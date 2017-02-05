@@ -2,18 +2,21 @@
   "name": "d3-foresight",
   "version": "0.0.0",
   "description": "Time series forecasts visualizations using d3",
-  "main": "./lib/d3-foresight.js",
+  "main": "./dist/d3-foresight.js",
   "repository": "git@github.com:reichlab/d3-foresight",
   "license": "MIT",
   "scripts": {
-    "build": "babel src -d lib",
-    "prepublish": "npm run build",
+    "compile": "webpack",
+    "build": "PROD_ENV=1 webpack",
+    "prepublish": "npm run compile",
     "test": "standard"
   },
   "devDependencies": {
-    "babel-cli": "^6.22.2",
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
     "babel-preset-latest": "^6.22.0",
-    "standard": "^8.6.0"
+    "standard": "^8.6.0",
+    "webpack": "^2.2.1"
   },
   "dependencies": {
     "colormap": "^2.2.0",
