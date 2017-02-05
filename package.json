@@ -1,6 +1,6 @@
 {
   "name": "d3-foresight",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Time series forecasts visualizations using d3",
   "main": "./dist/d3-foresight.js",
   "repository": "git@github.com:reichlab/d3-foresight",
