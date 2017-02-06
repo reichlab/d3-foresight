@@ -27,6 +27,11 @@ const config = {
     umdNamedDefine: true
   },
 
+  externals: {
+    "d3":"d3",
+    "moment":"moment"
+  },
+
   module: {
     rules: [
       {
