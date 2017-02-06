@@ -28,8 +28,8 @@ const config = {
   },
 
   externals: {
-    "d3":"d3",
-    "moment":"moment"
+    'd3': 'd3',
+    'moment': 'moment'
   },
 
   module: {
