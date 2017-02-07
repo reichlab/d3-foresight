@@ -10,7 +10,8 @@
     "build": "PROD_ENV=1 webpack",
     "prepublish": "npm run compile",
     "test": "standard",
-    "autotest": "nodemon node_modules/.bin/standard"
+    "autotest": "nodemon node_modules/.bin/standard",
+    "dev-server": "webpack-dev-server --watch --inline --hot"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
