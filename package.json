@@ -9,12 +9,14 @@
     "compile": "webpack",
     "build": "PROD_ENV=1 webpack",
     "prepublish": "npm run compile",
-    "test": "standard"
+    "test": "standard",
+    "autotest": "nodemon node_modules/.bin/standard"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
     "babel-preset-latest": "^6.22.0",
+    "nodemon": "^1.11.0",
     "standard": "^8.6.0",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.3.0"
