@@ -7,10 +7,12 @@ import * as mmwr from 'mmwr-week'
 import * as d3 from 'd3'
 
 export default class TimeChart {
-  constructor (elementId, weekHook) {
+  constructor (element, keywordArguments) {
     // Get div dimensions
-    let footBB = d3.select('.footer').node().getBoundingClientRect()
-    let chartBB = d3.select('#' + elementId).node().getBoundingClientRect()
+    let elementSelection = d3.select(element)
+    let body = elementSelection.select('.body')
+    let chartBB = body.node().getBoundingClientRect()
+    let footBB = elementSelection.select('.footer').node().getBoundingClientRect()
 
     let divWidth = chartBB.width
     let divHeight = window.innerHeight - chartBB.top - footBB.height
@@ -40,17 +42,17 @@ export default class TimeChart {
         .range([0, width])
 
     // Add svg
-    let svg = d3.select('#' + elementId).append('svg')
+    let svg = body.append('svg')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
         .append('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 
     // Add tooltips
-    this.chartTooltip = d3.select('#chart-tooltip')
+    this.chartTooltip = elementSelection.select('#chart-tooltip')
       .style('display', 'none')
 
-    this.legendTooltip = d3.select('#legend-tooltip')
+    this.legendTooltip = elementSelection.select('#legend-tooltip')
       .style('display', 'none')
 
     // Save variables
@@ -61,7 +63,7 @@ export default class TimeChart {
     this.height = height
     this.width = width
     this.onsetHeight = onsetHeight
-    this.weekHook = weekHook
+    this.weekHook = keywordArguments.weekHook
 
     // Add axes
     this.setupAxes()
