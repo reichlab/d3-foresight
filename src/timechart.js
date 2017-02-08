@@ -7,7 +7,7 @@ import * as mmwr from 'mmwr-week'
 import * as d3 from 'd3'
 
 export default class TimeChart {
-  constructor (element, keywordArguments) {
+  constructor (element, options) {
     // Get div dimensions
     let elementSelection = d3.select(element)
     let body = elementSelection.select('.body')
@@ -63,7 +63,7 @@ export default class TimeChart {
     this.height = height
     this.width = width
     this.onsetHeight = onsetHeight
-    this.weekHook = keywordArguments.weekHook
+    this.weekHooks = []
 
     // Add axes
     this.setupAxes()
@@ -271,7 +271,7 @@ export default class TimeChart {
     let yScale = this.yScale
     let xScaleDate = this.xScaleDate
     let tooltip = this.chartTooltip
-    let weekHook = this.weekHook
+    let weekHooks = this.weekHooks
 
     // Reset scales and axes
     yScale.domain([0, Math.min(13, util.getYMax(data))])
@@ -388,7 +388,7 @@ export default class TimeChart {
       this.nowGroup
         .style('display', 'none')
     }
-    weekHook(this.weekIdx)
+    this.handleHook(weekHooks, this.weekIdx)
 
     // Update markers with data
     this.timerect.plot(this, data.actual)
@@ -497,8 +497,18 @@ export default class TimeChart {
           .html(util.tooltipText(that, index, mouse[1]))
       })
       .on('click', function () {
-        weekHook(Math.round(xScale.invert(d3.mouse(this)[0])))
+        that.handleHook(weekHooks, Math.round(xScale.invert(d3.mouse(this)[0])))
       })
+  }
+
+  /**
+   * Helper method to call all functions of a hook
+   */
+  handleHook () {
+    let hookArray = arguments.shift()
+    hookArray.forEach((handler) => {
+      handler.apply(null, arguments)
+    })
   }
 
   /**
