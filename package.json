@@ -10,6 +10,7 @@
     "build": "PROD_ENV=1 webpack",
     "prepublish": "npm run compile",
     "test": "standard",
+    "watch": "webpack --watch",
     "autotest": "nodemon node_modules/.bin/standard",
     "dev-server": "webpack-dev-server --watch --inline --hot"
   },
