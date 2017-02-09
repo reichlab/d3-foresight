@@ -524,7 +524,6 @@ export class Legend {
     let actualItem = actualContainer.append('div')
         .attr('class', 'item')
         .attr('id', 'legend-actual')
-        .style('cursor', 'pointer')
 
     actualItem.append('i')
         .attr('class', 'fa fa-circle')
@@ -554,7 +553,6 @@ export class Legend {
     let observedItem = actualContainer.append('div')
         .attr('class', 'item')
         .attr('id', 'legend-observed')
-        .style('cursor', 'pointer')
 
     observedItem.append('i')
       .attr('class', 'fa fa-circle')
