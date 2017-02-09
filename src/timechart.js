@@ -505,7 +505,7 @@ export default class TimeChart {
    * Helper method to call all functions of a hook
    */
   handleHook () {
-    let hookArray = arguments.shift()
+    let hookArray = Array.prototype.shift.apply(arguments)
     hookArray.forEach((handler) => {
       handler.apply(null, arguments)
     })
