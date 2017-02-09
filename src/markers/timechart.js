@@ -508,6 +508,7 @@ export class Legend {
   constructor (parent, legendHook) {
     // TODO: Create legend div inside the parent @lepisma
     // TODO: Set id names to class and avoid repeating everything
+    // TODO: Create a common palette for use with css and js
     let legendContainer = d3.select('#legend')
     let actualContainer = legendContainer.select('#legend-actual-container')
     let predictionContainer = legendContainer.select('#legend-prediction-container')
