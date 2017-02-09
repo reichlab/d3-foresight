@@ -48,37 +48,44 @@ export const getNextWeeks = (currentWeek, weeks) => {
 }
 
 /**
- * Return formatted tooltip text for given weekIdx
+ * Template for main chart on hover tooltip
  */
-export const tooltipText = (object, idx, y) => {
+export const chartTooltip = (object, idx, y) => {
   // Run queries on objects and return html
-
   let text = ''
-
   // Ask for observed value
   let observedValue = object.observed.query(idx)
 
   if (observedValue) {
-    text += '<div class="actual" style="background:white">'
-    text += 'Observed <span class="bold">'
-    text += observedValue.toFixed(2) + '</span></div>'
+    text += `<div class="observed">
+               Observed
+               <span class="bold">
+                 ${observedValue.toFixed(2)}
+               </span>
+             </div>`
   }
 
   // Ask actual
   let actualValue = object.actual.query(idx)
 
   if (actualValue !== -1) {
-    text += '<div class="actual" style="background:white">'
-    text += 'Actual <span class="bold">'
-    text += actualValue.toFixed(2) + '</span></div>'
+    text += `<div class="actual">
+               Actual
+               <span class="bold">
+                 ${actualValue.toFixed(2)}
+               </span>
+             </div>`
   }
 
   object.predictions.map(p => {
     let data = p.query(idx)
-
     if (data) {
-      text += '<div class="prediction" style="background:' + p.color + '">'
-      text += p.id + ' <span class="bold">' + data.toFixed(2) + '</span></div>'
+      text += `<div class="prediction" style="background:${p.color}">
+                 ${p.id}
+                 <span class="bold">
+                   ${data.toFixed(2)}
+                 </span>
+               </div>`
     }
   })
 
@@ -86,19 +93,16 @@ export const tooltipText = (object, idx, y) => {
 }
 
 /**
- * Return formatted tooltip info text for points
+ * Template for point predictions
  */
 export const pointTooltip = (id, data, color) => {
-  let text = ''
-
-  text += '<div class="point head" style="background:' + color + '">'
-  text += id + '</div>'
-
+  let text = `<div class="point head" style="background:${color}">${id}</div>`
   data.map(d => {
-    text += '<div class="point">'
-    text += d.key + '<span class="bold">' + d.value.toFixed(2) + '</span></div>'
+    text += `<div class="point">
+               ${d.key}
+               <span class="bold">${d.value.toFixed(2)}</span>
+             </div>`
   })
-
   return text
 }
 
@@ -106,12 +110,12 @@ export const pointTooltip = (id, data, color) => {
  * Return formatted tooltip info text for legend items
  */
 export const legendTooltip = (meta) => {
-  let text = ''
-
-  text += '<div class="name">' + meta.name + '</div>'
-  text += '<div class="desc">' + meta.description + '</div>'
-
-  return text
+  return `<div class="name">
+            ${meta.name}
+          </div>
+          <div class="desc">
+            ${meta.description}
+          </div>`
 }
 
 /**

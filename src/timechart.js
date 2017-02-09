@@ -513,7 +513,7 @@ export default class TimeChart {
         tooltip
           .style('top', (d3.event.pageY + 15) + 'px')
           .style('left', (d3.event.pageX + 15) + 'px')
-          .html(util.tooltipText(that, index, mouse[1]))
+          .html(util.chartTooltip(that, index, mouse[1]))
       })
       .on('click', function () {
         that.handleHook(weekHooks, Math.round(xScale.invert(d3.mouse(this)[0])))
