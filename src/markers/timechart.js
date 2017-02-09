@@ -2,7 +2,7 @@
 
 import * as util from '../utils/timechart'
 import * as d3 from 'd3'
-import palette from '../palette.json'
+import palette from '../styles/palette.json'
 
 /**
  * Prediction markers
