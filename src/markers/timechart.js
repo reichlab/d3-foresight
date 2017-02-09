@@ -2,6 +2,7 @@
 
 import * as util from '../utils/timechart'
 import * as d3 from 'd3'
+import palette from '../palette.json'
 
 /**
  * Prediction markers
@@ -508,7 +509,6 @@ export class Legend {
   constructor (parent, legendHook) {
     // TODO: Create legend div inside the parent @lepisma
     // TODO: Set id names to class and avoid repeating everything
-    // TODO: Create a common palette for use with css and js
     let legendContainer = d3.select('#legend')
     let actualContainer = legendContainer.select('#legend-actual-container')
     let predictionContainer = legendContainer.select('#legend-prediction-container')
@@ -528,7 +528,7 @@ export class Legend {
 
     actualItem.append('i')
         .attr('class', 'fa fa-circle')
-        .style('color', 'red')
+        .style('color', palette.actual)
 
     actualItem.append('span')
       .attr('class', 'item-title')
@@ -557,7 +557,7 @@ export class Legend {
 
     observedItem.append('i')
       .attr('class', 'fa fa-circle')
-      .style('color', 'red')
+      .style('color', palette.observed)
 
     observedItem.append('span')
       .attr('class', 'item-title')
@@ -587,7 +587,7 @@ export class Legend {
 
     let historyIcon = historyItem.append('i')
         .attr('class', 'fa')
-        .style('color', 'red')
+        .style('color', palette['history-highlight'])
 
     historyItem.append('span')
       .attr('class', 'item-title')
