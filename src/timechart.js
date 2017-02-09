@@ -21,7 +21,8 @@ export default class TimeChart {
       axesUrl: {
         x: 'https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf',
         y: 'http://www.cdc.gov/flu/weekly/overview.htm'
-      }
+      },
+      noPredText: 'Predictions not available <br> for selected week'
     }
     this.config = Object.assign({}, defaults, options)
 
@@ -75,7 +76,7 @@ export default class TimeChart {
     // Add text for no prediction
     elementSelection.append('div')
       .attr('class', 'no-pred-text')
-      .html('Predictions not available <br> for selected week')
+      .html(this.config.noPredText)
 
     // Save variables
     this.svg = svg
