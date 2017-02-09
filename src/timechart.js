@@ -7,7 +7,24 @@ import * as mmwr from 'mmwr-week'
 import * as d3 from 'd3'
 
 export default class TimeChart {
-  constructor (element, options) {
+  constructor (element, options = {}) {
+    // Parse config passed
+    // TODO: Improve style considering markers @lepisma
+    let defaults = {
+      axesDesc: {
+        x: `Week of the calendar year, as measured by the CDC.
+            <br><br><em>Click to know more</em>`,
+        y: `Percentage of outpatient doctor visits for influenza-like
+            illness, weighted by state population.<br><br><em>Click to know
+            more</em>`
+      },
+      axesUrl: {
+        x: 'https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf',
+        y: 'http://www.cdc.gov/flu/weekly/overview.htm'
+      }
+    }
+    this.config = Object.assign({}, defaults, options)
+
     // Get div dimensions
     let elementSelection = d3.select(element)
     let chartBB = elementSelection.node().getBoundingClientRect()
@@ -106,6 +123,7 @@ export default class TimeChart {
     let width = this.width
     let height = this.height
     let onsetHeight = this.onsetHeight
+    let config = this.config
 
     // Keep onset panel between xaxis and plot
     let xAxisPos = height + onsetHeight
@@ -149,11 +167,10 @@ export default class TimeChart {
         infoTooltip
           .style('top', (d3.event.pageY - 15) + 'px')
           .style('left', (d3.event.pageX - 150 - 15) + 'px')
-          .html(`Week of the calendar year, as measured by the CDC.
-                 <br><br><em>Click to know more</em>`)
+          .html(config.axesDesc.x)
       })
       .on('click', function () {
-        window.open('https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf',
+        window.open(config.axesUrl.x,
                     '_blank')
       })
 
@@ -178,12 +195,10 @@ export default class TimeChart {
         infoTooltip
           .style('top', d3.event.pageY + 'px')
           .style('left', (d3.event.pageX + 15) + 'px')
-          .html(`Percentage of outpatient doctor visits for influenza-like
-                 illness, weighted by state population.<br><br><em>Click to know
-                 more</em>`)
+          .html(config.axesDesc.y)
       })
       .on('click', function () {
-        window.open('http://www.cdc.gov/flu/weekly/overview.htm', '_blank')
+        window.open(config.axesUrl.y, '_blank')
       })
   }
 
