@@ -57,7 +57,7 @@ export default class TimeChart {
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
         .append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+        .attr('transform', `translate(${margin.left},${margin.top})`)
 
     // Add tooltips
     // TODO: Merge separate tooltips
@@ -143,17 +143,17 @@ export default class TimeChart {
     // Main axis with ticks below the onset panel
     svg.append('g')
       .attr('class', 'axis axis-x')
-      .attr('transform', 'translate(0,' + xAxisPos + ')')
+      .attr('transform', `translate(0,${xAxisPos})`)
 
     let axisXDate = svg.append('g')
         .attr('class', 'axis axis-x-date')
-        .attr('transform', 'translate(0,' + (xAxisPos + 25) + ')')
+        .attr('transform', `translate(0,${xAxisPos + 25})`)
 
     let xText = axisXDate
         .append('text')
         .attr('class', 'title')
         .attr('text-anchor', 'start')
-        .attr('transform', 'translate(' + (width + 10) + ',-15)')
+        .attr('transform', `translate(${width + 10},-15)`)
 
     xText.append('tspan')
       .text('Epidemic')
@@ -179,15 +179,14 @@ export default class TimeChart {
           .html(config.axesDesc.x)
       })
       .on('click', function () {
-        window.open(config.axesUrl.x,
-                    '_blank')
+        window.open(config.axesUrl.x, '_blank')
       })
 
     svg.append('g')
       .attr('class', 'axis axis-y')
       .append('text')
       .attr('class', 'title')
-      .attr('transform', 'translate(-40 ,' + height / 2 + ') rotate(-90)')
+      .attr('transform', `translate(-40 , ${height / 2}) rotate(-90)`)
       .attr('dy', '.71em')
       .style('text-anchor', 'middle')
       .text('Weighted ILI (%)')
@@ -218,7 +217,7 @@ export default class TimeChart {
     // Clone of axis above onset panel, without text
     this.svg.append('g')
       .attr('class', 'axis axis-x-ticks')
-      .attr('transform', 'translate(0,' + this.height + ')')
+      .attr('transform', `translate(0, ${this.height})`)
   }
 
   /**

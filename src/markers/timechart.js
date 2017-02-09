@@ -475,7 +475,7 @@ export class HistoricalLines {
         tooltip
           .style('top', (d3.event.pageY + 15) + 'px')
           .style('left', (d3.event.pageX + 15) + 'px')
-          .html('<div class="point">' + d.id + '</div>')
+          .html(`<div class="point">${d.id}</div>`)
       })
     })
 
@@ -649,7 +649,7 @@ export class Legend {
 }
 
 /**
- * CDC Baseline
+ * Baseline
  */
 export class Baseline {
   constructor (parent) {
@@ -665,7 +665,7 @@ export class Baseline {
 
     let text = group.append('text')
         .attr('class', 'title')
-        .attr('transform', 'translate(' + (parent.width + 10) + ', 0)')
+        .attr('transform', `translate(${parent.width + 10}, 0)`)
     text.append('tspan')
       .text('CDC')
       .attr('x', 0)
