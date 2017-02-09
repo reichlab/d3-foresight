@@ -74,7 +74,7 @@ export default class TimeChart {
       .style('display', 'none')
 
     // Add text for no prediction
-    elementSelection.append('div')
+    this.noPredText = elementSelection.append('div')
       .attr('class', 'no-pred-text')
       .html(this.config.noPredText)
 
@@ -542,15 +542,14 @@ export default class TimeChart {
       p.update(idx)
     })
 
-    let noPredText = d3.select('.no-pred-text')
     // Set no
     if (this.predictions.filter(p => p.hidden).length !== 0) {
-      noPredText
+      this.noPredText
         .transition()
         .duration(100)
         .style('display', null)
     } else {
-      noPredText
+      this.noPredText
         .transition()
         .duration(100)
         .style('display', 'none')
