@@ -10,15 +10,10 @@ export default class TimeChart {
   constructor (element, options) {
     // Get div dimensions
     let elementSelection = d3.select(element)
-    let body = elementSelection.select('.body')
-    let chartBB = body.node().getBoundingClientRect()
-    let footBB = elementSelection.select('.footer').node().getBoundingClientRect()
+    let chartBB = elementSelection.node().getBoundingClientRect()
 
     let divWidth = chartBB.width
-    let divHeight = window.innerHeight - chartBB.top - footBB.height
-
-    // Padding offsets
-    divHeight -= 20
+    let divHeight = 500
 
     // Limits
     divHeight = Math.min(Math.max(350, divHeight), 550)
@@ -42,7 +37,7 @@ export default class TimeChart {
         .range([0, width])
 
     // Add svg
-    let svg = body.append('svg')
+    let svg = elementSelection.append('svg')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
         .append('g')
