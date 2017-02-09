@@ -506,18 +506,93 @@ export class HistoricalLines {
  */
 export class Legend {
   constructor (parent, legendHook) {
-    let predictionContainer = d3.select('#legend-prediction-container')
-    let ciButtons = d3.select('#legend-ci-buttons')
+    // TODO: Create legend div inside the parent @lepisma
+    // TODO: Set id names to class and avoid repeating everything
+    let legendContainer = d3.select('#legend')
+    let actualContainer = legendContainer.select('#legend-actual-container')
+    let predictionContainer = legendContainer.select('#legend-prediction-container')
+    let ciButtons = legendContainer.select('#legend-ci-buttons')
 
     // Clear entries
+    actualContainer.selectAll('*').remove()
     predictionContainer.selectAll('*').remove()
     ciButtons.selectAll('*').remove()
 
     // Meta data info tooltip
     let tooltip = parent.legendTooltip
 
-    let historyItem = d3.select('#legend-history')
-    let historyIcon = historyItem.select('i')
+    let actualItem = actualContainer.append('div')
+        .attr('class', 'item')
+        .attr('id', 'legend-actual')
+        .style('cursor', 'pointer')
+
+    actualItem.append('i')
+        .attr('class', 'fa fa-circle')
+        .style('color', 'red')
+
+    actualItem.append('span')
+      .attr('class', 'item-title')
+      .html('Actual')
+
+    actualItem
+      .on('mouseover', function () {
+        tooltip.style('display', null)
+      })
+      .on('mouseout', function () {
+        tooltip.style('display', 'none')
+      })
+      .on('mousemove', function () {
+        tooltip
+          .style('top', (d3.event.pageY + 15) + 'px')
+          .style('left', (d3.event.pageX - 150 - 15) + 'px')
+          .html(util.legendTooltip({
+            name: 'Actual Data',
+            description: 'Latest data available for the week'
+          }))
+      })
+
+    let observedItem = actualContainer.append('div')
+        .attr('class', 'item')
+        .attr('id', 'legend-observed')
+        .style('cursor', 'pointer')
+
+    observedItem.append('i')
+      .attr('class', 'fa fa-circle')
+      .style('color', 'red')
+
+    observedItem.append('span')
+      .attr('class', 'item-title')
+      .html('Observed')
+
+    observedItem
+      .on('mouseover', function () {
+        tooltip.style('display', null)
+      })
+      .on('mouseout', function () {
+        tooltip.style('display', 'none')
+      })
+      .on('mousemove', function () {
+        tooltip
+          .style('top', (d3.event.pageY + 15) + 'px')
+          .style('left', (d3.event.pageX - 150 - 15) + 'px')
+          .html(util.legendTooltip({
+            name: 'Observed Data',
+            description: 'Data available for weeks when the predictions were made'
+          }))
+      })
+
+    let historyItem = actualContainer.append('div')
+        .attr('class', 'item')
+        .attr('id', 'legend-history')
+        .style('cursor', 'pointer')
+
+    let historyIcon = historyItem.append('i')
+        .attr('class', 'fa')
+        .style('color', 'red')
+
+    historyItem.append('span')
+      .attr('class', 'item-title')
+      .html('History')
 
     if (parent.historyShow) historyIcon.classed('fa-circle', true)
     else historyIcon.classed('fa-circle-o', true)
@@ -530,6 +605,21 @@ export class Legend {
         historyIcon.classed('fa-circle-o', isActive)
 
         legendHook('legend:history', isActive)
+      })
+      .on('mouseover', function () {
+        tooltip.style('display', null)
+      })
+      .on('mouseout', function () {
+        tooltip.style('display', 'none')
+      })
+      .on('mousemove', function () {
+        tooltip
+          .style('top', (d3.event.pageY + 15) + 'px')
+          .style('left', (d3.event.pageX - 150 - 15) + 'px')
+          .html(util.legendTooltip({
+            name: 'Historical Data',
+            description: 'Toggle historical data lines'
+          }))
       })
 
     // Add confidence buttons
