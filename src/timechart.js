@@ -27,13 +27,11 @@ export default class TimeChart {
 
     // Get div dimensions
     let elementSelection = d3.select(element)
-    let chartBB = elementSelection.node().getBoundingClientRect()
+        .attr('class', 'd3-foresight-timechart')
 
+    let chartBB = elementSelection.node().getBoundingClientRect()
     let divWidth = chartBB.width
     let divHeight = 500
-
-    // Limits
-    divHeight = Math.min(Math.max(350, divHeight), 550)
 
     // Height of onset panel above x axis
     let onsetHeight = 30
@@ -61,11 +59,23 @@ export default class TimeChart {
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 
     // Add tooltips
-    this.chartTooltip = elementSelection.select('#chart-tooltip')
+    // TODO: Merge separate tooltips
+    this.chartTooltip = elementSelection.append('div')
+      .attr('class', 'd3-foresight-tooltip d3-foresight-chart-tooltip')
       .style('display', 'none')
 
-    this.legendTooltip = elementSelection.select('#legend-tooltip')
+    this.legendTooltip = elementSelection.append('div')
+      .attr('class', 'd3-foresight-tooltip d3-foresight-legend-tooltip')
       .style('display', 'none')
+
+    this.infoTooltip = elementSelection.append('div')
+      .attr('class', 'd3-foresight-tooltip d3-foresight-info-tooltip')
+      .style('display', 'none')
+
+    // Add text for no prediction
+    elementSelection.append('div')
+      .attr('class', 'no-pred-text')
+      .html('Predictions not available <br> for selected week')
 
     // Save variables
     this.svg = svg
@@ -124,12 +134,10 @@ export default class TimeChart {
     let height = this.height
     let onsetHeight = this.onsetHeight
     let config = this.config
+    let infoTooltip = this.infoTooltip
 
     // Keep onset panel between xaxis and plot
     let xAxisPos = height + onsetHeight
-
-    let infoTooltip = d3.select('#info-tooltip')
-        .style('display', 'none')
 
     // Main axis with ticks below the onset panel
     svg.append('g')
@@ -533,7 +541,7 @@ export default class TimeChart {
       p.update(idx)
     })
 
-    let noPredText = d3.select('#no-pred')
+    let noPredText = d3.select('.no-pred-text')
     // Set no
     if (this.predictions.filter(p => p.hidden).length !== 0) {
       noPredText

@@ -1,0 +1,61 @@
+// Styles for tooltips
+
+
+.d3-foresight-tooltip {
+  background-color: $white;
+  border-radius: 1px;
+  box-shadow: 0 0 2px;
+  font-size: 11px;
+  position: fixed;
+  z-index: 100;
+
+  .bold {
+    font-weight: bold;
+  }
+}
+
+.d3-foresight-info-tooltip {
+  padding: 5px 10px;
+  width: 150px;
+}
+
+.d3-foresight-chart-tooltip {
+  .bold {
+    float: right;
+    font-weight: bold;
+    margin-left: 5px;
+  }
+
+  .actual {
+    color: $gray;
+    padding: 5px 10px;
+  }
+
+  .prediction {
+    color: $white;
+    padding: 5px 10px;
+  }
+
+  .point {
+    color: $gray;
+    padding: 5px 10px;
+
+    &.head {
+      color: $white;
+    }
+  }
+}
+
+.d3-foresight-legend-tooltip {
+  width: 150px;
+
+  .name {
+    font-size: 13px;
+    padding: 5px 10px;
+  }
+
+  .desc {
+    margin-top: 0;
+    padding: 5px 10px;
+  }
+}

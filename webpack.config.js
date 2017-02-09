@@ -41,6 +41,16 @@ const config = {
         options: {
           presets: ['latest']
         }
+      },
+      {
+        test: /\.scss$/,
+        use: [{
+          loader: 'style-loader'
+        }, {
+          loader: 'css-loader'
+        }, {
+          loader: 'sass-loader'
+        }]
       }
     ]
   },
