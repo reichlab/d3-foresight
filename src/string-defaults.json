@@ -1,0 +1,11 @@
+{
+  "axesDesc": {
+    "x": "Week of the calendar year, as measured by the CDC.<br><br><em>Click to know more</em>",
+    "y": "Percentage of outpatient doctor visits for influenza-like illness, weighted by state population.<br><br><em>Click to know more</em>"
+  },
+  "axesUrl": {
+    "x": "https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf",
+    "y": "http://www.cdc.gov/flu/weekly/overview.htm"
+  },
+  "noPredText": "Predictions not available <br> for selected week"
+}

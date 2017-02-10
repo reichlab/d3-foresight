@@ -51,6 +51,10 @@ const config = {
         }, {
           loader: 'sass-loader'
         }]
+      },
+      {
+        test: /\.json$/,
+        use: 'json-loader'
       }
     ]
   },

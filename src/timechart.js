@@ -1,30 +1,14 @@
-// Chart plotting functions
-
 import * as util from './utils/timechart'
 import * as marker from './markers/timechart'
 import textures from 'textures'
 import * as mmwr from 'mmwr-week'
 import * as d3 from 'd3'
+import stringDefaults from './string-defaults.json'
 
 export default class TimeChart {
-  constructor (element, options = {}) {
-    // Parse config passed
-    // TODO: Improve style considering markers @lepisma
-    let defaults = {
-      axesDesc: {
-        x: `Week of the calendar year, as measured by the CDC.
-            <br><br><em>Click to know more</em>`,
-        y: `Percentage of outpatient doctor visits for influenza-like
-            illness, weighted by state population.<br><br><em>Click to know
-            more</em>`
-      },
-      axesUrl: {
-        x: 'https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf',
-        y: 'http://www.cdc.gov/flu/weekly/overview.htm'
-      },
-      noPredText: 'Predictions not available <br> for selected week'
-    }
-    this.config = Object.assign({}, defaults, options)
+  constructor (element, dataStore, options = {}) {
+    this.config = Object.assign({}, stringDefaults, options)
+    this.data = dataStore
 
     // Get div dimensions
     let elementSelection = d3.select(element)
@@ -282,8 +266,7 @@ export default class TimeChart {
       .style('fill', this.onsetTexture.url())
   }
 
-  // plot data
-  plot (data) {
+  plot () {
     let svg = this.svg
     let xScale = this.xScale
     let yScale = this.yScale
@@ -292,11 +275,11 @@ export default class TimeChart {
     let weekHooks = this.weekHooks
 
     // Reset scales and axes
-    yScale.domain([0, Math.min(13, util.getYMax(data))])
+    yScale.domain([0, Math.min(13, util.getYMax(this.data))])
     // Assuming actual data has all the weeks
-    let weeks = data.actual.map(d => d.week % 100)
+    let weeks = this.data.actual.map(d => d.week % 100)
 
-    let actualIndices = data.actual
+    let actualIndices = this.data.actual
         .filter(d => d.data !== -1)
         .map(d => weeks.indexOf(d.week % 100))
     xScale.domain([0, weeks.length - 1])
@@ -318,7 +301,7 @@ export default class TimeChart {
     }
 
     // Week to date parser
-    xScaleDate.domain(d3.extent(data.actual.map(d => {
+    xScaleDate.domain(d3.extent(this.data.actual.map(d => {
       let year = Math.floor(d.week / 100)
       let week = d.week % 100
       return mmwr.MMWRWeekToDate(year, week).toDate()
@@ -366,7 +349,7 @@ export default class TimeChart {
     if (actualIndices.length < weeks.length) {
       // Start at the latest prediction
       this.weekIdx = Math
-        .max(...data.models
+        .max(...this.data.models
              .map(m => {
                if (m.predictions.length === 0) return 0
                else {
@@ -388,7 +371,7 @@ export default class TimeChart {
         .style('display', null)
     } else {
       // Start at the oldest prediction
-      let modelPredictions = data.models
+      let modelPredictions = this.data.models
           .map(m => {
             if (m.predictions.length === 0) return -1
             else {
@@ -409,22 +392,22 @@ export default class TimeChart {
     this.handleHook(weekHooks, this.weekIdx)
 
     // Update markers with data
-    this.timerect.plot(this, data.actual)
-    this.baseline.plot(this, data.baseline)
-    this.actual.plot(this, data.actual)
-    this.observed.plot(this, data.observed)
+    this.timerect.plot(this, this.data.actual)
+    this.baseline.plot(this, this.data.baseline)
+    this.actual.plot(this, this.data.actual)
+    this.observed.plot(this, this.data.observed)
 
     // Reset history lines
-    this.history.plot(this, data.history)
+    this.history.plot(this, this.data.history)
 
     // Reset predictions
     let colors = d3.schemeCategory10
 
-    let totalModels = data.models.length
+    let totalModels = this.data.models.length
     let onsetDiff = (this.onsetHeight - 2) / (totalModels + 1)
 
     // Filter markers not needed
-    let currentPredictionIds = data.models.map(m => m.id)
+    let currentPredictionIds = this.data.models.map(m => m.id)
     this.predictions = this.predictions.filter(p => {
       if (currentPredictionIds.indexOf(p.id) === -1) {
         p.clear()
@@ -435,7 +418,7 @@ export default class TimeChart {
     })
 
     // Collect values with zero lags for starting point of prediction markers
-    let zeroLagData = data.observed.map(d => {
+    let zeroLagData = this.data.observed.map(d => {
       let dataToReturn = -1
       // Handle zero length values
       if (d.data.length !== 0) {
@@ -447,7 +430,7 @@ export default class TimeChart {
       }
     })
 
-    data.models.forEach((m, idx) => {
+    this.data.models.forEach((m, idx) => {
       // Add marker if not present
       let predMarker
       let markerIndex = this.predictions.map(p => p.id).indexOf(m.id)
