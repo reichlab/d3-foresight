@@ -8,111 +8,91 @@ import stringDefaults from './string-defaults.json'
 export default class TimeChart {
   constructor (element, dataStore, options = {}) {
     this.config = Object.assign({}, stringDefaults, options)
+    this.config.margin = Object.assign({}, {
+      top: 5, right: 50, bottom: 70 + this.onsetHeight, left: 40
+    }, options.margin)
     this.data = dataStore
-
-    // Get div dimensions
-    let elementSelection = d3.select(element)
+    this.container = d3.select(element)
         .attr('class', 'd3-foresight-timechart')
-
-    let chartBB = elementSelection.node().getBoundingClientRect()
-    let divWidth = chartBB.width
-    let divHeight = 500
-
-    // Height of onset panel above x axis
-    let onsetHeight = 30
-
-    // Create blank chart
-    let margin = {
-      top: 5, right: 50, bottom: 70 + onsetHeight, left: 40
-    }
-    let width = divWidth - margin.left - margin.right
-    let height = divHeight - margin.top - margin.bottom
-
-    // Initialize scales and stuff
-    let xScale = d3.scaleLinear()
-        .range([0, width])
-    let yScale = d3.scaleLinear()
-        .range([height, 0])
-    let xScaleDate = d3.scaleTime()
-        .range([0, width])
-
-    // Add svg
-    let svg = elementSelection.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`)
-
-    // Add tooltips
-    // TODO: Merge separate tooltips
-    this.chartTooltip = elementSelection.append('div')
-      .attr('class', 'd3-foresight-tooltip d3-foresight-chart-tooltip')
-      .style('display', 'none')
-
-    this.legendTooltip = elementSelection.append('div')
-      .attr('class', 'd3-foresight-tooltip d3-foresight-legend-tooltip')
-      .style('display', 'none')
-
-    this.infoTooltip = elementSelection.append('div')
-      .attr('class', 'd3-foresight-tooltip d3-foresight-info-tooltip')
-      .style('display', 'none')
-
-    // Add text for no prediction
-    this.noPredText = elementSelection.append('div')
-      .attr('class', 'no-pred-text')
-      .html(this.config.noPredText)
-
-    // Save variables
-    this.svg = svg
-    this.xScale = xScale
-    this.yScale = yScale
-    this.xScaleDate = xScaleDate
-    this.height = height
-    this.width = width
-    this.onsetHeight = onsetHeight
-    this.weekHooks = []
-
-    // Add axes
+    this.onsetHeight = 30
+    this.setupDimentions()
+    this.setupScales()
+    this.setupSvg()
+    this.setupTooltips()
+    this.setupEmptyText()
     this.setupAxes()
-
-    // Add marker primitives
     this.timerect = new marker.TimeRect(this)
-
-    this.onsetTexture = textures.lines()
-      .lighter()
-      .strokeWidth(0.5)
-      .size(8)
-      .stroke('#ccc')
-    svg.call(this.onsetTexture)
-
-    // Paint the onset panel
-    this.paintOnsetOffset()
-
-    // Add overlays and other mouse interaction items
+    this.setupOnsetTexture()
+    this.paintOnsetPanelOffset()
     this.setupOverlay()
-
-    // Axis at top of onset panel
     this.setupReverseAxis()
-
+    this.setupConfidenceIntervals()
     this.history = new marker.HistoricalLines(this)
     this.baseline = new marker.Baseline(this)
     this.actual = new marker.Actual(this)
     this.observed = new marker.Observed(this)
     this.predictions = []
-
-    // Hard coding confidence values as of now
-    // This and currently selected id should ideally go in the vuex store
-    this.confidenceIntervals = ['90%', '50%']
-    this.cid = 1 // Use 50% as default
-
-    // Legend toggle state
+    this.weekHooks = []
     this.historyShow = true
     this.predictionsShow = {}
   }
 
-  /**
-   * Setup axes
-   */
+  setupDimentions () {
+    let divWidth = this.container.node().getBoundingClientRect().width
+    let divHeight = 500
+    this.height = divHeight - this.config.margin.top - this.config.margin.bottom
+    this.width = divWidth - this.config.margin.left - this.config.margin.right
+  }
+
+  setupOnsetTexture () {
+    this.onsetTexture = textures.lines()
+      .lighter()
+      .strokeWidth(0.5)
+      .size(8)
+      .stroke('#ccc')
+    this.svg.call(this.onsetTexture)
+  }
+
+  setupSvg () {
+    this.svg = this.container.append('svg')
+        .attr('width', this.width + this.config.margin.left + this.config.margin.right)
+        .attr('height', this.height + this.config.margin.top + this.config.margin.bottom)
+        .append('g')
+        .attr('transform', `translate(${this.config.margin.left},${this.config.margin.top})`)
+  }
+
+  setupScales () {
+    this.xScale = d3.scaleLinear()
+        .range([0, this.width])
+    this.yScale = d3.scaleLinear()
+        .range([this.height, 0])
+    this.xScaleDate = d3.scaleTime()
+        .range([0, this.width])
+  }
+
+  setupEmptyText () {
+    this.noPredText = this.container.append('div')
+      .attr('class', 'no-pred-text')
+      .html(this.config.noPredText)
+  }
+
+  setupTooltips () {
+    this.chartTooltip = this.container.append('div')
+      .attr('class', 'd3-foresight-tooltip d3-foresight-chart-tooltip')
+      .style('display', 'none')
+    this.legendTooltip = this.container.append('div')
+      .attr('class', 'd3-foresight-tooltip d3-foresight-legend-tooltip')
+      .style('display', 'none')
+    this.infoTooltip = this.container.append('div')
+      .attr('class', 'd3-foresight-tooltip d3-foresight-info-tooltip')
+      .style('display', 'none')
+  }
+
+  setupConfidenceIntervals () {
+    this.confidenceIntervals = ['90%', '50%']
+    this.cid = 1
+  }
+
   setupAxes () {
     let svg = this.svg
     let width = this.width
@@ -256,7 +236,7 @@ export default class TimeChart {
       })
   }
 
-  paintOnsetOffset () {
+  paintOnsetPanelOffset () {
     this.svg.append('rect')
       .attr('class', 'onset-texture')
       .attr('height', this.onsetHeight)
