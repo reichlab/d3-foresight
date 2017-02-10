@@ -3,6 +3,33 @@
 This is a temporary document for laying out the interface for `d3-foresight` as
 the development goes on.
 
+### Data transformation
+
+This section documents the flow of data in flusight which might help explain the
+arguments of `TimeChart`, `Choropleth` etc.
+
+`data.json` has two properties.
+
+- `branding` is used by flusight for metadata about the website
+- `data` contains actual data
+
+The central place to look for the trasformations
+is
+[this](https://github.com/reichlab/flusight/blob/test-foresight/src/store/getters.js).
+These are getter functions which use `state` and other child `getters` (from
+`modules` subdirectory of `store`) to subset the data. `data` from `data.json`
+is bound to `state.data` (this can be studied more in detail in
+the
+[store](https://github.com/reichlab/flusight/blob/test-foresight/src/store/)).
+
+Specially important are the getters `timeChartData` and `choroplethData`. These
+provide the data subset which gets in `TimeChart.plot`
+(see
+[here](https://github.com/reichlab/flusight/blob/test-foresight/src/store/actions.js#L21))
+and describe the transformation in its entirety.
+
+---
+
 There are 2 classes, one for plotting the timechart (`TimeChart`) with forecasts
 and other for plotting the usa map (`Choropleth`).
 
