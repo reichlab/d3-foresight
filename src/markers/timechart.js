@@ -583,6 +583,9 @@ export class Controls {
           .style('left', (d3.event.pageX - 100 - 15) + 'px')
           .html('Move backward')
       })
+      .on('click', function () {
+        controlHook('backward')
+      })
 
     navControls.append('br')
 
@@ -606,6 +609,9 @@ export class Controls {
           .style('top', (d3.event.pageY + 15) + 'px')
           .style('left', (d3.event.pageX - 100 - 15) + 'px')
           .html('Move forward')
+      })
+      .on('click', function () {
+        controlHook('forward')
       })
 
     let legendGroup = controlGroup.append('div')

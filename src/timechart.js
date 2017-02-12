@@ -144,6 +144,10 @@ export default class TimeChart {
           this.cid = p.cid = payload
           p.update(this.weekIdx)
         })
+      } else if (event === 'forward') {
+        this.forward()
+      } else if (event === 'backward') {
+        this.backward()
       }
     })
   }
