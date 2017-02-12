@@ -507,9 +507,7 @@ export class HistoricalLines {
  * nav-drawers and buttons
  */
 export class Controls {
-  constructor(parent) {
-    let tooltip = parent.btnTooltip
-
+  constructor (parent, controlHook) {
     let controlGroup = parent.elementSelection.append('div')
         .attr('class', 'd3-foresight-controls')
 
@@ -526,13 +524,13 @@ export class Controls {
 
     legendBtn
       .on('mouseover', function () {
-        tooltip.style('display', null)
+        parent.btnTooltip.style('display', null)
       })
       .on('mouseout', function () {
-        tooltip.style('display', 'none')
+        parent.btnTooltip.style('display', 'none')
       })
       .on('mousemove', function () {
-        tooltip
+        parent.btnTooltip
           .style('top', (d3.event.pageY + 15) + 'px')
           .style('left', (d3.event.pageX - 100 - 15) + 'px')
           .html('Toggle Legend')
@@ -550,13 +548,13 @@ export class Controls {
 
     statsBtn
       .on('mouseover', function () {
-        tooltip.style('display', null)
+        parent.btnTooltip.style('display', null)
       })
       .on('mouseout', function () {
-        tooltip.style('display', 'none')
+        parent.btnTooltip.style('display', 'none')
       })
       .on('mousemove', function () {
-        tooltip
+        parent.btnTooltip
           .style('top', (d3.event.pageY + 15) + 'px')
           .style('left', (d3.event.pageX - 100 - 15) + 'px')
           .html('Toggle Stats')
@@ -574,13 +572,13 @@ export class Controls {
 
     backBtn
       .on('mouseover', function () {
-        tooltip.style('display', null)
+        parent.btnTooltip.style('display', null)
       })
       .on('mouseout', function () {
-        tooltip.style('display', 'none')
+        parent.btnTooltip.style('display', 'none')
       })
       .on('mousemove', function () {
-        tooltip
+        parent.btnTooltip
           .style('top', (d3.event.pageY + 15) + 'px')
           .style('left', (d3.event.pageX - 100 - 15) + 'px')
           .html('Move backward')
@@ -598,42 +596,40 @@ export class Controls {
 
     nextBtn
       .on('mouseover', function () {
-        tooltip.style('display', null)
+        parent.btnTooltip.style('display', null)
       })
       .on('mouseout', function () {
-        tooltip.style('display', 'none')
+        parent.btnTooltip.style('display', 'none')
       })
       .on('mousemove', function () {
-        tooltip
+        parent.btnTooltip
           .style('top', (d3.event.pageY + 15) + 'px')
           .style('left', (d3.event.pageX - 100 - 15) + 'px')
           .html('Move forward')
       })
 
-  }
-}
+    let legendGroup = controlGroup.append('div')
+        .attr('class', 'legend nav-drawer')
 
-/**
- * Legend and controls
- */
-export class Legend {
-  constructor (parent, legendHook) {
-    // TODO: Create legend div inside the parent @lepisma
-    // TODO: Set id names to class and avoid repeating everything
-    let legendContainer = d3.select('.legend')
-    let actualContainer = legendContainer.select('.legend-actual-container')
-    let predictionContainer = legendContainer.select('.legend-prediction-container')
-    let ciButtons = legendContainer.select('.legend-ci-buttons')
+    let legendActualContainer = legendGroup.append('div')
+        .attr('class', 'legend-actual-container')
 
-    // Clear entries
-    actualContainer.selectAll('*').remove()
-    predictionContainer.selectAll('*').remove()
-    ciButtons.selectAll('*').remove()
+    legendGroup.append('hr')
 
-    // Meta data info tooltip
-    let tooltip = parent.legendTooltip
+    let legendCIItem = legendGroup.append('div')
+        .attr('class', 'legend-ci-container')
+        .append('div')
+        .attr('class', 'item')
 
-    let actualItem = actualContainer.append('div')
+    legendCIItem.append('span').text('CI')
+    let legendCIButtons = legendCIItem.append('span')
+        .attr('class', 'legend-ci-buttons')
+
+    legendGroup.append('hr')
+    legendGroup.append('div')
+      .attr('class', 'legend-prediction-container')
+
+    let actualItem = legendActualContainer.append('div')
         .attr('class', 'item')
         .attr('id', 'legend-actual')
 
@@ -647,13 +643,13 @@ export class Legend {
 
     actualItem
       .on('mouseover', function () {
-        tooltip.style('display', null)
+        parent.legendTooltip.style('display', null)
       })
       .on('mouseout', function () {
-        tooltip.style('display', 'none')
+        parent.legendTooltip.style('display', 'none')
       })
       .on('mousemove', function () {
-        tooltip
+        parent.legendTooltip
           .style('top', (d3.event.pageY + 15) + 'px')
           .style('left', (d3.event.pageX - 150 - 15) + 'px')
           .html(util.legendTooltip({
@@ -662,7 +658,7 @@ export class Legend {
           }))
       })
 
-    let observedItem = actualContainer.append('div')
+    let observedItem = legendActualContainer.append('div')
         .attr('class', 'item')
         .attr('id', 'legend-observed')
 
@@ -676,13 +672,13 @@ export class Legend {
 
     observedItem
       .on('mouseover', function () {
-        tooltip.style('display', null)
+        parent.legendTooltip.style('display', null)
       })
       .on('mouseout', function () {
-        tooltip.style('display', 'none')
+        parent.legendTooltip.style('display', 'none')
       })
       .on('mousemove', function () {
-        tooltip
+        parent.legendTooltip
           .style('top', (d3.event.pageY + 15) + 'px')
           .style('left', (d3.event.pageX - 150 - 15) + 'px')
           .html(util.legendTooltip({
@@ -691,7 +687,7 @@ export class Legend {
           }))
       })
 
-    let historyItem = actualContainer.append('div')
+    let historyItem = legendActualContainer.append('div')
         .attr('class', 'item')
         .attr('id', 'legend-history')
         .style('cursor', 'pointer')
@@ -714,16 +710,16 @@ export class Legend {
         historyIcon.classed('fa-circle', !isActive)
         historyIcon.classed('fa-circle-o', isActive)
 
-        legendHook('legend:history', isActive)
+        controlHook('legend:history', isActive)
       })
       .on('mouseover', function () {
-        tooltip.style('display', null)
+        parent.legendTooltip.style('display', null)
       })
       .on('mouseout', function () {
-        tooltip.style('display', 'none')
+        parent.legendTooltip.style('display', 'none')
       })
       .on('mousemove', function () {
-        tooltip
+        parent.legendTooltip
           .style('top', (d3.event.pageY + 15) + 'px')
           .style('left', (d3.event.pageX - 150 - 15) + 'px')
           .html(util.legendTooltip({
@@ -734,27 +730,27 @@ export class Legend {
 
     // Add confidence buttons
     parent.confidenceIntervals.map((c, idx) => {
-      let confButton = ciButtons.append('span')
+      let confButton = legendCIButtons.append('span')
           .attr('class', 'ci-button')
           .style('cursor', 'pointer')
           .text(c)
 
       confButton
         .on('click', function () {
-          ciButtons.selectAll('.ci-button')
+          legendCIButtons.selectAll('.ci-button')
             .classed('selected', false)
           d3.select(this).classed('selected', true)
 
-          legendHook('legend:ci', idx)
+          controlHook('legend:ci', idx)
         })
         .on('mouseover', function () {
-          tooltip.style('display', null)
+          parent.legendTooltip.style('display', null)
         })
         .on('mouseout', function () {
-          tooltip.style('display', 'none')
+          parent.legendTooltip.style('display', 'none')
         })
         .on('mousemove', function () {
-          tooltip
+          parent.legendTooltip
             .style('top', (d3.event.pageY + 15) + 'px')
             .style('left', (d3.event.pageX - 150 - 15) + 'px')
             .html(util.legendTooltip({
@@ -768,6 +764,22 @@ export class Legend {
         confButton.classed('selected', true)
       }
     })
+  }
+}
+
+/**
+ * Legend and controls
+ */
+export class Legend {
+  constructor (parent, legendHook) {
+    // TODO: Set id names to class and avoid repeating everything
+    let predictionContainer = parent.elementSelection.select('.legend-prediction-container')
+
+    // Clear entries
+    predictionContainer.selectAll('*').remove()
+
+    // Meta data info tooltip
+    let tooltip = parent.legendTooltip
 
     // Add prediction items
     parent.predictions.forEach(p => {

@@ -115,13 +115,11 @@ export default class TimeChart {
     // Axis at top of onset panel
     this.setupReverseAxis()
 
-    this.controls = new marker.Controls(this)
     this.history = new marker.HistoricalLines(this)
     this.baseline = new marker.Baseline(this)
     this.actual = new marker.Actual(this)
     this.observed = new marker.Observed(this)
     this.predictions = []
-
     // Hard coding confidence values as of now
     // This and currently selected id should ideally go in the vuex store
     this.confidenceIntervals = ['90%', '50%']
@@ -130,6 +128,24 @@ export default class TimeChart {
     // Legend toggle state
     this.historyShow = true
     this.predictionsShow = {}
+
+    // Control panel
+    this.controls = new marker.Controls(this, (event, payload) => {
+      if (event === 'legend:history') {
+        // On history toggle action
+        // payload is `hide`
+        this.historyShow = !payload
+        if (payload) this.history.hide()
+        else this.history.show()
+      } else if (event === 'legend:ci') {
+        // On ci change events
+        // payload is `cid`
+        this.predictions.map(p => {
+          this.cid = p.cid = payload
+          p.update(this.weekIdx)
+        })
+      }
+    })
   }
 
   /**
@@ -476,29 +492,14 @@ export default class TimeChart {
 
     // Legend and hook
     this.legend = new marker.Legend(this, (event, payload) => {
-      if (event === 'legend:history') {
-        // On history toggle action
-        // payload is `hide`
-        this.historyShow = !payload
-        if (payload) this.history.hide()
-        else this.history.show()
-      } else if (event === 'legend:ci') {
-        // On ci change events
-        // payload is `cid`
-        this.predictions.map(p => {
-          this.cid = p.cid = payload
-          p.update(this.weekIdx)
-        })
-      } else {
-        // On prediction toggle action
-        // payload is `hide`
-        let pred = this.predictions[this.predictions.map(p => p.id).indexOf(event)]
-        this.predictionsShow[event] = !payload
-        pred.legendHidden = payload
+      // On prediction toggle action
+      // payload is `hide`
+      let pred = this.predictions[this.predictions.map(p => p.id).indexOf(event)]
+      this.predictionsShow[event] = !payload
+      pred.legendHidden = payload
 
-        if (payload) pred.hideMarkers()
-        else pred.showMarkers()
-      }
+      if (payload) pred.hideMarkers()
+      else pred.showMarkers()
     })
 
     let that = this
