@@ -565,4 +565,16 @@ export default class TimeChart {
 
     this.legend.update(this.predictions)
   }
+
+  /**
+   * Move chart one step ahead
+   */
+  forward () {
+  }
+
+  /**
+   * Move chart one step back
+   */
+  backward () {
+  }
 }
