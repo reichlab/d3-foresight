@@ -515,7 +515,7 @@ export class Controls {
         .attr('class', 'nav-controls')
 
     let legendBtn = navControls.append('a')
-        .attr('class', 'button is-small is-info')
+        .attr('class', 'button is-small is-info is-outlined')
 
     legendBtn.append('span')
       .attr('class', 'icon is-small')
@@ -539,7 +539,7 @@ export class Controls {
     navControls.append('br')
 
     let statsBtn = navControls.append('a')
-        .attr('class', 'button is-small is-info')
+        .attr('class', 'button is-small is-info is-outlined')
 
     statsBtn.append('span')
       .attr('class', 'icon is-small')
@@ -563,7 +563,7 @@ export class Controls {
     navControls.append('br')
 
     let backBtn = navControls.append('a')
-        .attr('class', 'button is-small is-info')
+        .attr('class', 'button is-small is-info is-outlined')
 
     backBtn.append('span')
       .attr('class', 'icon is-small')
@@ -587,7 +587,7 @@ export class Controls {
     navControls.append('br')
 
     let nextBtn = navControls.append('a')
-        .attr('class', 'button is-small is-info')
+        .attr('class', 'button is-small is-info is-outlined')
 
     nextBtn.append('span')
       .attr('class', 'icon is-small')
