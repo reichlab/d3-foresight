@@ -1,5 +1,8 @@
 // Styles for tooltips
 
+@mixin cell-padding() {
+  padding: 5px 10px;
+}
 
 .d3-foresight-tooltip {
   background-color: $white;
@@ -15,7 +18,7 @@
 }
 
 .d3-foresight-info-tooltip {
-  padding: 5px 10px;
+  @include cell-padding;
   width: 150px;
 }
 
@@ -30,17 +33,17 @@
   .observed {
     background-color: $white;
     color: $gray;
-    padding: 5px 10px;
+    @include cell-padding;
   }
 
   .prediction {
     color: $white;
-    padding: 5px 10px;
+    @include cell-padding;
   }
 
   .point {
     color: $gray;
-    padding: 5px 10px;
+    @include cell-padding;
 
     &.head {
       color: $white;
@@ -53,17 +56,16 @@
 
   .name {
     font-size: 13px;
-    padding: 5px 10px;
+    @include cell-padding;
   }
 
   .desc {
     margin-top: 0;
-    padding: 5px 10px;
+    @include cell-padding;
   }
 }
 
-// TODO: Classify this
-#btn-tooltip {
+.d3-foresight-btn-tooltip {
   width: 100px;
-  padding: 5px 10px;
+  @include cell-padding;
 }

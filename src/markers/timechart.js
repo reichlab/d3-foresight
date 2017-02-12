@@ -503,16 +503,127 @@ export class HistoricalLines {
 }
 
 /**
+ * Chart controls
+ * nav-drawers and buttons
+ */
+export class Controls {
+  constructor(parent) {
+    let tooltip = parent.btnTooltip
+
+    let controlGroup = parent.elementSelection.append('div')
+        .attr('class', 'd3-foresight-controls')
+
+    let navControls = controlGroup.append('div')
+        .attr('class', 'nav-controls')
+
+    let legendBtn = navControls.append('a')
+        .attr('class', 'button is-small is-info')
+
+    legendBtn.append('span')
+      .attr('class', 'icon is-small')
+      .append('i')
+      .attr('class', 'fa fa-map-o')
+
+    legendBtn
+      .on('mouseover', function () {
+        tooltip.style('display', null)
+      })
+      .on('mouseout', function () {
+        tooltip.style('display', 'none')
+      })
+      .on('mousemove', function () {
+        tooltip
+          .style('top', (d3.event.pageY + 15) + 'px')
+          .style('left', (d3.event.pageX - 100 - 15) + 'px')
+          .html('Toggle Legend')
+      })
+
+    navControls.append('br')
+
+    let statsBtn = navControls.append('a')
+        .attr('class', 'button is-small is-info')
+
+    statsBtn.append('span')
+      .attr('class', 'icon is-small')
+      .append('i')
+      .attr('class', 'fa fa-percent')
+
+    statsBtn
+      .on('mouseover', function () {
+        tooltip.style('display', null)
+      })
+      .on('mouseout', function () {
+        tooltip.style('display', 'none')
+      })
+      .on('mousemove', function () {
+        tooltip
+          .style('top', (d3.event.pageY + 15) + 'px')
+          .style('left', (d3.event.pageX - 100 - 15) + 'px')
+          .html('Toggle Stats')
+      })
+
+    navControls.append('br')
+
+    let backBtn = navControls.append('a')
+        .attr('class', 'button is-small is-info')
+
+    backBtn.append('span')
+      .attr('class', 'icon is-small')
+      .append('i')
+      .attr('class', 'fa fa-arrow-left')
+
+    backBtn
+      .on('mouseover', function () {
+        tooltip.style('display', null)
+      })
+      .on('mouseout', function () {
+        tooltip.style('display', 'none')
+      })
+      .on('mousemove', function () {
+        tooltip
+          .style('top', (d3.event.pageY + 15) + 'px')
+          .style('left', (d3.event.pageX - 100 - 15) + 'px')
+          .html('Move backward')
+      })
+
+    navControls.append('br')
+
+    let nextBtn = navControls.append('a')
+        .attr('class', 'button is-small is-info')
+
+    nextBtn.append('span')
+      .attr('class', 'icon is-small')
+      .append('i')
+      .attr('class', 'fa fa-arrow-right')
+
+    nextBtn
+      .on('mouseover', function () {
+        tooltip.style('display', null)
+      })
+      .on('mouseout', function () {
+        tooltip.style('display', 'none')
+      })
+      .on('mousemove', function () {
+        tooltip
+          .style('top', (d3.event.pageY + 15) + 'px')
+          .style('left', (d3.event.pageX - 100 - 15) + 'px')
+          .html('Move forward')
+      })
+
+  }
+}
+
+/**
  * Legend and controls
  */
 export class Legend {
   constructor (parent, legendHook) {
     // TODO: Create legend div inside the parent @lepisma
     // TODO: Set id names to class and avoid repeating everything
-    let legendContainer = d3.select('#legend')
-    let actualContainer = legendContainer.select('#legend-actual-container')
-    let predictionContainer = legendContainer.select('#legend-prediction-container')
-    let ciButtons = legendContainer.select('#legend-ci-buttons')
+    let legendContainer = d3.select('.legend')
+    let actualContainer = legendContainer.select('.legend-actual-container')
+    let predictionContainer = legendContainer.select('.legend-prediction-container')
+    let ciButtons = legendContainer.select('.legend-ci-buttons')
 
     // Clear entries
     actualContainer.selectAll('*').remove()

@@ -73,12 +73,17 @@ export default class TimeChart {
       .attr('class', 'd3-foresight-tooltip d3-foresight-info-tooltip')
       .style('display', 'none')
 
+    this.btnTooltip = elementSelection.append('div')
+      .attr('class', 'd3-foresight-tooltip d3-foresight-btn-tooltip')
+      .style('display', 'none')
+
     // Add text for no prediction
     this.noPredText = elementSelection.append('div')
       .attr('class', 'no-pred-text')
       .html(this.config.noPredText)
 
     // Save variables
+    this.elementSelection = elementSelection
     this.svg = svg
     this.xScale = xScale
     this.yScale = yScale
@@ -110,6 +115,7 @@ export default class TimeChart {
     // Axis at top of onset panel
     this.setupReverseAxis()
 
+    this.controls = new marker.Controls(this)
     this.history = new marker.HistoricalLines(this)
     this.baseline = new marker.Baseline(this)
     this.actual = new marker.Actual(this)
