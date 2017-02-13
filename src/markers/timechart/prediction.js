@@ -1,9 +1,8 @@
 import * as d3 from 'd3'
 import * as util from '../../utils/timechart'
 
-export class Prediction {
+export default class Prediction {
   constructor (parent, id, meta, color, cy) {
-    // Prediction group
     let predictionGroup = parent.svg.append('g')
         .attr('class', 'prediction-group')
         .attr('id', id + '-marker')

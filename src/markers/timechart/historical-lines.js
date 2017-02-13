@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 /**
  * Historical lines
  */
-export class HistoricalLines {
+export default class HistoricalLines {
   constructor (parent) {
     this.group = parent.svg.append('g')
       .attr('class', 'history-group')

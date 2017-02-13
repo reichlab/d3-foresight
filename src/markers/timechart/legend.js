@@ -5,7 +5,7 @@ import palette from '../../styles/palette.json'
 /**
  * Legend and controls
  */
-export class Legend {
+export default class Legend {
   constructor (parent, legendHook) {
     let legendContainer = d3.select('#legend')
     let actualContainer = legendContainer.select('#legend-actual-container')

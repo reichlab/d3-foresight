@@ -1,7 +1,7 @@
 /**
  * Time rectangle for navigation guidance
  */
-export class TimeRect {
+export default class TimeRect {
   constructor (parent) {
     this.rect = parent.svg.append('rect')
       .attr('x', 0)

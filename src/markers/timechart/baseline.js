@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 /**
  * Baseline
  */
-export class Baseline {
+export default class Baseline {
   constructor (parent) {
     let group = parent.svg.append('g')
       .attr('class', 'baseline-group')
