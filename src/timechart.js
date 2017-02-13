@@ -443,6 +443,9 @@ export default class TimeChart {
     // Reset history lines
     this.history.plot(this, data.history)
 
+    // Get meta data and statistics
+    this.modelStats = data.models.map(m => m.stats)
+
     // Reset predictions
     let colors = d3.schemeCategory10
 
