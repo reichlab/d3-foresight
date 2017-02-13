@@ -871,7 +871,6 @@ class StatsDrawer {
         keys.forEach(key => {
           let perKey = data.map(d => d[key])
           let bestIdx = perKey.indexOf(statsMeta.bestFunc(...perKey))
-
           statsData[bestIdx][key].best = true
         })
       }
@@ -881,6 +880,10 @@ class StatsDrawer {
       this.previousBtn = headerSpan.append('a')
         .attr('id', 'previous-stat-btn')
         .attr('class', 'stat-btn button is-small')
+        .on('click', () => {
+          this.selectedStat = Math.max(this.selectedStat - 1, 0)
+          this.plot(modelIds, stats, colors)
+        })
 
       this.previousBtn.append('span')
         .attr('class', 'icon is-small')
@@ -895,11 +898,21 @@ class StatsDrawer {
       this.nextBtn = headerSpan.append('a')
         .attr('id', 'next-stat-btn')
         .attr('class', 'stat-btn button is-small')
+        .on('click', () => {
+          this.selectedStat = Math.min(this.selectedStat + 1, this.statsMeta.length - 1)
+          this.plot(modelIds, stats, colors)
+        })
 
       this.nextBtn.append('span')
         .attr('class', 'icon is-small')
         .append('i')
         .attr('class', 'fa fa-arrow-right')
+
+      if (this.selectedStat === 0) {
+        this.previousBtn.classed('is-disabled', true)
+      } else if (this.selectedStat === (this.statsMeta.length - 1)) {
+        this.nextBtn.classed('is-disabled', true)
+      }
 
       // Create main table
       let table = this.drawerSelection.append('table')
@@ -917,7 +930,6 @@ class StatsDrawer {
                <th>3 wk</th>
                <th>4 wk</th>`)
 
-      console.log(colors)
       // Add actual values
       let tableBodyHTML = ''
       modelIds.forEach((id, index) => {
