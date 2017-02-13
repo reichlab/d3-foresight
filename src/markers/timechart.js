@@ -503,120 +503,89 @@ export class HistoricalLines {
 }
 
 /**
- * Chart controls
- * nav-drawers and buttons
+ * Side buttons in control panel
  */
-export class Controls {
-  constructor (parent, controlHook) {
-    let controlGroup = parent.elementSelection.append('div')
-        .attr('class', 'd3-foresight-controls')
-
-    let navControls = controlGroup.append('div')
+class ControlButtons {
+  constructor (panelSelection, tooltip, eventHook) {
+    let navControls = panelSelection.append('div')
         .attr('class', 'nav-controls')
 
-    let legendBtn = navControls.append('a')
-        .attr('class', 'button is-small is-info is-outlined')
+    // Save all the buttons for toggling state and stuff
+    this.buttons = [
+      {
+        name: 'legendBtn',
+        icon: 'fa-map-o',
+        tooltipText: 'Toggle Legend',
+        event: 'btn:legend'
+      },
+      {
+        name: 'statsBtn',
+        icon: 'fa-percent',
+        tooltipText: 'Toggle Stats',
+        event: 'btn:stats'
+      },
+      {
+        name: 'backBtn',
+        icon: 'fa-arrow-left',
+        tooltipText: 'Move backward',
+        event: 'btn:back'
+      },
+      {
+        name: 'nextBtn',
+        icon: 'fa-arrow-right',
+        tooltipText: 'Move forward',
+        event: 'btn:next'
+      }
+    ].map(data => {
+      let btn = navControls.append('a')
+          .attr('class', 'button is-small is-info is-outlined')
+      btn.append('span')
+        .attr('class', 'icon is-small')
+        .append('i')
+        .attr('class', `fa ${data.icon}`)
+      btn
+        .on('mouseover', function () {
+          tooltip.style('display', null)
+        })
+        .on('mouseout', function () {
+          tooltip.style('display', 'none')
+        })
+        .on('mousemove', function () {
+          tooltip
+            .style('top', (d3.event.pageY + 15) + 'px')
+            .style('left', (d3.event.pageX - 100 - 15) + 'px')
+            .html(data.tooltipText)
+        })
+        .on('click', function () {
+          eventHook(data.event)
+        })
+      navControls.append('br')
+      return btn
+    })
+  }
 
-    legendBtn.append('span')
-      .attr('class', 'icon is-small')
-      .append('i')
-      .attr('class', 'fa fa-map-o')
+  toggleLegendBtn () {
+    this.buttons[0].classed('is-outlined', !this.buttons[0].classed('is-outlined'))
+  }
 
-    legendBtn
-      .on('mouseover', function () {
-        parent.btnTooltip.style('display', null)
-      })
-      .on('mouseout', function () {
-        parent.btnTooltip.style('display', 'none')
-      })
-      .on('mousemove', function () {
-        parent.btnTooltip
-          .style('top', (d3.event.pageY + 15) + 'px')
-          .style('left', (d3.event.pageX - 100 - 15) + 'px')
-          .html('Toggle Legend')
-      })
+  toggleStatsBtn () {
+    this.buttons[1].classed('is-outlined', !this.buttons[1].classed('is-outlined'))
+  }
+}
 
-    navControls.append('br')
-
-    let statsBtn = navControls.append('a')
-        .attr('class', 'button is-small is-info is-outlined')
-
-    statsBtn.append('span')
-      .attr('class', 'icon is-small')
-      .append('i')
-      .attr('class', 'fa fa-percent')
-
-    statsBtn
-      .on('mouseover', function () {
-        parent.btnTooltip.style('display', null)
-      })
-      .on('mouseout', function () {
-        parent.btnTooltip.style('display', 'none')
-      })
-      .on('mousemove', function () {
-        parent.btnTooltip
-          .style('top', (d3.event.pageY + 15) + 'px')
-          .style('left', (d3.event.pageX - 100 - 15) + 'px')
-          .html('Toggle Stats')
-      })
-
-    navControls.append('br')
-
-    let backBtn = navControls.append('a')
-        .attr('class', 'button is-small is-info is-outlined')
-
-    backBtn.append('span')
-      .attr('class', 'icon is-small')
-      .append('i')
-      .attr('class', 'fa fa-arrow-left')
-
-    backBtn
-      .on('mouseover', function () {
-        parent.btnTooltip.style('display', null)
-      })
-      .on('mouseout', function () {
-        parent.btnTooltip.style('display', 'none')
-      })
-      .on('mousemove', function () {
-        parent.btnTooltip
-          .style('top', (d3.event.pageY + 15) + 'px')
-          .style('left', (d3.event.pageX - 100 - 15) + 'px')
-          .html('Move backward')
-      })
-      .on('click', function () {
-        controlHook('backward')
-      })
-
-    navControls.append('br')
-
-    let nextBtn = navControls.append('a')
-        .attr('class', 'button is-small is-info is-outlined')
-
-    nextBtn.append('span')
-      .attr('class', 'icon is-small')
-      .append('i')
-      .attr('class', 'fa fa-arrow-right')
-
-    nextBtn
-      .on('mouseover', function () {
-        parent.btnTooltip.style('display', null)
-      })
-      .on('mouseout', function () {
-        parent.btnTooltip.style('display', 'none')
-      })
-      .on('mousemove', function () {
-        parent.btnTooltip
-          .style('top', (d3.event.pageY + 15) + 'px')
-          .style('left', (d3.event.pageX - 100 - 15) + 'px')
-          .html('Move forward')
-      })
-      .on('click', function () {
-        controlHook('forward')
-      })
-
-    let legendGroup = controlGroup.append('div')
+/**
+ * Legend nav drawer
+ * @param panelSelection - D3 selection from controlpanel
+ * @param tooltip - Legend tooltip
+ * @param confidenceIntervals - List of confidence intervals
+ * @param eventHook - Event hook callback to be used by controlpanel
+ */
+class LegendDrawer {
+  constructor (panelSelection, tooltip, confidenceIntervals, eventHook) {
+    let legendGroup = panelSelection.append('div')
         .attr('class', 'legend nav-drawer')
 
+    // Contains items including and above the CI buttons
     let legendActualContainer = legendGroup.append('div')
         .attr('class', 'legend-actual-container')
 
@@ -635,107 +604,76 @@ export class Controls {
     legendGroup.append('div')
       .attr('class', 'legend-prediction-container')
 
-    let actualItem = legendActualContainer.append('div')
-        .attr('class', 'item')
-        .attr('id', 'legend-actual')
+    // Add rows for actual lines
+    this.actualItems = [
+      {
+        id: 'legend-actual',
+        color: palette.actual,
+        text: 'Actual',
+        tooltipHTML: util.legendTooltip({
+          name: 'Actual Data',
+          description: 'Latest data available for the week'
+        })
+      },
+      {
+        id: 'legend-observed',
+        color: palette.observed,
+        text: 'Observed',
+        tooltipHTML: util.legendTooltip({
+          name: 'Observed Data',
+          description: 'Data available for weeks when the predictions were made'
+        })
+      },
+      {
+        id: 'legend-history',
+        color: palette['history-highlight'],
+        text: 'History',
+        tooltipHTML: util.legendTooltip({
+          name: 'Historical Data',
+          description: 'Toggle historical data lines'
+        })
+      }
+    ].map(data => {
+      let item = legendActualContainer.append('div')
+          .attr('class', 'item')
+          .attr('id', data.id)
 
-    actualItem.append('i')
+      item.append('i')
         .attr('class', 'fa fa-circle')
-        .style('color', palette.actual)
+        .style('color', data.color)
 
-    actualItem.append('span')
-      .attr('class', 'item-title')
-      .html('Actual')
+      item.append('span')
+        .attr('class', 'item-title')
+        .text(data.text)
 
-    actualItem
-      .on('mouseover', function () {
-        parent.legendTooltip.style('display', null)
-      })
-      .on('mouseout', function () {
-        parent.legendTooltip.style('display', 'none')
-      })
-      .on('mousemove', function () {
-        parent.legendTooltip
-          .style('top', (d3.event.pageY + 15) + 'px')
-          .style('left', (d3.event.pageX - 150 - 15) + 'px')
-          .html(util.legendTooltip({
-            name: 'Actual Data',
-            description: 'Latest data available for the week'
-          }))
-      })
+      item
+        .on('mouseover', function () {
+          tooltip.style('display', null)
+        })
+        .on('mouseout', function () {
+          tooltip.style('display', 'none')
+        })
+        .on('mousemove', function () {
+          tooltip
+            .style('top', (d3.event.pageY + 15) + 'px')
+            .style('left', (d3.event.pageX - 150 - 15) + 'px')
+            .html(data.tooltipHTML)
+        })
+      return item
+    })
 
-    let observedItem = legendActualContainer.append('div')
-        .attr('class', 'item')
-        .attr('id', 'legend-observed')
-
-    observedItem.append('i')
-      .attr('class', 'fa fa-circle')
-      .style('color', palette.observed)
-
-    observedItem.append('span')
-      .attr('class', 'item-title')
-      .html('Observed')
-
-    observedItem
-      .on('mouseover', function () {
-        parent.legendTooltip.style('display', null)
-      })
-      .on('mouseout', function () {
-        parent.legendTooltip.style('display', 'none')
-      })
-      .on('mousemove', function () {
-        parent.legendTooltip
-          .style('top', (d3.event.pageY + 15) + 'px')
-          .style('left', (d3.event.pageX - 150 - 15) + 'px')
-          .html(util.legendTooltip({
-            name: 'Observed Data',
-            description: 'Data available for weeks when the predictions were made'
-          }))
-      })
-
-    let historyItem = legendActualContainer.append('div')
-        .attr('class', 'item')
-        .attr('id', 'legend-history')
-        .style('cursor', 'pointer')
-
-    let historyIcon = historyItem.append('i')
-        .attr('class', 'fa')
-        .style('color', palette['history-highlight'])
-
-    historyItem.append('span')
-      .attr('class', 'item-title')
-      .html('History')
-
-    if (parent.historyShow) historyIcon.classed('fa-circle', true)
-    else historyIcon.classed('fa-circle-o', true)
+    // Add extra props to history item
+    let historyItem = this.actualItems[2]
+    historyItem.style('cursor', 'pointer')
+    this.historyIcon = historyItem.select('i')
 
     historyItem
       .on('click', function () {
-        let isActive = historyIcon.classed('fa-circle')
-
-        historyIcon.classed('fa-circle', !isActive)
-        historyIcon.classed('fa-circle-o', isActive)
-
-        controlHook('legend:history', isActive)
-      })
-      .on('mouseover', function () {
-        parent.legendTooltip.style('display', null)
-      })
-      .on('mouseout', function () {
-        parent.legendTooltip.style('display', 'none')
-      })
-      .on('mousemove', function () {
-        parent.legendTooltip
-          .style('top', (d3.event.pageY + 15) + 'px')
-          .style('left', (d3.event.pageX - 150 - 15) + 'px')
-          .html(util.legendTooltip({
-            name: 'Historical Data',
-            description: 'Toggle historical data lines'
-          }))
+        eventHook('legend:history')
       })
 
     // Add confidence buttons
-    parent.confidenceIntervals.map((c, idx) => {
+    this.confButtons = confidenceIntervals.map((c, idx) => {
       let confButton = legendCIButtons.append('span')
           .attr('class', 'ci-button')
           .style('cursor', 'pointer')
@@ -747,16 +685,16 @@ export class Controls {
             .classed('selected', false)
           d3.select(this).classed('selected', true)
 
-          controlHook('legend:ci', idx)
+          eventHook('legend:ci', idx)
         })
         .on('mouseover', function () {
-          parent.legendTooltip.style('display', null)
+          tooltip.style('display', null)
         })
         .on('mouseout', function () {
-          parent.legendTooltip.style('display', 'none')
+          tooltip.style('display', 'none')
         })
         .on('mousemove', function () {
-          parent.legendTooltip
+          tooltip
             .style('top', (d3.event.pageY + 15) + 'px')
             .style('left', (d3.event.pageX - 150 - 15) + 'px')
             .html(util.legendTooltip({
@@ -764,12 +702,88 @@ export class Controls {
               description: 'Select confidence interval for prediction markers'
             }))
         })
+      return confButton
+    })
+  }
 
-      // Select first by default
-      if (idx === parent.cid) {
-        confButton.classed('selected', true)
+  toggleHistoryIcon () {
+    let isActive = this.historyIcon.classed('fa-circle')
+
+    this.historyIcon.classed('fa-circle', !isActive)
+    this.historyIcon.classed('fa-circle-o', isActive)
+  }
+
+  toggleConfidenceBtn (idx) {
+    let btn = this.confButtons[idx]
+    btn.classed('selected', !btn.classed('selected'))
+  }
+
+  toggleDrawer () {
+    //
+  }
+}
+
+/**
+ * Stats nav drawer
+ */
+// class StatsDrawer {
+//   constructor (panelSelection, tooltip, eventHook) {
+//     let statsGroup = panelSelection.append('div')
+//         .attr('class', 'stats nav-drawer')
+//   }
+// }
+
+/**
+ * Chart controls
+ * nav-drawers and buttons
+ */
+export class ControlPanel {
+  constructor (parent, panelHook) {
+    // Main panel selection
+    let panelSelection = parent.elementSelection.append('div')
+        .attr('class', 'd3-foresight-controls')
+
+    // Buttons on the side of panel
+    let controlButtons = new ControlButtons(panelSelection, parent.btnTooltip, event => {
+      if (['btn:next', 'btn:prev'].includes(event)) {
+        // Simple triggers, pass directly
+        panelHook(event)
+      } else {
+        if (event === 'btn:legend') {
+          //
+        } else if (event === 'btn:stats') {
+          //
+        }
       }
     })
+
+    // Turn on legend by default
+    controlButtons.toggleLegendBtn()
+
+    // Add legend drawer
+    let legendDrawer = new LegendDrawer(
+      panelSelection,
+      parent.legendTooltip,
+      parent.confidenceIntervals,
+      (event, payload) => {
+        if (event === 'legend:history') {
+          legendDrawer.toggleHistoryIcon()
+          panelHook(event)
+        } else {
+          panelHook(event, payload)
+        }
+      })
+
+    // Set value of historical line selection and default confidence
+    legendDrawer.toggleConfidenceBtn(parent.cid)
+  }
+
+  plot () {
+    //
+  }
+
+  update () {
+    //
   }
 }
 

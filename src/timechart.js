@@ -130,13 +130,13 @@ export default class TimeChart {
     this.predictionsShow = {}
 
     // Control panel
-    this.controls = new marker.Controls(this, (event, payload) => {
+    this.controlPanel = new marker.ControlPanel(this, (event, payload) => {
       if (event === 'legend:history') {
         // On history toggle action
         // payload is `hide`
-        this.historyShow = !payload
-        if (payload) this.history.hide()
-        else this.history.show()
+        this.historyShow = !this.historyShow
+        if (this.historyShow) this.history.show()
+        else this.history.hide()
       } else if (event === 'legend:ci') {
         // On ci change events
         // payload is `cid`
@@ -144,9 +144,9 @@ export default class TimeChart {
           this.cid = p.cid = payload
           p.update(this.weekIdx)
         })
-      } else if (event === 'forward') {
+      } else if (event === 'btn:next') {
         this.forward()
-      } else if (event === 'backward') {
+      } else if (event === 'btn:back') {
         this.backward()
       }
     })
