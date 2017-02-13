@@ -829,7 +829,8 @@ class StatsDrawer {
       }
     ]
 
-    this.selectedStat = 0
+    // Use log score as default
+    this.selectedStat = 1
   }
 
   toggleDrawer () {
@@ -840,7 +841,7 @@ class StatsDrawer {
     }
   }
 
-  plot (modelIds, stats, colors) {
+  plot (modelIds, modelMeta, stats, colors) {
     this.drawerSelection.selectAll('*').remove()
 
     let heading = this.drawerSelection.append('div')
@@ -882,7 +883,7 @@ class StatsDrawer {
         .attr('class', 'stat-btn button is-small')
         .on('click', () => {
           this.selectedStat = Math.max(this.selectedStat - 1, 0)
-          this.plot(modelIds, stats, colors)
+          this.plot(modelIds, modelMeta, stats, colors)
         })
 
       this.previousBtn.append('span')
@@ -900,7 +901,7 @@ class StatsDrawer {
         .attr('class', 'stat-btn button is-small')
         .on('click', () => {
           this.selectedStat = Math.min(this.selectedStat + 1, this.statsMeta.length - 1)
-          this.plot(modelIds, stats, colors)
+          this.plot(modelIds, modelMeta, stats, colors)
         })
 
       this.nextBtn.append('span')
@@ -931,18 +932,31 @@ class StatsDrawer {
                <th>4 wk</th>`)
 
       // Add actual values
-      let tableBodyHTML = ''
+      let tbody = table.append('tbody')
+
       modelIds.forEach((id, index) => {
         let statsItem = statsData[index]
-        tableBodyHTML += `<tr>
-          <td style="color:${colors[index]}"> ${id} </td>
+        let tr = tbody.append('tr')
+        tr.html(`<td style="color:${colors[index]}"> ${id} </td>
           <td class="${statsItem.oneWk.best ? 'bold' : ''}">${statsItem.oneWk.value}</td>
           <td class="${statsItem.twoWk.best ? 'bold' : ''}">${statsItem.twoWk.value}</td>
           <td class="${statsItem.threeWk.best ? 'bold' : ''}">${statsItem.threeWk.value}</td>
-          <td class="${statsItem.fourWk.best ? 'bold' : ''}">${statsItem.fourWk.value}</td>`
-      })
+          <td class="${statsItem.fourWk.best ? 'bold' : ''}">${statsItem.fourWk.value}</td>`)
 
-      table.append('tbody').html(tableBodyHTML)
+        tr.select('td')
+          .on('mouseover', () => {
+            this.tooltip.style('display', null)
+          })
+          .on('mouseout', () => {
+            this.tooltip.style('display', 'none')
+          })
+          .on('mousemove', () => {
+            this.tooltip
+              .style('top', (d3.event.pageY + 15) + 'px')
+              .style('left', (d3.event.pageX - 150 - 15) + 'px')
+              .html(util.legendTooltip(modelMeta[index]))
+          })
+      })
 
       this.drawerSelection.append('div')
         .attr('class', 'stat-disclaimer')
@@ -1012,6 +1026,7 @@ export class ControlPanel {
 
     this.statsDrawer.plot(
       parent.predictions.map(p => p.id),
+      parent.predictions.map(p => p.meta),
       parent.modelStats,
       parent.predictions.map(p => p.color))
   }
