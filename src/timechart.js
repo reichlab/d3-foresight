@@ -479,11 +479,13 @@ export default class TimeChart {
       let markerIndex = this.predictions.map(p => p.id).indexOf(m.id)
       if (markerIndex === -1) {
         let onsetYPos = (idx + 1) * onsetDiff + this.height + 1
-        predMarker = new marker.Prediction(this,
-                                           m.id,
-                                           m.meta,
-                                           colors[idx],
-                                           onsetYPos)
+        predMarker = new marker.Prediction(
+          this,
+          m.id,
+          m.meta,
+          colors[idx],
+          onsetYPos
+        )
         this.predictions.push(predMarker)
 
         if (!(m.id in this.predictionsShow)) this.predictionsShow[m.id] = true
@@ -494,10 +496,10 @@ export default class TimeChart {
       predMarker.hideMarkers()
     })
 
-    // Legend and hook
-    this.legend = new marker.Legend(this, (event, payload) => {
+    // Update submission entries shown in control panel
+    this.controlPanel.plot(this, (event, payload) => {
       // On prediction toggle action
-      // payload is `hide`
+      // payload is the value of `hide`
       let pred = this.predictions[this.predictions.map(p => p.id).indexOf(event)]
       this.predictionsShow[event] = !payload
       pred.legendHidden = payload
@@ -552,7 +554,7 @@ export default class TimeChart {
       p.update(idx)
     })
 
-    // Set no
+    // Control no prediction text
     if (this.predictions.filter(p => p.hidden).length !== 0) {
       this.noPredText
         .transition()
@@ -567,7 +569,7 @@ export default class TimeChart {
 
     this.observed.update(idx)
 
-    this.legend.update(this.predictions)
+    this.controlPanel.update(this.predictions)
   }
 
   /**

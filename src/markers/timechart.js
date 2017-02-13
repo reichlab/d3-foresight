@@ -704,6 +704,9 @@ class LegendDrawer {
         })
       return confButton
     })
+
+    this.tooltip = tooltip
+    this.drawerSelection = legendGroup
   }
 
   toggleHistoryIcon () {
@@ -721,88 +724,18 @@ class LegendDrawer {
   toggleDrawer () {
     //
   }
-}
 
-/**
- * Stats nav drawer
- */
-// class StatsDrawer {
-//   constructor (panelSelection, tooltip, eventHook) {
-//     let statsGroup = panelSelection.append('div')
-//         .attr('class', 'stats nav-drawer')
-//   }
-// }
-
-/**
- * Chart controls
- * nav-drawers and buttons
- */
-export class ControlPanel {
-  constructor (parent, panelHook) {
-    // Main panel selection
-    let panelSelection = parent.elementSelection.append('div')
-        .attr('class', 'd3-foresight-controls')
-
-    // Buttons on the side of panel
-    let controlButtons = new ControlButtons(panelSelection, parent.btnTooltip, event => {
-      if (['btn:next', 'btn:prev'].includes(event)) {
-        // Simple triggers, pass directly
-        panelHook(event)
-      } else {
-        if (event === 'btn:legend') {
-          //
-        } else if (event === 'btn:stats') {
-          //
-        }
-      }
-    })
-
-    // Turn on legend by default
-    controlButtons.toggleLegendBtn()
-
-    // Add legend drawer
-    let legendDrawer = new LegendDrawer(
-      panelSelection,
-      parent.legendTooltip,
-      parent.confidenceIntervals,
-      (event, payload) => {
-        if (event === 'legend:history') {
-          legendDrawer.toggleHistoryIcon()
-          panelHook(event)
-        } else {
-          panelHook(event, payload)
-        }
-      })
-
-    // Set value of historical line selection and default confidence
-    legendDrawer.toggleConfidenceBtn(parent.cid)
-  }
-
-  plot () {
-    //
-  }
-
-  update () {
-    //
-  }
-}
-
-/**
- * Legend and controls
- */
-export class Legend {
-  constructor (parent, legendHook) {
-    // TODO: Set id names to class and avoid repeating everything
-    let predictionContainer = parent.elementSelection.select('.legend-prediction-container')
+  plot (predictions, predictionsShow, eventHook) {
+    let predictionContainer = this.drawerSelection.select('.legend-prediction-container')
 
     // Clear entries
     predictionContainer.selectAll('*').remove()
 
     // Meta data info tooltip
-    let tooltip = parent.legendTooltip
+    let tooltip = this.tooltip
 
     // Add prediction items
-    parent.predictions.forEach(p => {
+    predictions.forEach(p => {
       let predItem = predictionContainer.append('div')
           .attr('class', 'item')
           .attr('id', 'legend-' + p.id)
@@ -812,7 +745,7 @@ export class Legend {
           .attr('class', 'fa')
           .style('color', p.color)
 
-      let showThis = parent.predictionsShow[p.id]
+      let showThis = predictionsShow[p.id]
       predIcon.classed('fa-circle', showThis)
       predIcon.classed('fa-circle-o', !showThis)
 
@@ -842,7 +775,7 @@ export class Legend {
           predIcon.classed('fa-circle', !isActive)
           predIcon.classed('fa-circle-o', isActive)
 
-          legendHook(p.id, isActive)
+          eventHook(p.id, isActive)
         })
 
       predItem
@@ -859,24 +792,79 @@ export class Legend {
             .html(util.legendTooltip(p.meta))
         })
     })
-
-    this.tooltip = tooltip
-    this.predictionContainer = predictionContainer
   }
 
   update (predictions) {
-    let predictionContainer = this.predictionContainer
-
     predictions.forEach(p => {
-      let pDiv = predictionContainer.select('#legend-' + p.id)
-      if (p.hidden) {
-        pDiv
-          .classed('na', true)
+      let pDiv = this.drawerSelection.select('#legend-' + p.id)
+      pDiv.classed('na', p.hidden)
+    })
+  }
+}
+
+/**
+ * Stats nav drawer
+ */
+// class StatsDrawer {
+//   constructor (panelSelection, tooltip, eventHook) {
+//     let statsGroup = panelSelection.append('div')
+//         .attr('class', 'stats nav-drawer')
+//   }
+// }
+
+/**
+ * Chart controls
+ * nav-drawers and buttons
+ */
+export class ControlPanel {
+  constructor (parent, panelHook) {
+    // Main panel selection
+    let panelSelection = parent.elementSelection.append('div')
+        .attr('class', 'd3-foresight-controls')
+
+    // Buttons on the side of panel
+    this.controlButtons = new ControlButtons(panelSelection, parent.btnTooltip, event => {
+      if (['btn:next', 'btn:prev'].includes(event)) {
+        // Simple triggers, pass directly
+        panelHook(event)
       } else {
-        pDiv
-          .classed('na', false)
+        if (event === 'btn:legend') {
+          //
+        } else if (event === 'btn:stats') {
+          //
+        }
       }
     })
+
+    // Turn on legend by default
+    this.controlButtons.toggleLegendBtn()
+
+    // Add legend drawer
+    this.legendDrawer = new LegendDrawer(
+      panelSelection,
+      parent.legendTooltip,
+      parent.confidenceIntervals,
+      (event, payload) => {
+        if (event === 'legend:history') {
+          this.legendDrawer.toggleHistoryIcon()
+          panelHook(event)
+        } else {
+          panelHook(event, payload)
+        }
+      })
+
+    // Set value of historical line selection and default confidence
+    this.legendDrawer.toggleConfidenceBtn(parent.cid)
+  }
+
+  plot (parent, panelHook) {
+    this.legendDrawer.plot(parent.predictions, parent.predictionsShow, (event, payload) => {
+      panelHook(event, payload)
+    })
+  }
+
+  update (predictions) {
+    this.legendDrawer.update(predictions)
   }
 }
 
