@@ -1,5 +1,5 @@
 import * as util from './utils/timechart'
-import * as marker from './markers/timechart'
+import * as marker from './markers/timechart/'
 import textures from 'textures'
 import * as mmwr from 'mmwr-week'
 import * as d3 from 'd3'
@@ -9,12 +9,13 @@ export default class TimeChart {
   constructor (element, dataStore, options = {}) {
     this.config = Object.assign({}, stringDefaults, options)
     this.config.margin = Object.assign({}, {
-      top: 5, right: 50, bottom: 70 + this.onsetHeight, left: 40
+      top: 5, right: 50, bottom: 70, left: 40
     }, options.margin)
+    this.onsetHeight = 30
+    this.config.margin.bottom = this.config.margin.bottom + this.onsetHeight
     this.data = dataStore
     this.container = d3.select(element)
         .attr('class', 'd3-foresight-timechart')
-    this.onsetHeight = 30
     this.setupDimentions()
     this.setupScales()
     this.setupSvg()
