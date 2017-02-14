@@ -1,0 +1,173 @@
+// Styles for the control panel
+
+.d3-foresight-controls {
+  // Side drawers
+  .nav-drawer {
+    background-color: $white;
+    border-color: $shadow;
+    border-radius: 2px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 1px 1px 2px $shadow;
+    font-size: 11px;
+    position: absolute;
+    right: 60px;
+    top: 12px;
+    user-select: none;
+
+    hr {
+      border: 0;
+      border-bottom: 1px dashed $shadow;
+      height: 1px;
+      margin: 5px 0;
+    }
+
+    .item {
+      padding: 4px 10px;
+
+      .fa {
+        display: inline-block;
+        font-size: 11px;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+
+      .item-title {
+        display: inline-block;
+        font-size: 11px;
+        vertical-align: middle;
+      }
+
+      .model-url {
+        margin-left: 10px;
+        margin-right: 5px;
+      }
+
+      &.na {
+        .fa {
+          color: $hover-line !important;
+        }
+
+        color: $hover-line !important;
+      }
+
+      &#legend-actual i {
+        color: $actual;
+      }
+
+      &#legend-observed i {
+        color: $observed;
+      }
+
+      &#legend-history {
+        cursor: pointer;
+        i {
+          color: $history;
+        }
+      }
+    }
+
+    .item-selected {
+      background-color: $accent;
+      color: $white;
+    }
+
+    .legend-ci-container {
+      text-align: center;
+
+      .legend-ci-buttons {
+        border-color: $shadow;
+        border-radius: 2px;
+        border-style: solid;
+        border-width: 1px;
+        margin-left: 10px;
+        padding: 2px 0;
+
+        .ci-button {
+          padding: 2px 6px;
+
+          &.selected {
+            background-color: $accent;
+            color: $white;
+          }
+
+          &:first-child {
+            border-bottom-left-radius: 2px;
+            border-top-left-radius: 2px;
+          }
+
+          &:last-child {
+            border-bottom-right-radius: 2px;
+            border-top-right-radius: 2px;
+          }
+        }
+      }
+    }
+
+    table {
+      margin: 0;
+
+      td.bold {
+        font-weight: bold;
+      }
+    }
+
+    .stat-heading {
+      margin: 10px 10px !important;
+      text-align: center;
+
+      a {
+        color: $gray-light;
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: -2px;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      #previous-stat-btn {
+        float: left;
+      }
+
+      #next-stat-btn {
+        float: right;
+      }
+
+      .stat-btn {
+        margin-bottom: 10px;
+      }
+    }
+
+    .stat-disclaimer {
+      font-style: italic;
+      margin: 10px;
+    }
+
+    .center {
+      text-align: center;
+    }
+  }
+
+  .nav-controls {
+    background-color: $white;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+    .icon {
+      margin-left: 0 !important;
+    }
+
+    a {
+      box-shadow: 1px 1px 1px $shadow;
+      margin: 2px 0;
+      width: 28px;
+
+      &#legend-btn {
+        border-color: $accent;
+        border-width: 1px;
+      }
+    }
+  }
+}

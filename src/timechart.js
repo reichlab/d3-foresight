@@ -21,6 +21,7 @@ export default class TimeChart {
     this.setupSvg()
     this.setupTooltips()
     this.setupEmptyText()
+    this.setupControlPanel()
     this.setupAxes()
     this.timerect = new marker.TimeRect(this)
     this.setupOnsetTexture()
@@ -78,6 +79,9 @@ export default class TimeChart {
   }
 
   setupTooltips () {
+    this.btnTooltip = this.container.append('div')
+      .attr('class', 'd3-foresight-tooltip d3-foresight-btn-tooltip')
+      .style('display', 'none')
     this.chartTooltip = this.container.append('div')
       .attr('class', 'd3-foresight-tooltip d3-foresight-chart-tooltip')
       .style('display', 'none')
@@ -92,6 +96,27 @@ export default class TimeChart {
   setupConfidenceIntervals () {
     this.confidenceIntervals = ['90%', '50%']
     this.cid = 1
+  }
+
+  setupControlPanel () {
+    this.controlPanel = new marker.ControlPanel(this, (event, payload) => {
+      if (event === 'legend:history') {
+        this.historyShow = !this.historyShow
+        if (this.historyShow) this.history.show()
+        else {
+          this.history.hide()
+        }
+      } else if (event === 'legend:ci') {
+        this.predictions.map(p => {
+          this.cid = p.cid = payload
+          p.update(this.weekIdx)
+        })
+      } else if (event === 'btn:next') {
+        this.forward()
+      } else if (event === 'btn:back') {
+        this.backward()
+      }
+    })
   }
 
   setupAxes () {
@@ -371,8 +396,6 @@ export default class TimeChart {
         .style('display', 'none')
     }
     this.handleHook(weekHooks, this.weekIdx)
-
-    // Update markers with data
     this.timerect.plot(this, this.data.actual)
     this.baseline.plot(this, this.data.baseline)
     this.actual.plot(this, this.data.actual)
@@ -380,6 +403,9 @@ export default class TimeChart {
 
     // Reset history lines
     this.history.plot(this, this.data.history)
+
+    // Get meta data and statistics
+    this.modelStats = this.data.models.map(m => m.stats)
 
     // Reset predictions
     let colors = d3.schemeCategory10
@@ -417,11 +443,13 @@ export default class TimeChart {
       let markerIndex = this.predictions.map(p => p.id).indexOf(m.id)
       if (markerIndex === -1) {
         let onsetYPos = (idx + 1) * onsetDiff + this.height + 1
-        predMarker = new marker.Prediction(this,
-                                           m.id,
-                                           m.meta,
-                                           colors[idx],
-                                           onsetYPos)
+        predMarker = new marker.Prediction(
+          this,
+          m.id,
+          m.meta,
+          colors[idx],
+          onsetYPos
+        )
         this.predictions.push(predMarker)
 
         if (!(m.id in this.predictionsShow)) this.predictionsShow[m.id] = true
@@ -432,31 +460,16 @@ export default class TimeChart {
       predMarker.hideMarkers()
     })
 
-    // Legend and hook
-    this.legend = new marker.Legend(this, (event, payload) => {
-      if (event === 'legend:history') {
-        // On history toggle action
-        // payload is `hide`
-        this.historyShow = !payload
-        if (payload) this.history.hide()
-        else this.history.show()
-      } else if (event === 'legend:ci') {
-        // On ci change events
-        // payload is `cid`
-        this.predictions.map(p => {
-          this.cid = p.cid = payload
-          p.update(this.weekIdx)
-        })
-      } else {
-        // On prediction toggle action
-        // payload is `hide`
-        let pred = this.predictions[this.predictions.map(p => p.id).indexOf(event)]
-        this.predictionsShow[event] = !payload
-        pred.legendHidden = payload
+    // Update submission entries shown in control panel
+    this.controlPanel.plot(this, (event, payload) => {
+      // On prediction toggle action
+      // payload is the value of `hide`
+      let pred = this.predictions[this.predictions.map(p => p.id).indexOf(event)]
+      this.predictionsShow[event] = !payload
+      pred.legendHidden = payload
 
-        if (payload) pred.hideMarkers()
-        else pred.showMarkers()
-      }
+      if (payload) pred.hideMarkers()
+      else pred.showMarkers()
     })
 
     let that = this
@@ -472,7 +485,6 @@ export default class TimeChart {
           .duration(50)
           .attr('x1', snappedX)
           .attr('x2', snappedX)
-
         tooltip
           .style('top', (d3.event.pageY + 15) + 'px')
           .style('left', (d3.event.pageX + 15) + 'px')
@@ -497,15 +509,17 @@ export default class TimeChart {
    * Update marker position
    */
   update (idx) {
-    // Change self index
     this.weekIdx = idx
     this.timerect.update(idx)
-
     this.predictions.forEach(p => {
       p.update(idx)
     })
+    this.changePredictionTextVisibility()
+    this.observed.update(idx)
+    this.controlPanel.update(this.predictions)
+  }
 
-    // Set no
+  changePredictionTextVisibility () {
     if (this.predictions.filter(p => p.hidden).length !== 0) {
       this.noPredText
         .transition()
@@ -517,9 +531,5 @@ export default class TimeChart {
         .duration(100)
         .style('display', 'none')
     }
-
-    this.observed.update(idx)
-
-    this.legend.update(this.predictions)
   }
 }

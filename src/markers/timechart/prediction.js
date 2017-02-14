@@ -393,4 +393,3 @@ export default class Prediction {
     return this.displayedData[idx]
   }
 }
-
