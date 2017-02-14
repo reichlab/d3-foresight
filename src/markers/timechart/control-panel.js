@@ -8,7 +8,7 @@ import * as ControlButtons from './control-buttons'
  */
 export default class ControlPanel {
   constructor (parent, panelHook) {
-    let panelSelection = parent.elementSelection.append('div')
+    let panelSelection = parent.container.append('div')
         .attr('class', 'd3-foresight-controls')
     this.paintLegend(panelSelection, parent, panelHook)
     this.paintStatsDrawer(panelSelection, parent)
