@@ -5,74 +5,9 @@ the development goes on. This document focuses on the timechart component of
 visualization and doesn't talk much about the choropleth. *Should this change?
 Open an [issue](https://github.com/reichlab/d3-foresight/issues/new).*
 
-> There is a script named `timechart-data-dump.js` in the `test-foresight` branch
-> ([flusight](https://github.com/reichlab/flusight)) that filters out data for
-> season `2016-2017` and `National` region. Filtered data is written to
-> `./src/assets/data-timechart.json` in the flusight repo.
->
 > Same data is saved to this repository in `examples` directory. Also an schema
 > is kept as `data-timechart.schema.json`. A more detailed explanation of the
 > file is in the section on [timechart](#timechart)
-
-## Data
-
-Flusight has the aim to be a completely static application and thus creates a
-central `data.json` file. This file has two properties.
-
-- `branding` is used by flusight for metadata about the website
-- `data` contains actual data
-
-Every component in the application gets desired data via helper functions. These
-functions tap onto a central store of data
-from [vuex](https://github.com/vuejs/vuex) store which contains both, the data
-from `data.json` and other items necessary to maintain the UI toggles and state.
-
-For our purpose, in `d3-foresight`, the only relevant things are the transformations
-from `data.json` to whatever data is ingested by the visualization components
-like `TimeChart` or `Choropleth`. The central place to look for the trasformations
-is
-[here](https://github.com/reichlab/flusight/blob/test-foresight/src/store/getters.js).
-These are getter functions which use `state` and other child `getters` (from
-`modules` sub directory of `store`) to subset the data. `data` from `data.json`
-is bound to `state.data` (this can be studied more in detail in
-the
-[store](https://github.com/reichlab/flusight/blob/test-foresight/src/store/)).
-
-Specially important are the getters `timeChartData` and `choroplethData`. These
-provide the data subset which gets in `TimeChart.plot`
-(see
-[here](https://github.com/reichlab/flusight/blob/test-foresight/src/store/actions.js#L21))
-and describe the transformation in its entirety.
-
-As mentioned earlier in the header note of this document, a subset is already
-extracted for season `2016-2017` and `National` region and is kept in
-`./examples` directory here. Before going into what this subset contains, its
-necessary to be clear on how `data.json` structures these subsets and what that
-means for the applications which are going to use `d3-foresight`.
-
-## `d3-foresight` data structure
-
-Although flusight is meant to be static, the data pipeline enabling the
-visualization components (which we are extracting away) is amenable to extended
-usage by applications with streaming data source. As seen on
-the [web app](https://reichlab.github.io/flusight), at any time, the `timechart`
-displays model predictions for a given influenza **season** and selected **region**.
-Even with a lot of models to show, this subunit of discretization should be
-relatively safe. Right now, on flusight, the data goes around 300 kb
-in gzipped request. This includes 2 seasons and 11 regions in all, giving ~13kb
-per selection of season-region, good enough to have this chunk of data sent from
-a backend server. Also these chunks could be cached by your application if
-needed. These chunks are also dominated by lag data (used for showing observed
-data at given week) and are thus not likely to increase a lot while adding more
-models. (*In fact, I recommend trying to use all data at first directly, instead
-of using an API, similar to how flusight works and see if page is doing okay as
-far as loading time is considered*).
-
-These season-region selection can be taken out from `data.json` pretty easily.
-For example, the main key `data` from `data.json` is essentially a list of all
-11 regions. Then moving inside, there is a list for seasons and so on. Next
-section explains these season-region chunks that gets passed to
-`TimeChart.plot(data)`.
 
 ## Interface
 
@@ -88,24 +23,16 @@ is as follows:
 - [Optionally] add event hooks to `TimeChart` which gets triggered whenever week
   is changed in timechart either by mouse clicks or whenever someone calls
   `update` function of timechart.
-- Call `timechart.plot(data)` with the data subset of selected season and
+- Call `timechart.plot()` with the data subset of selected season and
   region. This will plot the corresponding stuff. Timechart is now self
   contained and accepts `timechart.update(idx)` to move the current week pointer
   here and there.
 - Whenever you have a change in selected region (using the choropleth component
   or a dropdown) or in selected season, you just need to call
-  `timechart.plot(data)` with your data subset for the new season-region pair.
+  `timechart.plot()`.
   Every call to `plot` also maintains a list of models in the last selection to
   create smooth animations.
 
-The exposed functions from the class are described next
-
-#### 1. `Constructor`
-
-  The constructor takes the selector string of the element to draw the chart on and a config
-  object. (config is slightly ill defined as of now and will change depending on
-  other things). It mostly just sets up a few SVG elements for the chart.
-  
 #### 2. `plot`
 
   `plot` is equivalent to a redraw in a sense. This clears off the whole thing
