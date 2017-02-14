@@ -384,7 +384,12 @@ export default class Prediction {
   }
 
   query (idx) {
-    if (this.hidden || this.legendHidden || this.displayedData.length === 0) return false
+    if (this.hidden ||
+        this.legendHidden ||
+        this.displayedData == null ||
+        this.displayedData.length === 0) {
+      return false
+    }
     return this.displayedData[idx]
   }
 }
