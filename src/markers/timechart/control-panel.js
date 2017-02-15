@@ -1,6 +1,6 @@
-import * as LegendDrawer from './legend-drawer'
-import * as StatsDrawer from './stats-drawer'
-import * as ControlButtons from './control-buttons'
+import { LegendDrawer } from './legend-drawer'
+import { StatsDrawer } from './stats-drawer'
+import { ControlButtons } from './control-buttons'
 
 /**
  * Chart controls

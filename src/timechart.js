@@ -28,7 +28,6 @@ export default class TimeChart {
     this.paintOnsetPanelOffset()
     this.setupOverlay()
     this.setupReverseAxis()
-    this.setupConfidenceIntervals()
     this.history = new marker.HistoricalLines(this)
     this.baseline = new marker.Baseline(this)
     this.actual = new marker.Actual(this)
@@ -99,6 +98,7 @@ export default class TimeChart {
   }
 
   setupControlPanel () {
+    this.setupConfidenceIntervals()
     this.controlPanel = new marker.ControlPanel(this, (event, payload) => {
       if (event === 'legend:history') {
         this.historyShow = !this.historyShow

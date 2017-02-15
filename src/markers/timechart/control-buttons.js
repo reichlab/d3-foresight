@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 /**
  * Side buttons in control panel
  */
-export default class ControlButtons {
+export class ControlButtons {
   constructor (panelSelection, tooltip, eventHook) {
     let navControls = panelSelection.append('div')
         .attr('class', 'nav-controls')

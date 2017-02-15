@@ -2,13 +2,12 @@ import * as d3 from 'd3'
 import * as util from '../../utils/timechart'
 
 /**
- * Stats nav drawer
+ * Stats navigation drawer
  */
-export default class StatsDrawer {
+export class StatsDrawer {
   constructor (panelSelection, tooltip) {
     this.drawerSelection = panelSelection.append('div')
       .attr('class', 'stats nav-drawer')
-
     this.tooltip = tooltip
     this.statsMeta = [
       {
@@ -23,8 +22,6 @@ export default class StatsDrawer {
         bestFunc: Math.max
       }
     ]
-
-    // Use log score as default
     this.selectedStat = 1
   }
 

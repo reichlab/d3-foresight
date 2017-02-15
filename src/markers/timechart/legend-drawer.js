@@ -9,7 +9,7 @@ import palette from '../../styles/palette.json'
  * @param confidenceIntervals - List of confidence intervals
  * @param eventHook - Event hook callback to be used by controlpanel
  */
-export default class LegendDrawer {
+export class LegendDrawer {
   constructor (panelSelection, tooltip, confidenceIntervals, eventHook) {
     let legendGroup = panelSelection.append('div')
         .attr('class', 'legend nav-drawer')
