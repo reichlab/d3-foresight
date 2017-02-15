@@ -37,8 +37,7 @@ is as follows:
 
   `plot` is equivalent to a redraw in a sense. This clears off the whole thing
   (not exactly; mostly it updates components like baseline, actual line etc. by
-  animating) and draws the given data object. Its argument is a single data
-  object with following keys
+  animating).
   
   > `week` in these represents week identifier like 201636 for 36th MMWR week of
   > 2016-2017 season
