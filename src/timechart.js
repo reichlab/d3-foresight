@@ -23,11 +23,13 @@ export default class TimeChart {
     this.setupEmptyText()
     this.setupControlPanel()
     this.setupAxes()
-    this.timerect = new marker.TimeRect(this)
     this.setupOnsetTexture()
     this.paintOnsetPanelOffset()
+    this.setupVerticalHoverLine()
+    this.setupNowLine()
     this.setupOverlay()
     this.setupReverseAxis()
+    this.timerect = new marker.TimeRect(this)
     this.history = new marker.HistoricalLines(this)
     this.baseline = new marker.Baseline(this)
     this.actual = new marker.Actual(this)
@@ -204,7 +206,6 @@ export default class TimeChart {
    * Add x axis with only ticks above the onset panel
    */
   setupReverseAxis () {
-    // Clone of axis above onset panel, without text
     this.svg.append('g')
       .attr('class', 'axis axis-x-ticks')
       .attr('transform', `translate(0, ${this.height})`)
@@ -214,52 +215,48 @@ export default class TimeChart {
    * Setup overlay for mouse events
    */
   setupOverlay () {
-    let svg = this.svg
-    let height = this.height
-    let onsetHeight = this.onsetHeight
-    let width = this.width
-    let tooltip = this.chartTooltip
+    this.svg.append('rect')
+      .attr('class', 'overlay')
+      .attr('height', this.chartHeight)
+      .attr('width', this.width)
+      .on('mouseover', () => {
+        this.hoverLine.style('display', null)
+        this.chartTooltip.style('display', null)
+      })
+      .on('mouseout', () => {
+        this.hoverLine.style('display', 'none')
+        this.chartTooltip.style('display', 'none')
+      })
+  }
 
-    let chartHeight = height + onsetHeight
+  setupVerticalHoverLine () {
+    this.hoverLine = this.svg.append('line')
+      .attr('class', 'hover-line')
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', this.chartHeight)
+      .style('display', 'none')
+  }
 
-    // Add vertical line
-    let line = svg.append('line')
-        .attr('class', 'hover-line')
-        .attr('x1', 0)
-        .attr('y1', 0)
-        .attr('x2', 0)
-        .attr('y2', chartHeight)
-        .style('display', 'none')
-
-    // Add now line
-    let nowGroup = svg.append('g')
+  setupNowLine () {
+    this.nowLineGroup = this.svg.append('g')
         .attr('class', 'now-group')
-
-    nowGroup.append('line')
+    this.nowLineGroup.append('line')
       .attr('class', 'now-line')
       .attr('x1', 0)
       .attr('y1', 0)
       .attr('x2', 0)
-      .attr('y2', chartHeight)
-    nowGroup.append('text')
+      .attr('y2', this.chartHeight)
+    this.nowLineGroup.append('text')
       .attr('class', 'now-text')
       .attr('transform', 'translate(15, 10) rotate(-90)')
       .style('text-anchor', 'end')
       .text('Today')
+  }
 
-    this.nowGroup = nowGroup
-    svg.append('rect')
-      .attr('class', 'overlay')
-      .attr('height', chartHeight)
-      .attr('width', width)
-      .on('mouseover', () => {
-        line.style('display', null)
-        tooltip.style('display', null)
-      })
-      .on('mouseout', () => {
-        line.style('display', 'none')
-        tooltip.style('display', 'none')
-      })
+  get chartHeight () {
+    return this.height + this.onsetHeight
   }
 
   paintOnsetPanelOffset () {
@@ -366,14 +363,14 @@ export default class TimeChart {
 
       // Display now line
       let nowPos = this.xScaleDate(new Date())
-      this.nowGroup.select('.now-line')
+      this.nowLineGroup.select('.now-line')
         .attr('x1', nowPos)
         .attr('x2', nowPos)
 
-      this.nowGroup.select('.now-text')
+      this.nowLineGroup.select('.now-text')
         .attr('dy', nowPos)
 
-      this.nowGroup
+      this.nowLineGroup
         .style('display', null)
     } else {
       // Start at the oldest prediction
@@ -392,7 +389,7 @@ export default class TimeChart {
         this.weekIdx = Math.min(...modelPredictions)
       }
 
-      this.nowGroup
+      this.nowLineGroup
         .style('display', 'none')
     }
     this.handleHook(weekHooks, this.weekIdx)
