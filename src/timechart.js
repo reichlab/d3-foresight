@@ -96,7 +96,7 @@ export default class TimeChart {
 
   setupConfidenceIntervals () {
     this.confidenceIntervals = ['90%', '50%']
-    this.cid = 1
+    this.cid = this.config.initalizeWithNinetyPercent === true ? 0 : 1
   }
 
   setupControlPanel () {
