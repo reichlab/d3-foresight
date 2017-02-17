@@ -270,12 +270,10 @@ export default class TimeChart {
   }
 
   plot () {
-    let svg = this.svg
     let xScale = this.xScale
     let yScale = this.yScale
     let xScaleDate = this.xScaleDate
     let tooltip = this.chartTooltip
-    let weekHooks = this.weekHooks
 
     // Reset scales and axes
     yScale.domain([0, Math.min(13, util.getYMax(this.data))])
@@ -328,19 +326,19 @@ export default class TimeChart {
 
     let yAxis = d3.axisLeft(yScale)
 
-    svg.select('.axis-x')
+    this.svg.select('.axis-x')
       .transition().duration(200).call(xAxis)
 
     // Copy over ticks above the onsetpanel
-    let tickOnlyAxis = svg.select('.axis-x-ticks')
+    let tickOnlyAxis = this.svg.select('.axis-x-ticks')
         .transition().duration(200).call(xAxisReverseTick)
 
     tickOnlyAxis.selectAll('text').remove()
 
-    svg.select('.axis-x-date')
+    this.svg.select('.axis-x-date')
       .transition().duration(200).call(xAxisDate)
 
-    svg.select('.axis-y')
+    this.svg.select('.axis-y')
       .transition().duration(200).call(yAxis)
 
     // Save
@@ -392,7 +390,7 @@ export default class TimeChart {
       this.nowLineGroup
         .style('display', 'none')
     }
-    this.handleHook(weekHooks, this.weekIdx)
+    this.handleHook(this.weekHooks, this.weekIdx)
     this.timerect.plot(this, this.data.actual)
     this.baseline.plot(this, this.data.baseline)
     this.actual.plot(this, this.data.actual)
@@ -470,7 +468,6 @@ export default class TimeChart {
     })
 
     let that = this
-    // Add mouse move and click events
     d3.select('.overlay')
       .on('mousemove', function () {
         let mouse = d3.mouse(this)
@@ -488,8 +485,9 @@ export default class TimeChart {
           .html(util.chartTooltip(that, index, mouse[1]))
       })
       .on('click', function () {
-        that.handleHook(weekHooks, Math.round(xScale.invert(d3.mouse(this)[0])))
+        this.handleHook(this.weekHooks, Math.round(xScale.invert(d3.mouse(this)[0])))
       })
+    this.update(this.weekIdx)
   }
 
   /**
