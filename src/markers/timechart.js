@@ -1,6 +1,6 @@
 // Markers for time chart
 
-import * as util from '../utils/timechart'
+import * as util from '../utils'
 import * as d3 from 'd3'
 import palette from '../styles/palette.json'
 

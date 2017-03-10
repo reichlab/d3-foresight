@@ -1,6 +1,6 @@
 // Chart plotting functions
 
-import * as util from './utils/timechart'
+import * as util from './utils'
 import * as marker from './markers/timechart'
 import textures from 'textures'
 import * as mmwr from 'mmwr-week'
