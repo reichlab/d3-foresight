@@ -3,6 +3,7 @@ import * as util from '../utils'
 
 export default class Overlay {
   constructor (parent) {
+    // TODO take in timerect ?
     let svg = parent.svg
     let height = parent.height
     let onsetHeight = parent.onsetHeight

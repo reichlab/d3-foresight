@@ -314,6 +314,7 @@ class StatsDrawer {
     this.drawerSelection = panelSelection.append('div')
       .attr('class', 'stats nav-drawer')
 
+    // TODO Don't write stuff here
     this.tooltip = tooltip
     this.statsMeta = [
       {
@@ -350,6 +351,7 @@ class StatsDrawer {
     // Assume if one model has no stats, no one has
     if (stats[0]) {
       // Formatted stuff
+      // TODO allow random stats
       let statsData = {}
       let statsMeta = this.statsMeta[this.selectedStat]
       let keys = ['oneWk', 'twoWk', 'threeWk', 'fourWk']

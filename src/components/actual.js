@@ -45,6 +45,7 @@ export default class Actual {
   }
 
   query (idx) {
+    // TODO replace with something simpler in the timechart end
     return this.data[idx].data
   }
 }

@@ -3,8 +3,10 @@ import textures from 'textures'
 
 export class YAxis {
   constructor (parent) {
+    // TODO make sure 0 offset work as expected
     let height = parent.height
     let svg = parent.svg
+    // TODO config?
     let config = parent.config
     let infoTooltip = parent.infoTooltip
 

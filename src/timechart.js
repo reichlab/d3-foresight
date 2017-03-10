@@ -8,7 +8,7 @@ import * as component from './components'
 export default class TimeChart {
   constructor (element, options = {}) {
     // Parse config passed
-    // TODO: Improve style considering markers @lepisma
+    // TODO: Plan the API and position help strings
     let defaults = {
       axesDesc: {
         x: `Week of the calendar year, as measured by the CDC.
@@ -87,13 +87,11 @@ export default class TimeChart {
     this.onsetHeight = onsetHeight
     this.eventHooks = []
 
-    // Add marker primitives
-    this.timerect = new component.TimeRect(this)
-
     // Axes markers
     this.yAxis = new component.YAxis(this)
     this.xAxis = new component.XAxis(this)
 
+    this.timerect = new component.TimeRect(this)
     this.overlay = new component.Overlay(this)
 
     this.history = new component.HistoricalLines(this)
@@ -101,8 +99,8 @@ export default class TimeChart {
     this.actual = new component.Actual(this)
     this.observed = new component.Observed(this)
     this.predictions = []
-    // Hard coding confidence values as of now
-    // This and currently selected id should ideally go in the vuex store
+
+    // TODO: Move this to controlpanel
     this.confidenceIntervals = ['90%', '50%']
     this.cid = 1 // Use 50% as default
 
@@ -140,6 +138,7 @@ export default class TimeChart {
     let yScale = this.yScale
 
     // Assuming actual data has all the weeks
+    // TODO replan data structure
     let weeks = data.actual.map(d => d.week % 100)
 
     // Update domains
@@ -151,6 +150,7 @@ export default class TimeChart {
     xScale.domain([0, weeks.length - 1])
 
     // Setup a scale for ticks
+    // TODO minimize number of scales
     this.xScalePoint = d3.scalePoint()
       .domain(weeks)
       .range([0, this.width])
@@ -176,6 +176,7 @@ export default class TimeChart {
     this.xAxis.plot(this)
     this.yAxis.plot(this)
 
+    // TODO Simplify this
     let showNowLine = false
     // Use actualIndices as indicator of whether the season is current
     if (actualIndices.length < weeks.length) {
@@ -210,7 +211,6 @@ export default class TimeChart {
 
     this.overlay.plot(this, showNowLine)
 
-    // TODO
     this.handleHook({
       type: 'weekUpdate',
       value: this.weekIdx
@@ -231,6 +231,7 @@ export default class TimeChart {
     // Get meta data and statistics
     this.modelStats = data.models.map(m => m.stats)
 
+    // TODO save these stuff
     // Reset predictions
     let colors = d3.schemeCategory10
 
@@ -248,6 +249,7 @@ export default class TimeChart {
       }
     })
 
+    // TODO fix data format
     // Collect values with zero lags for starting point of prediction markers
     let zeroLagData = data.observed.map(d => {
       let dataToReturn = -1
@@ -310,7 +312,7 @@ export default class TimeChart {
    * Update marker position
    */
   update (idx) {
-    // Change self index
+    // TODO Plan the plot, update interface
     this.weekIdx = idx
     this.timerect.update(idx)
     this.predictions.forEach(p => {

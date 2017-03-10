@@ -11,6 +11,7 @@ import * as util from '../utils'
 export default class Prediction {
   constructor (parent, id, meta, color, cy) {
     // Prediction group
+    // TODO DRY
     let predictionGroup = parent.svg.append('g')
         .attr('class', 'prediction-group')
         .attr('id', id + '-marker')
@@ -361,6 +362,7 @@ export default class Prediction {
   }
 
   hideMarkers () {
+    // TODO rename this to be consistent
     this.onsetGroup
       .style('visibility', 'hidden')
 

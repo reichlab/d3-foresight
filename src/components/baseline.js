@@ -3,6 +3,7 @@
  */
 export default class Baseline {
   constructor (parent) {
+    // TODO take text
     let group = parent.svg.append('g')
       .attr('class', 'baseline-group')
 
