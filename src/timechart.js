@@ -1,10 +1,10 @@
 // Chart plotting functions
 
 import * as util from './utils'
-import * as marker from './markers/timechart'
 import textures from 'textures'
 import * as mmwr from 'mmwr-week'
 import * as d3 from 'd3'
+import * as marker from './markers'
 
 export default class TimeChart {
   constructor (element, options = {}) {
