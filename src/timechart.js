@@ -3,7 +3,7 @@
 import * as util from './utils'
 import * as mmwr from 'mmwr-week'
 import * as d3 from 'd3'
-import * as marker from './markers'
+import * as component from './components'
 
 export default class TimeChart {
   constructor (element, options = {}) {
@@ -88,18 +88,18 @@ export default class TimeChart {
     this.eventHooks = []
 
     // Add marker primitives
-    this.timerect = new marker.TimeRect(this)
+    this.timerect = new component.TimeRect(this)
 
     // Axes markers
-    this.yAxis = new marker.YAxis(this)
-    this.xAxis = new marker.XAxis(this)
+    this.yAxis = new component.YAxis(this)
+    this.xAxis = new component.XAxis(this)
 
-    this.overlay = new marker.Overlay(this)
+    this.overlay = new component.Overlay(this)
 
-    this.history = new marker.HistoricalLines(this)
-    this.baseline = new marker.Baseline(this)
-    this.actual = new marker.Actual(this)
-    this.observed = new marker.Observed(this)
+    this.history = new component.HistoricalLines(this)
+    this.baseline = new component.Baseline(this)
+    this.actual = new component.Actual(this)
+    this.observed = new component.Observed(this)
     this.predictions = []
     // Hard coding confidence values as of now
     // This and currently selected id should ideally go in the vuex store
@@ -111,7 +111,7 @@ export default class TimeChart {
     this.predictionsShow = {}
 
     // Control panel
-    this.controlPanel = new marker.ControlPanel(this, (event, payload) => {
+    this.controlPanel = new component.ControlPanel(this, (event, payload) => {
       if (event === 'legend:history') {
         // On history toggle action
         // payload is `hide`
@@ -267,7 +267,7 @@ export default class TimeChart {
       let markerIndex = this.predictions.map(p => p.id).indexOf(m.id)
       if (markerIndex === -1) {
         let onsetYPos = (idx + 1) * onsetDiff + this.height + 1
-        predMarker = new marker.Prediction(
+        predMarker = new component.Prediction(
           this,
           m.id,
           m.meta,
