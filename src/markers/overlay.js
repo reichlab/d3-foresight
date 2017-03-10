@@ -75,7 +75,10 @@ export default class Overlay {
           .html(util.chartTooltip(parent, index, mouse[1]))
       })
       .on('click', function () {
-        parent.handleHook(parent.weekHooks, Math.round(xScale.invert(d3.mouse(this)[0])))
+        parent.handleHook({
+          type: 'weekUpdate',
+          value: Math.round(xScale.invert(d3.mouse(this)[0]))
+        })
       })
   }
 

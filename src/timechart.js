@@ -85,7 +85,7 @@ export default class TimeChart {
     this.height = height
     this.width = width
     this.onsetHeight = onsetHeight
-    this.weekHooks = []
+    this.eventHooks = []
 
     // Add marker primitives
     this.timerect = new marker.TimeRect(this)
@@ -138,7 +138,6 @@ export default class TimeChart {
     let xScale = this.xScale
     let xScaleDate = this.xScaleDate
     let yScale = this.yScale
-    let weekHooks = this.weekHooks
 
     // Assuming actual data has all the weeks
     let weeks = data.actual.map(d => d.week % 100)
@@ -212,7 +211,10 @@ export default class TimeChart {
     this.overlay.plot(this, showNowLine)
 
     // TODO
-    this.handleHook(weekHooks, this.weekIdx)
+    this.handleHook({
+      type: 'weekUpdate',
+      value: this.weekIdx
+    })
 
     this.weeks = weeks
     this.actualIndices = actualIndices
@@ -296,13 +298,12 @@ export default class TimeChart {
   }
 
   /**
-   * Helper method to call all functions of a hook
+   * Helper method to call all hooks
+   * @param data dictionary with event type key `type` and corresponding
+   * value `value`
    */
-  handleHook () {
-    let hookArray = Array.prototype.shift.apply(arguments)
-    hookArray.forEach((handler) => {
-      handler.apply(null, arguments)
-    })
+  handleHook (data) {
+    this.eventHooks.forEach(hook => hook(data))
   }
 
   /**
