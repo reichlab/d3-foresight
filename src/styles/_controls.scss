@@ -104,6 +104,11 @@
       }
     }
 
+    .legend-prediction-container {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
     table {
       margin: 0;
 
