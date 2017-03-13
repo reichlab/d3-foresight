@@ -19,19 +19,17 @@ export class YAxis {
       .style('text-anchor', 'middle')
       .text('Weighted ILI (%)')
       .style('cursor', 'pointer')
-      .on('mouseover', () => {
-        infoTooltip
-          .style('display', null)
-      })
-      .on('mouseout', () => {
-        infoTooltip
-          .style('display', 'none')
-      })
+      .on('mouseover', () => infoTooltip.show())
+      .on('mouseout', () => infoTooltip.hide())
       .on('mousemove', () => {
-        infoTooltip
-          .style('top', d3.event.pageY + 'px')
-          .style('left', (d3.event.pageX + 15) + 'px')
-          .html(config.axesDesc.y)
+        infoTooltip.renderText({
+          title: null,
+          text: config.axesDesc.y
+        })
+        infoTooltip.move({
+          x: d3.event.pageX,
+          y: d3.event.pageY
+        })
       })
       .on('click', () => {
         window.open(config.axesUrl.y, '_blank')
@@ -81,19 +79,17 @@ export class XAxis {
       .attr('dy', '1em')
 
     xText.style('cursor', 'pointer')
-      .on('mouseover', () => {
-        infoTooltip
-          .style('display', null)
-      })
-      .on('mouseout', () => {
-        infoTooltip
-          .style('display', 'none')
-      })
+      .on('mouseover', () => infoTooltip.show())
+      .on('mouseout', () => infoTooltip.hide())
       .on('mousemove', () => {
-        infoTooltip
-          .style('top', (d3.event.pageY - 15) + 'px')
-          .style('left', (d3.event.pageX - 150 - 15) + 'px')
-          .html(config.axesDesc.x)
+        infoTooltip.renderText({
+          title: null,
+          text: config.axesDesc.x
+        })
+        infoTooltip.move({
+          x: d3.event.pageX,
+          y: d3.event.pageY
+        }, 'left')
       })
       .on('click', () => {
         window.open(config.axesUrl.x, '_blank')

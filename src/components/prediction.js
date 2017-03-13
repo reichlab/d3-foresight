@@ -116,7 +116,7 @@ export default class Prediction {
     this.yScale = parent.yScale
     this.weeks = parent.weeks
     this.legendHidden = !parent.predictionsShow[this.id]
-    this.tooltip = parent.chartTooltip
+    this.chartTooltip = parent.chartTooltip
   }
 
   update (idx) {
@@ -138,7 +138,7 @@ export default class Prediction {
       this.displayedPoints = {}
 
       let cid = this.cid
-      let tooltip = this.tooltip
+      let chartTooltip = this.chartTooltip
 
       // Move things
       let onset = this.data[localPosition].onsetWeek
@@ -155,27 +155,26 @@ export default class Prediction {
             .transition()
             .duration(300)
             .style('stroke', util.hexToRgba(color, 0.3))
-          tooltip
-            .style('display', null)
-            .html(util.pointTooltip(id, [
-              {
-                key: 'Season Onset',
-                value: onset.point
-              }
-            ], color))
+          chartTooltip.show()
+          chartTooltip.renderPoint(id, [
+            {
+              key: 'Season Onset',
+              value: onset.point
+            }
+          ], color)
         })
         .on('mouseout', function () {
           d3.select(this)
             .transition()
             .duration(200)
             .style('stroke', 'transparent')
-          tooltip
-            .style('display', 'none')
+          chartTooltip.hide()
         })
         .on('mousemove', function () {
-          tooltip
-            .style('top', (d3.event.pageY + 15) + 'px')
-            .style('left', (d3.event.pageX + 15) + 'px')
+          chartTooltip.move({
+            x: d3.event.pageX,
+            y: d3.event.pageY
+          })
         })
 
       this.onsetGroup.select('.onset-range')
@@ -215,31 +214,30 @@ export default class Prediction {
             .transition()
             .duration(300)
             .style('stroke', util.hexToRgba(color, 0.3))
-          tooltip
-            .style('display', null)
-            .html(util.pointTooltip(id, [
-              {
-                key: 'Peak Percent',
-                value: pp.point
-              },
-              {
-                key: 'Peak Week',
-                value: pw.point
-              }
-            ], color))
+          chartTooltip.show()
+          chartTooltip.renderPoint(id, [
+            {
+              key: 'Peak Percent',
+              value: pp.point
+            },
+            {
+              key: 'Peak Week',
+              value: pw.point
+            }
+          ], color)
         })
         .on('mouseout', function () {
           d3.select(this)
             .transition()
             .duration(200)
             .style('stroke', 'transparent')
-          tooltip
-            .style('display', 'none')
+          chartTooltip.hide()
         })
         .on('mousemove', function () {
-          tooltip
-            .style('top', (d3.event.pageY + 15) + 'px')
-            .style('left', (d3.event.pageX + 15) + 'px')
+          chartTooltip.move({
+            x: d3.event.pageX,
+            y: d3.event.pageY
+          })
         })
 
       this.peakGroup.select('.peak-range-x')

@@ -59,22 +59,8 @@ export default class TimeChart {
         .attr('transform', `translate(${margin.left},${margin.top})`)
 
     // Add tooltips
-    // TODO: Merge separate tooltips
-    this.chartTooltip = elementSelection.append('div')
-      .attr('class', 'd3-foresight-tooltip d3-foresight-chart-tooltip')
-      .style('display', 'none')
-
-    this.legendTooltip = elementSelection.append('div')
-      .attr('class', 'd3-foresight-tooltip d3-foresight-legend-tooltip')
-      .style('display', 'none')
-
-    this.infoTooltip = elementSelection.append('div')
-      .attr('class', 'd3-foresight-tooltip d3-foresight-info-tooltip')
-      .style('display', 'none')
-
-    this.btnTooltip = elementSelection.append('div')
-      .attr('class', 'd3-foresight-tooltip d3-foresight-btn-tooltip')
-      .style('display', 'none')
+    this.chartTooltip = new component.ChartTooltip(elementSelection)
+    this.infoTooltip = new component.InfoTooltip(elementSelection)
 
     // Save variables
     this.elementSelection = elementSelection

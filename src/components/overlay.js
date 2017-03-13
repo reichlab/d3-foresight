@@ -1,5 +1,4 @@
 import * as d3 from 'd3'
-import * as util from '../utils'
 
 export default class Overlay {
   constructor (parent) {
@@ -8,7 +7,7 @@ export default class Overlay {
     let height = parent.height
     let onsetHeight = parent.onsetHeight
     let width = parent.width
-    let tooltip = parent.chartTooltip
+    let chartTooltip = parent.chartTooltip
     let xScale = parent.xScale
 
     let chartHeight = height + onsetHeight
@@ -50,11 +49,11 @@ export default class Overlay {
       .attr('width', width)
       .on('mouseover', () => {
         line.style('display', null)
-        tooltip.style('display', null)
+        chartTooltip.show()
       })
       .on('mouseout', () => {
         line.style('display', 'none')
-        tooltip.style('display', 'none')
+        chartTooltip.hide()
       })
 
     // Add mouse move and click events
@@ -64,16 +63,20 @@ export default class Overlay {
         // Snap x to nearest tick
         let index = Math.round(xScale.invert(mouse[0]))
         let snappedX = xScale(index)
+
+        // Move the cursor
         d3.select('.hover-line')
           .transition()
           .duration(50)
           .attr('x1', snappedX)
           .attr('x2', snappedX)
 
-        tooltip
-          .style('top', (d3.event.pageY + 15) + 'px')
-          .style('left', (d3.event.pageX + 15) + 'px')
-          .html(util.chartTooltip(parent, index, mouse[1]))
+        chartTooltip.renderValues(parent.observed, parent.actual,
+                                  parent.predictions, index)
+        chartTooltip.move({
+          x: d3.event.pageX,
+          y: d3.event.pageY
+        })
       })
       .on('click', function () {
         parent.handleHook({

@@ -7,7 +7,7 @@ export default class HistoricalLines {
   constructor (parent) {
     this.group = parent.svg.append('g')
       .attr('class', 'history-group')
-    this.tooltip = parent.chartTooltip
+    this.chartTooltip = parent.chartTooltip
   }
 
   plot (parent, data) {
@@ -15,7 +15,7 @@ export default class HistoricalLines {
     if (parent.historyShow) this.show()
     else this.hide()
 
-    let tooltip = this.tooltip
+    let chartTooltip = this.chartTooltip
 
     let line = d3.line()
         .x(d => parent.xScaleWeek(d.week % 100))
@@ -35,19 +35,18 @@ export default class HistoricalLines {
         d3.select('.line-history.highlight')
           .datum(d.actual)
           .attr('d', line)
-        tooltip
-          .style('display', null)
+        chartTooltip.show()
       }).on('mouseout', function () {
         d3.select('.line-history.highlight')
           .datum([])
           .attr('d', line)
-        tooltip
-          .style('display', 'none')
-      }).on('mousemove', function () {
-        tooltip
-          .style('top', (d3.event.pageY + 15) + 'px')
-          .style('left', (d3.event.pageX + 15) + 'px')
-          .html(`<div class="point">${d.id}</div>`)
+        chartTooltip.hide()
+      }).on('mousemove', () => {
+        chartTooltip.renderText(d.id)
+        chartTooltip.move({
+          x: d3.event.pageX,
+          y: d3.event.pageY
+        })
       })
     })
 
