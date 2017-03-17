@@ -73,8 +73,7 @@
     }
 
     .legend-ci-container {
-      text-align: center;
-
+      
       .legend-ci-buttons {
         border-color: $shadow;
         border-radius: 2px;
@@ -107,6 +106,10 @@
     .legend-prediction-container {
       max-height: 200px;
       overflow-y: auto;
+
+      .search-input {
+        width: 100px;
+      }
     }
 
     .table-wrapper {

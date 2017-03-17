@@ -227,6 +227,18 @@ class LegendDrawer {
     // Meta data info tooltip
     let infoTooltip = this.infoTooltip
 
+    // Add filter box
+    let filterDiv = predictionContainer.append('div')
+        .attr('class', 'item')
+
+    filterDiv.append('input')
+      .attr('class', 'input is-small search-input')
+      .attr('type', 'text')
+      .attr('placeholder', 'Search models')
+      .on('keyup', function () {
+        console.log(this.value)
+      })
+
     // Add prediction items
     this.rows = predictions.map(p => {
       let predItem = predictionContainer.append('div')
