@@ -218,6 +218,16 @@ class LegendDrawer {
     }
   }
 
+  showRows (visibilityStates) {
+    this.rows.forEach((row, idx) => {
+      if (visibilityStates[idx]) {
+        row.style('display', null)
+      } else {
+        row.style('display', 'none')
+      }
+    })
+  }
+
   plot (predictions, predictionsShow, eventHook) {
     let predictionContainer = this.drawerSelection.select('.legend-prediction-container')
 
@@ -231,12 +241,18 @@ class LegendDrawer {
     let filterDiv = predictionContainer.append('div')
         .attr('class', 'item')
 
+    let that = this
     filterDiv.append('input')
       .attr('class', 'input is-small search-input')
       .attr('type', 'text')
       .attr('placeholder', 'Search models')
       .on('keyup', function () {
-        console.log(this.value)
+        // Do a full text search on key event
+        let searchBase = predictions.map(p => {
+          return `${p.id} ${p.meta.name} + ${p.meta.description}`.toLowerCase()
+        })
+
+        that.showRows(searchBase.map(sb => sb.includes(this.value.toLowerCase())))
       })
 
     // Add prediction items
