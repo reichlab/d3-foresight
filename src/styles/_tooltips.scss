@@ -18,8 +18,19 @@
 }
 
 .d3-foresight-info-tooltip {
-  @include cell-padding;
   width: 150px;
+
+  .title {
+    @include cell-padding;
+    font-size: 13px;
+    margin-bottom: 0;
+    margin-top: 5px;
+  }
+
+  .text {
+    margin-top: 0;
+    @include cell-padding;
+  }
 }
 
 .d3-foresight-chart-tooltip {
@@ -41,7 +52,8 @@
     @include cell-padding;
   }
 
-  .point {
+  .point,
+  .text {
     color: $gray;
     @include cell-padding;
 
@@ -49,23 +61,4 @@
       color: $white;
     }
   }
-}
-
-.d3-foresight-legend-tooltip {
-  width: 150px;
-
-  .name {
-    font-size: 13px;
-    @include cell-padding;
-  }
-
-  .desc {
-    margin-top: 0;
-    @include cell-padding;
-  }
-}
-
-.d3-foresight-btn-tooltip {
-  width: 100px;
-  @include cell-padding;
 }

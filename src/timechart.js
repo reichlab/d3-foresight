@@ -1,15 +1,14 @@
 // Chart plotting functions
 
-import * as util from './utils/timechart'
-import * as marker from './markers/timechart'
-import textures from 'textures'
+import * as util from './utils'
 import * as mmwr from 'mmwr-week'
 import * as d3 from 'd3'
+import * as component from './components'
 
 export default class TimeChart {
   constructor (element, options = {}) {
     // Parse config passed
-    // TODO: Improve style considering markers @lepisma
+    // TODO: Plan the API and position help strings
     let defaults = {
       axesDesc: {
         x: `Week of the calendar year, as measured by the CDC.
@@ -44,13 +43,13 @@ export default class TimeChart {
     let width = divWidth - margin.left - margin.right
     let height = divHeight - margin.top - margin.bottom
 
-    // Initialize scales and stuff
+    // Initialize scales
     let xScale = d3.scaleLinear()
+        .range([0, width])
+    let xScaleDate = d3.scaleTime()
         .range([0, width])
     let yScale = d3.scaleLinear()
         .range([height, 0])
-    let xScaleDate = d3.scaleTime()
-        .range([0, width])
 
     // Add svg
     let svg = elementSelection.append('svg')
@@ -60,68 +59,34 @@ export default class TimeChart {
         .attr('transform', `translate(${margin.left},${margin.top})`)
 
     // Add tooltips
-    // TODO: Merge separate tooltips
-    this.chartTooltip = elementSelection.append('div')
-      .attr('class', 'd3-foresight-tooltip d3-foresight-chart-tooltip')
-      .style('display', 'none')
-
-    this.legendTooltip = elementSelection.append('div')
-      .attr('class', 'd3-foresight-tooltip d3-foresight-legend-tooltip')
-      .style('display', 'none')
-
-    this.infoTooltip = elementSelection.append('div')
-      .attr('class', 'd3-foresight-tooltip d3-foresight-info-tooltip')
-      .style('display', 'none')
-
-    this.btnTooltip = elementSelection.append('div')
-      .attr('class', 'd3-foresight-tooltip d3-foresight-btn-tooltip')
-      .style('display', 'none')
-
-    // Add text for no prediction
-    this.noPredText = elementSelection.append('div')
-      .attr('class', 'no-pred-text')
-      .html(this.config.noPredText)
+    this.chartTooltip = new component.ChartTooltip(elementSelection)
+    this.infoTooltip = new component.InfoTooltip(elementSelection)
 
     // Save variables
     this.elementSelection = elementSelection
     this.svg = svg
     this.xScale = xScale
-    this.yScale = yScale
     this.xScaleDate = xScaleDate
+    this.yScale = yScale
     this.height = height
     this.width = width
     this.onsetHeight = onsetHeight
-    this.weekHooks = []
+    this.eventHooks = []
 
-    // Add axes
-    this.setupAxes()
+    // Axes markers
+    this.yAxis = new component.YAxis(this)
+    this.xAxis = new component.XAxis(this)
 
-    // Add marker primitives
-    this.timerect = new marker.TimeRect(this)
+    this.timerect = new component.TimeRect(this)
+    this.overlay = new component.Overlay(this)
 
-    this.onsetTexture = textures.lines()
-      .lighter()
-      .strokeWidth(0.5)
-      .size(8)
-      .stroke('#ccc')
-    svg.call(this.onsetTexture)
-
-    // Paint the onset panel
-    this.paintOnsetOffset()
-
-    // Add overlays and other mouse interaction items
-    this.setupOverlay()
-
-    // Axis at top of onset panel
-    this.setupReverseAxis()
-
-    this.history = new marker.HistoricalLines(this)
-    this.baseline = new marker.Baseline(this)
-    this.actual = new marker.Actual(this)
-    this.observed = new marker.Observed(this)
+    this.history = new component.HistoricalLines(this)
+    this.baseline = new component.Baseline(this)
+    this.actual = new component.Actual(this)
+    this.observed = new component.Observed(this)
     this.predictions = []
-    // Hard coding confidence values as of now
-    // This and currently selected id should ideally go in the vuex store
+
+    // TODO: Move this to controlpanel
     this.confidenceIntervals = ['90%', '50%']
     this.cid = 1 // Use 50% as default
 
@@ -130,7 +95,7 @@ export default class TimeChart {
     this.predictionsShow = {}
 
     // Control panel
-    this.controlPanel = new marker.ControlPanel(this, (event, payload) => {
+    this.controlPanel = new component.ControlPanel(this, (event, payload) => {
       if (event === 'legend:history') {
         // On history toggle action
         // payload is `hide`
@@ -152,175 +117,18 @@ export default class TimeChart {
     })
   }
 
-  /**
-   * Setup axes
-   */
-  setupAxes () {
-    let svg = this.svg
-    let width = this.width
-    let height = this.height
-    let onsetHeight = this.onsetHeight
-    let config = this.config
-    let infoTooltip = this.infoTooltip
-
-    // Keep onset panel between xaxis and plot
-    let xAxisPos = height + onsetHeight
-
-    // Main axis with ticks below the onset panel
-    svg.append('g')
-      .attr('class', 'axis axis-x')
-      .attr('transform', `translate(0,${xAxisPos})`)
-
-    let axisXDate = svg.append('g')
-        .attr('class', 'axis axis-x-date')
-        .attr('transform', `translate(0,${xAxisPos + 25})`)
-
-    let xText = axisXDate
-        .append('text')
-        .attr('class', 'title')
-        .attr('text-anchor', 'start')
-        .attr('transform', `translate(${width + 10},-15)`)
-
-    xText.append('tspan')
-      .text('Epidemic')
-      .attr('x', 0)
-    xText.append('tspan')
-      .text('Week')
-      .attr('x', 0)
-      .attr('dy', '1em')
-
-    xText.style('cursor', 'pointer')
-      .on('mouseover', function () {
-        infoTooltip
-          .style('display', null)
-      })
-      .on('mouseout', function () {
-        infoTooltip
-          .style('display', 'none')
-      })
-      .on('mousemove', function () {
-        infoTooltip
-          .style('top', (d3.event.pageY - 15) + 'px')
-          .style('left', (d3.event.pageX - 150 - 15) + 'px')
-          .html(config.axesDesc.x)
-      })
-      .on('click', function () {
-        window.open(config.axesUrl.x, '_blank')
-      })
-
-    svg.append('g')
-      .attr('class', 'axis axis-y')
-      .append('text')
-      .attr('class', 'title')
-      .attr('transform', `translate(-40 , ${height / 2}) rotate(-90)`)
-      .attr('dy', '.71em')
-      .style('text-anchor', 'middle')
-      .text('Weighted ILI (%)')
-      .style('cursor', 'pointer')
-      .on('mouseover', function () {
-        infoTooltip
-          .style('display', null)
-      })
-      .on('mouseout', function () {
-        infoTooltip
-          .style('display', 'none')
-      })
-      .on('mousemove', function () {
-        infoTooltip
-          .style('top', d3.event.pageY + 'px')
-          .style('left', (d3.event.pageX + 15) + 'px')
-          .html(config.axesDesc.y)
-      })
-      .on('click', function () {
-        window.open(config.axesUrl.y, '_blank')
-      })
-  }
-
-  /**
-   * Add x axis with only ticks above the onset panel
-   */
-  setupReverseAxis () {
-    // Clone of axis above onset panel, without text
-    this.svg.append('g')
-      .attr('class', 'axis axis-x-ticks')
-      .attr('transform', `translate(0, ${this.height})`)
-  }
-
-  /**
-   * Setup overlay for mouse events
-   */
-  setupOverlay () {
-    let svg = this.svg
-    let height = this.height
-    let onsetHeight = this.onsetHeight
-    let width = this.width
-    let tooltip = this.chartTooltip
-
-    let chartHeight = height + onsetHeight
-
-    // Add vertical line
-    let line = svg.append('line')
-        .attr('class', 'hover-line')
-        .attr('x1', 0)
-        .attr('y1', 0)
-        .attr('x2', 0)
-        .attr('y2', chartHeight)
-        .style('display', 'none')
-
-    // Add now line
-    let nowGroup = svg.append('g')
-        .attr('class', 'now-group')
-
-    nowGroup.append('line')
-      .attr('class', 'now-line')
-      .attr('x1', 0)
-      .attr('y1', 0)
-      .attr('x2', 0)
-      .attr('y2', chartHeight)
-    nowGroup.append('text')
-      .attr('class', 'now-text')
-      .attr('transform', 'translate(15, 10) rotate(-90)')
-      .style('text-anchor', 'end')
-      .text('Today')
-
-    this.nowGroup = nowGroup
-    svg.append('rect')
-      .attr('class', 'overlay')
-      .attr('height', chartHeight)
-      .attr('width', width)
-      .on('mouseover', () => {
-        line.style('display', null)
-        tooltip.style('display', null)
-      })
-      .on('mouseout', () => {
-        line.style('display', 'none')
-        tooltip.style('display', 'none')
-      })
-  }
-
-  paintOnsetOffset () {
-    this.svg.append('rect')
-      .attr('class', 'onset-texture')
-      .attr('height', this.onsetHeight)
-      .attr('width', this.width)
-      .attr('x', 0)
-      .attr('y', this.height)
-      .style('fill', this.onsetTexture.url())
-  }
-
   // plot data
   plot (data) {
-    let svg = this.svg
     let xScale = this.xScale
-    let yScale = this.yScale
     let xScaleDate = this.xScaleDate
-    let tooltip = this.chartTooltip
-    let weekHooks = this.weekHooks
+    let yScale = this.yScale
 
-    // Reset scales and axes
-    yScale.domain([0, Math.min(13, util.getYMax(data))])
     // Assuming actual data has all the weeks
+    // TODO replan data structure
     let weeks = data.actual.map(d => d.week % 100)
+
+    // Update domains
+    yScale.domain([0, Math.min(13, util.getYMax(data))])
 
     let actualIndices = data.actual
         .filter(d => d.data !== -1)
@@ -328,12 +136,13 @@ export default class TimeChart {
     xScale.domain([0, weeks.length - 1])
 
     // Setup a scale for ticks
-    let xScalePoint = d3.scalePoint()
-        .domain(weeks)
-        .range([0, this.width])
+    // TODO minimize number of scales
+    this.xScalePoint = d3.scalePoint()
+      .domain(weeks)
+      .range([0, this.width])
 
     // Week domain scale for easy mapping
-    let xScaleWeek = (d) => {
+    this.xScaleWeek = d => {
       let dInt = Math.floor(d)
       let dFloat = d % 1
       // [0, 1) point fix without changing the scale
@@ -350,44 +159,11 @@ export default class TimeChart {
       return mmwr.MMWRWeekToDate(year, week).toDate()
     })))
 
-    let xAxis = d3.axisBottom(xScalePoint)
-        .tickValues(xScalePoint.domain().filter((d, i) => !(i % 2)))
+    this.xAxis.plot(this)
+    this.yAxis.plot(this)
 
-    let xAxisReverseTick = d3.axisTop(xScalePoint)
-        .tickValues(xScalePoint.domain().filter((d, i) => !(i % 2)))
-
-    let xAxisDate = d3.axisBottom(xScaleDate)
-        .ticks(d3.timeMonth)
-        .tickFormat(d3.timeFormat('%b %y'))
-
-    // Mobile view fix
-    if (this.width < 420) {
-      xAxisDate.ticks(2)
-      xAxis.tickValues(xScalePoint.domain().filter((d, i) => !(i % 10)))
-    }
-
-    let yAxis = d3.axisLeft(yScale)
-
-    svg.select('.axis-x')
-      .transition().duration(200).call(xAxis)
-
-    // Copy over ticks above the onsetpanel
-    let tickOnlyAxis = svg.select('.axis-x-ticks')
-        .transition().duration(200).call(xAxisReverseTick)
-
-    tickOnlyAxis.selectAll('text').remove()
-
-    svg.select('.axis-x-date')
-      .transition().duration(200).call(xAxisDate)
-
-    svg.select('.axis-y')
-      .transition().duration(200).call(yAxis)
-
-    // Save
-    this.weeks = weeks
-    this.actualIndices = actualIndices
-    this.xScaleWeek = xScaleWeek
-
+    // TODO Simplify this
+    let showNowLine = false
     // Use actualIndices as indicator of whether the season is current
     if (actualIndices.length < weeks.length) {
       // Start at the latest prediction
@@ -400,18 +176,7 @@ export default class TimeChart {
                    .indexOf(m.predictions[m.predictions.length - 1].week % 100)
                }
              }))
-
-      // Display now line
-      let nowPos = this.xScaleDate(new Date())
-      this.nowGroup.select('.now-line')
-        .attr('x1', nowPos)
-        .attr('x2', nowPos)
-
-      this.nowGroup.select('.now-text')
-        .attr('dy', nowPos)
-
-      this.nowGroup
-        .style('display', null)
+      showNowLine = true
     } else {
       // Start at the oldest prediction
       let modelPredictions = data.models
@@ -424,15 +189,21 @@ export default class TimeChart {
 
       if (modelPredictions.length === 0) {
         // Start at the most recent actual data
-        this.weekIdx = this.actualIndices[this.actualIndices.length - 1]
+        this.weekIdx = actualIndices[actualIndices.length - 1]
       } else {
         this.weekIdx = Math.min(...modelPredictions)
       }
-
-      this.nowGroup
-        .style('display', 'none')
     }
-    this.handleHook(weekHooks, this.weekIdx)
+
+    this.overlay.plot(this, showNowLine)
+
+    this.handleHook({
+      type: 'weekUpdate',
+      value: this.weekIdx
+    })
+
+    this.weeks = weeks
+    this.actualIndices = actualIndices
 
     // Update markers with data
     this.timerect.plot(this, data.actual)
@@ -446,6 +217,7 @@ export default class TimeChart {
     // Get meta data and statistics
     this.modelStats = data.models.map(m => m.stats)
 
+    // TODO save these stuff
     // Reset predictions
     let colors = d3.schemeCategory10
 
@@ -463,6 +235,7 @@ export default class TimeChart {
       }
     })
 
+    // TODO fix data format
     // Collect values with zero lags for starting point of prediction markers
     let zeroLagData = data.observed.map(d => {
       let dataToReturn = -1
@@ -482,7 +255,7 @@ export default class TimeChart {
       let markerIndex = this.predictions.map(p => p.id).indexOf(m.id)
       if (markerIndex === -1) {
         let onsetYPos = (idx + 1) * onsetDiff + this.height + 1
-        predMarker = new marker.Prediction(
+        predMarker = new component.Prediction(
           this,
           m.id,
           m.meta,
@@ -510,73 +283,35 @@ export default class TimeChart {
       if (payload) pred.hideMarkers()
       else pred.showMarkers()
     })
-
-    let that = this
-    // Add mouse move and click events
-    d3.select('.overlay')
-      .on('mousemove', function () {
-        let mouse = d3.mouse(this)
-        // Snap x to nearest tick
-        let index = Math.round(xScale.invert(mouse[0]))
-        let snappedX = xScale(index)
-        d3.select('.hover-line')
-          .transition()
-          .duration(50)
-          .attr('x1', snappedX)
-          .attr('x2', snappedX)
-
-        tooltip
-          .style('top', (d3.event.pageY + 15) + 'px')
-          .style('left', (d3.event.pageX + 15) + 'px')
-          .html(util.chartTooltip(that, index, mouse[1]))
-      })
-      .on('click', function () {
-        that.handleHook(weekHooks, Math.round(xScale.invert(d3.mouse(this)[0])))
-      })
   }
 
   /**
-   * Helper method to call all functions of a hook
+   * Helper method to call all hooks
+   * @param data dictionary with event type key `type` and corresponding
+   * value `value`
    */
-  handleHook () {
-    let hookArray = Array.prototype.shift.apply(arguments)
-    hookArray.forEach((handler) => {
-      handler.apply(null, arguments)
-    })
+  handleHook (data) {
+    this.eventHooks.forEach(hook => hook(data))
   }
 
   /**
    * Update marker position
    */
   update (idx) {
-    // Change self index
+    // TODO Plan the plot, update interface
     this.weekIdx = idx
     this.timerect.update(idx)
-
     this.predictions.forEach(p => {
       p.update(idx)
     })
-
-    // Control no prediction text
-    if (this.predictions.filter(p => p.hidden).length !== 0) {
-      this.noPredText
-        .transition()
-        .duration(100)
-        .style('display', null)
-    } else {
-      this.noPredText
-        .transition()
-        .duration(100)
-        .style('display', 'none')
-    }
-
+    this.overlay.update(this.predictions)
     this.observed.update(idx)
-
     this.controlPanel.update(this.predictions)
   }
 
   /**
    * Move chart one step ahead
+   * TODO implement this for control panel
    */
   forward () {
   }

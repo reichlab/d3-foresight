@@ -9,6 +9,5 @@
 [![Standard - JavaScript Style Guide](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
 
-d3-foresight is a library for building interactive forecast visualizations. It
-is being extracted out of [flusight](https://github.com/reichlab/flusight).
-Check the `develop` branch for status.
+d3-foresight is a library for building interactive time series forecast
+visualizations similar to [flusight](https://github.com/reichlab/flusight).
