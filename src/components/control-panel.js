@@ -86,10 +86,8 @@ class LegendDrawer {
     let legendActualContainer = legendGroup.append('div')
         .attr('class', 'legend-actual-container')
 
-    legendGroup.append('hr')
-
     let legendCIItem = legendGroup.append('div')
-        .attr('class', 'legend-ci-container')
+        .attr('class', 'legend-control-container')
         .append('div')
         .attr('class', 'item')
 
@@ -97,7 +95,6 @@ class LegendDrawer {
     let legendCIButtons = legendCIItem.append('span')
         .attr('class', 'legend-ci-buttons')
 
-    legendGroup.append('hr')
     legendGroup.append('div')
       .attr('class', 'legend-prediction-container')
 
@@ -237,8 +234,12 @@ class LegendDrawer {
     // Meta data info tooltip
     let infoTooltip = this.infoTooltip
 
+    // TODO: Don't recreate this
+    let controlContainer = this.drawerSelection.select('.legend-control-container')
+    controlContainer.select('.search-input').remove()
+
     // Add filter box
-    let filterDiv = predictionContainer.append('div')
+    let filterDiv = controlContainer.append('div')
         .attr('class', 'item')
 
     let that = this

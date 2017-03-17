@@ -72,8 +72,17 @@
       color: $white;
     }
 
-    .legend-ci-container {
-      
+    .legend-control-container {
+      padding: 5px 0px;
+      border-style: solid;
+      border-width: 1px 0px;
+      border-color: $shadow;
+      background-color: $white-shade;
+
+      .search-input {
+        width: 100px;
+      }
+
       .legend-ci-buttons {
         border-color: $shadow;
         border-radius: 2px;
@@ -84,6 +93,7 @@
 
         .ci-button {
           padding: 2px 6px;
+          background-color: white;
 
           &.selected {
             background-color: $accent;
@@ -106,16 +116,12 @@
     .legend-prediction-container {
       max-height: 200px;
       overflow-y: auto;
-
-      .search-input {
-        width: 100px;
-      }
     }
 
     .table-wrapper {
       max-height: 200px;
-      overflow-y: auto;
       min-width: 300px;
+      overflow-y: auto;
     }
 
     table {
