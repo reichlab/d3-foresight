@@ -402,8 +402,10 @@ class StatsDrawer {
         this.nextBtn.classed('is-disabled', true)
       }
 
-      // Create main table
-      let table = this.drawerSelection.append('table')
+      let tableWrapper = this.drawerSelection.append('div')
+          .attr('class', 'table-wrapper')
+      // Create Tables
+      let table = tableWrapper.append('table')
           .attr('class', 'table is-striped is-bordered')
 
       let thead = table.append('thead')
@@ -418,7 +420,6 @@ class StatsDrawer {
                <th>3 wk</th>
                <th>4 wk</th>`)
 
-      // Add actual values
       let tbody = table.append('tbody')
 
       modelIds.forEach((id, index) => {

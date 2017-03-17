@@ -109,6 +109,12 @@
       overflow-y: auto;
     }
 
+    .table-wrapper {
+      max-height: 200px;
+      overflow-y: auto;
+      min-width: 300px;
+    }
+
     table {
       margin: 0;
 
