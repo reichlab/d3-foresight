@@ -64,17 +64,27 @@ export class ChartTooltip extends Tooltip {
                </div>`
     }
 
-    predObjs.map(p => {
+    // Show upto maxNPreds predictions
+    let maxNPreds = 10
+    let visiblePreds = predObjs.filter(p => p.query(index))
+    visiblePreds.slice(0, maxNPreds).map(p => {
       let data = p.query(index)
-      if (data) {
-        html += `<div class="prediction" style="background:${p.color}">
-                   ${p.id}
-                   <span class="bold">
-                     ${data.toFixed(2)}
-                   </span>
-                 </div>`
-      }
+      html += `<div class="prediction" style="background:${p.color}">
+                 ${p.id}
+                 <span class="bold">
+                   ${data.toFixed(2)}
+                 </span>
+               </div>`
     })
+
+    // Notify regarding overflow
+    if (visiblePreds.length > maxNPreds) {
+      html += `<div class="actual">
+                 <em>Truncated list. Please <br>
+                 select fewer than <br>
+                 ${maxNPreds + 1} predictions</em>
+               </div>`
+    }
 
     this.render(html)
   }
