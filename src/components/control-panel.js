@@ -228,7 +228,7 @@ class LegendDrawer {
     let infoTooltip = this.infoTooltip
 
     // Add prediction items
-    predictions.forEach(p => {
+    this.rows = predictions.map(p => {
       let predItem = predictionContainer.append('div')
           .attr('class', 'item')
           .attr('id', 'legend-' + p.id)
@@ -280,6 +280,7 @@ class LegendDrawer {
             y: d3.event.pageY
           }, 'left')
         })
+      return predItem
     })
   }
 
@@ -422,7 +423,7 @@ class StatsDrawer {
 
       let tbody = table.append('tbody')
 
-      modelIds.forEach((id, index) => {
+      this.rows = modelIds.map((id, index) => {
         let statsItem = statsData[index]
         let tr = tbody.append('tr')
         tr.html(`<td style="color:${colors[index]}"> ${id} </td>
@@ -444,6 +445,7 @@ class StatsDrawer {
               y: d3.event.pageY
             }, 'left')
           })
+        return tr
       })
 
       this.drawerSelection.append('div')
