@@ -31,7 +31,7 @@
   "dependencies": {
     "colormap": "^2.2.0",
     "d3": "^4.5.0",
-    "mmwr-week": "^1.0.2",
+    "mmwr-week": "1.1.0",
     "textures": "^1.0.4",
     "tinycolor2": "^1.4.1"
   }

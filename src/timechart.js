@@ -156,7 +156,8 @@ export default class TimeChart {
     xScaleDate.domain(d3.extent(data.actual.map(d => {
       let year = Math.floor(d.week / 100)
       let week = d.week % 100
-      return mmwr.MMWRWeekToDate(year, week).toDate()
+      let mdate = new mmwr.MMWRDate(year, week)
+      return mdate.toMomentDate()
     })))
 
     this.xAxis.plot(this)
