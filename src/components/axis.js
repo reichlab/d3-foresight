@@ -3,10 +3,8 @@ import textures from 'textures'
 
 export class YAxis {
   constructor (parent) {
-    // TODO make sure 0 offset work as expected
     let height = parent.height
     let svg = parent.svg
-    // TODO config?
     let config = parent.config
     let infoTooltip = parent.infoTooltip
 
@@ -17,14 +15,14 @@ export class YAxis {
       .attr('transform', `translate(-40 , ${height / 2}) rotate(-90)`)
       .attr('dy', '.71em')
       .style('text-anchor', 'middle')
-      .text('Weighted ILI (%)')
+      .text(config.axes.y.title)
       .style('cursor', 'pointer')
       .on('mouseover', () => infoTooltip.show())
       .on('mouseout', () => infoTooltip.hide())
       .on('mousemove', () => {
         infoTooltip.renderText({
           title: null,
-          text: config.axesDesc.y
+          text: config.axes.y.description
         })
         infoTooltip.move({
           x: d3.event.pageX,
@@ -32,7 +30,7 @@ export class YAxis {
         })
       })
       .on('click', () => {
-        window.open(config.axesUrl.y, '_blank')
+        window.open(config.axes.y.url, '_blank')
       })
   }
 
@@ -70,13 +68,23 @@ export class XAxis {
         .attr('text-anchor', 'start')
         .attr('transform', `translate(${width + 10},-15)`)
 
-    xText.append('tspan')
-      .text('Epidemic')
-      .attr('x', 0)
-    xText.append('tspan')
-      .text('Week')
-      .attr('x', 0)
-      .attr('dy', '1em')
+    // Setup multiline text
+    let xTitle = config.axes.x.title
+    if (Array.isArray(xTitle)) {
+      xText.append('tspan')
+        .text(xTitle[0])
+        .attr('x', 0)
+      xTitle.slice(1).forEach(txt => {
+        xText.append('tspan')
+          .text(txt)
+          .attr('x', 0)
+          .attr('dy', '1em')
+      })
+    } else {
+      xText.append('tspan')
+        .text(xTitle)
+        .attr('x', 0)
+    }
 
     xText.style('cursor', 'pointer')
       .on('mouseover', () => infoTooltip.show())
@@ -84,7 +92,7 @@ export class XAxis {
       .on('mousemove', () => {
         infoTooltip.renderText({
           title: null,
-          text: config.axesDesc.x
+          text: config.axes.x.description
         })
         infoTooltip.move({
           x: d3.event.pageX,
@@ -92,7 +100,7 @@ export class XAxis {
         }, 'left')
       })
       .on('click', () => {
-        window.open(config.axesUrl.x, '_blank')
+        window.open(config.axes.x.url, '_blank')
       })
 
     // Setup reverse axis (over onset offset)

@@ -7,22 +7,30 @@ import * as component from './components'
 
 export default class TimeChart {
   constructor (element, options = {}) {
-    // Parse config passed
-    // TODO: Plan the API and position help strings
-    let defaults = {
-      axesDesc: {
-        x: `Week of the calendar year, as measured by the CDC.
-            <br><br><em>Click to know more</em>`,
-        y: `Percentage of outpatient doctor visits for influenza-like
-            illness, weighted by state population.<br><br><em>Click to know
-            more</em>`
+    let defaultConfig = {
+      baseline: {
+        text: ['CDC', 'Baseline'],
+        description: `Baseline ILI value as defined by CDC.
+                      <br><br><em>Click to know more</em>`,
+        url: 'http://www.cdc.gov/flu/weekly/overview.htm'
       },
-      axesUrl: {
-        x: 'https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf',
-        y: 'http://www.cdc.gov/flu/weekly/overview.htm'
+      axes: {
+        x: {
+          title: ['Epidemic', 'Week'],
+          description: `Week of the calendar year, as measured by the CDC.
+                        <br><br><em>Click to know more</em>`,
+          url: 'https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf'
+        },
+        y: {
+          title: 'Weighted ILI (%)',
+          description: `Percentage of outpatient doctor visits for
+                        influenza-like illness, weighted by state population.
+                        <br><br><em>Click to know more</em>`,
+          url: 'http://www.cdc.gov/flu/weekly/overview.htm'
+        }
       }
     }
-    this.config = Object.assign({}, defaults, options)
+    this.config = Object.assign({}, defaultConfig, options)
 
     // Get div dimensions
     let elementSelection = d3.select(element)
@@ -85,7 +93,6 @@ export default class TimeChart {
     this.observed = new component.Observed(this)
     this.predictions = []
 
-    // TODO: Move this to controlpanel
     this.confidenceIntervals = ['90%', '50%']
     this.cid = 1 // Use 50% as default
 
@@ -123,7 +130,6 @@ export default class TimeChart {
     let yScale = this.yScale
 
     // Assuming actual data has all the weeks
-    // TODO replan data structure
     let weeks = data.actual.map(d => d.week % 100)
 
     // Update domains
@@ -135,7 +141,6 @@ export default class TimeChart {
     xScale.domain([0, weeks.length - 1])
 
     // Setup a scale for ticks
-    // TODO minimize number of scales
     this.xScalePoint = d3.scalePoint()
       .domain(weeks)
       .range([0, this.width])
@@ -235,7 +240,6 @@ export default class TimeChart {
       }
     })
 
-    // TODO fix data format
     // Collect values with zero lags for starting point of prediction markers
     let zeroLagData = data.observed.map(d => {
       let dataToReturn = -1

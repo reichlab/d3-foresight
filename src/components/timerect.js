@@ -13,7 +13,6 @@ export default class TimeRect {
 
   plot (parent, data) {
     // Save local data
-    // TODO don't
     this.data = data
     this.scale = parent.xScaleWeek
   }

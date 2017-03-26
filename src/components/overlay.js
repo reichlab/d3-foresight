@@ -2,7 +2,6 @@ import * as d3 from 'd3'
 
 export default class Overlay {
   constructor (parent) {
-    // TODO take in timerect ?
     let svg = parent.svg
     let height = parent.height
     let onsetHeight = parent.onsetHeight
@@ -85,8 +84,8 @@ export default class Overlay {
       })
   }
 
-  plot (parent, show) {
-    if (show) {
+  plot (parent, showNowLine) {
+    if (showNowLine) {
       let nowPos = parent.xScaleDate(new Date())
       this.nowGroup.select('.now-line')
         .attr('x1', nowPos)

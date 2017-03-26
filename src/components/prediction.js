@@ -11,7 +11,6 @@ import * as util from '../utils'
 export default class Prediction {
   constructor (parent, id, meta, color, cy) {
     // Prediction group
-    // TODO DRY
     let predictionGroup = parent.svg.append('g')
         .attr('class', 'prediction-group')
         .attr('id', id + '-marker')
@@ -360,29 +359,24 @@ export default class Prediction {
   }
 
   hideMarkers () {
-    // TODO rename this to be consistent
-    this.onsetGroup
-      .style('visibility', 'hidden')
-
-    this.peakGroup
-      .style('visibility', 'hidden')
-
-    this.predictionGroup
-      .style('visibility', 'hidden')
+    [
+      this.onsetGroup,
+      this.peakGroup,
+      this.predictionGroup].forEach(elem => {
+        elem.style('visibility', 'hidden')
+      })
   }
 
   showMarkers () {
     // Only show if not hidden
     if (this.hidden) return
 
-    this.onsetGroup
-      .style('visibility', null)
-
-    this.peakGroup
-      .style('visibility', null)
-
-    this.predictionGroup
-      .style('visibility', null)
+    [
+      this.onsetGroup,
+      this.peakGroup,
+      this.predictionGroup].forEach(elem => {
+        elem.style('visibility', null)
+      })
   }
 
   clear () {

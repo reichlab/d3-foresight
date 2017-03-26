@@ -39,7 +39,6 @@ export class ChartTooltip extends Tooltip {
   }
 
   renderValues (observedObj, actualObj, predObjs, index) {
-    // TODO: use newer planned data interface
     let html = ''
     // Ask for observed value
     let observedValue = observedObj.query(index)

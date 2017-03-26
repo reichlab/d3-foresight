@@ -16,7 +16,6 @@ export default class Observed {
 
   plot (parent, data) {
     // Save data for queries and updates
-    // TODO replace with something simpler in the timechart end
     this.data = data
     this.xScale = parent.xScaleWeek
     this.yScale = parent.yScale
