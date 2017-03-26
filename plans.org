@@ -1,0 +1,66 @@
+#+TITLE: d3-foresight dev plan
+#+AUTHOR: Abhinav Tushar
+
+This is a temporary document for laying out the interface for `d3-foresight` as
+the development goes on.
+
+* Styles
+** Work on the examples page for this
+** Bulma inside
+** Font-awesome inside
+* Things to ask user for
+** Axes + baseline text
+This will go in the constructor i guess.
+- text
+- description
+- urls (if any)
+*** TODO Keep a sensible default and move the specific text in flusight :micro:
+** Metadata about
+*** confidence intervals
+*** statistics
+This needs a bit of metadata inside with headers to show
+*** [#A] model meta
+Probably this is okay because this is one for each series of predictions. Needs
+CI though.
+** X-scale
+*** A date axis
+*** A timepoint series
+*** timepoints mapping to datetime
+** Actual
+Array of pure values like:
+- [1.3, 3.4, null, null, null]
+** History
+Dict of key (identifier of history) and values (array like actual)
+** Models
+- for each model
+  - id: unique identifier
+  - stats: TODO
+  - meta: TODO
+  - predictions: A list like
+    - [null,
+       null,
+       {
+         seriesValues: [{point: 3.4, low: [2.1, 4.5], high: [2.1, 4.5]}, ...],
+         pointValues: {
+           x: {onset: {point: 3.4, low: [2.1, 4.5], high: [2.1, 4.5]}}
+           xy: {peak: {x: {point: 3.4, low: [2.1, 4.5], high: [2.1, 4.5]}, y: {point: 3.4, low: [2.1, 4.5], high: [2.1, 4.5]}}}
+         }
+       },
+       null]
+** Observed
+Each element corresponding to the x-scale will be a list like
+- [{lag: <lagInDiscreteUnits>, value: }, ...]
+This can be done with plain list too. Keep in mind that the order is reversed.
+
+* Notes
+If a component needs to plot / update something which is not in its file, it
+will trigger a function in the parent (timechart.js) to let it pass the
+information to the child instead of using ~parent~ argument or something.
+For example, right now, this applies to events from legend panel while
+- toggling historical lines (inform history component)
+- change confidence interval (prediction component)
+- toggling prediction markers (prediction components)
+- pressing next / prev buttons (all components)
+* Other tasks
+** TODO Plot for showing probability distribution
+- Might have to make the control-panel survive outside the timeChart
