@@ -20,8 +20,7 @@ export default class TimeChart {
       axesUrl: {
         x: 'https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf',
         y: 'http://www.cdc.gov/flu/weekly/overview.htm'
-      },
-      noPredText: 'Predictions not available <br> for selected week'
+      }
     }
     this.config = Object.assign({}, defaults, options)
 
@@ -299,7 +298,6 @@ export default class TimeChart {
    * Update marker position
    */
   update (idx) {
-    // TODO Plan the plot, update interface
     this.weekIdx = idx
     this.timerect.update(idx)
     this.predictions.forEach(p => {

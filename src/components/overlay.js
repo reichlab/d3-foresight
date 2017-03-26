@@ -9,13 +9,12 @@ export default class Overlay {
     let width = parent.width
     let chartTooltip = parent.chartTooltip
     let xScale = parent.xScale
-
     let chartHeight = height + onsetHeight
 
     // Add text for no prediction
     this.noPredText = parent.elementSelection.append('div')
       .attr('class', 'no-pred-text')
-      .html(parent.config.noPredText)
+      .html('Predictions not available <br> for selected time')
 
     // Add mouse hover line
     let line = svg.append('line')
