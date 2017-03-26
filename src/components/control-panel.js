@@ -100,6 +100,14 @@ class LegendDrawer {
     legendShowHideItem.append('span').text('Show')
     let legendShowHideButtons = legendShowHideItem.append('span')
 
+    // Add filter box
+    let legendSearchItem = legendControlContainer.append('div')
+        .attr('class', 'item')
+    this.searchBox = legendSearchItem.append('input')
+      .attr('class', 'input is-small search-input')
+      .attr('type', 'text')
+      .attr('placeholder', 'Search models')
+
     // Prediction items
     legendGroup.append('div')
       .attr('class', 'legend-prediction-container')
@@ -250,6 +258,7 @@ class LegendDrawer {
     }
   }
 
+  // Show / hide the "row items divs" while filtering with the search box
   showRows (visibilityStates) {
     this.rows.forEach((row, idx) => {
       if (visibilityStates[idx]) {
@@ -258,6 +267,11 @@ class LegendDrawer {
         row.style('display', 'none')
       }
     })
+  }
+
+  // Show / hide all the items markers (not the legend div)
+  showHidePredItem (show) {
+    
   }
 
   plot (predictions, predictionsShow, eventHook) {
@@ -269,27 +283,18 @@ class LegendDrawer {
     // Meta data info tooltip
     let infoTooltip = this.infoTooltip
 
-    // TODO: Don't recreate this
-    let controlContainer = this.drawerSelection.select('.legend-control-container')
-    controlContainer.select('.search-input').remove()
-
-    // Add filter box
-    let filterDiv = controlContainer.append('div')
-        .attr('class', 'item')
-
     let that = this
-    filterDiv.append('input')
-      .attr('class', 'input is-small search-input')
-      .attr('type', 'text')
-      .attr('placeholder', 'Search models')
-      .on('keyup', function () {
-        // Do a full text search on key event
-        let searchBase = predictions.map(p => {
-          return `${p.id} ${p.meta.name} + ${p.meta.description}`.toLowerCase()
-        })
 
-        that.showRows(searchBase.map(sb => sb.includes(this.value.toLowerCase())))
+    this.searchBox.keyup = null
+    this.searchBox.on('keyup', function () {
+      console.log('Doing a search !!!')
+      // Do a full text search on key event
+      let searchBase = predictions.map(p => {
+        return `${p.id} ${p.meta.name} + ${p.meta.description}`.toLowerCase()
       })
+
+      that.showRows(searchBase.map(sb => sb.includes(this.value.toLowerCase())))
+    })
 
     // Add prediction items
     this.rows = predictions.map(p => {
