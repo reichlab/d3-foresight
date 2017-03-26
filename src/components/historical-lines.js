@@ -18,7 +18,7 @@ export default class HistoricalLines {
     let chartTooltip = this.chartTooltip
 
     let line = d3.line()
-        .x(d => parent.xScaleWeek(d.week % 100))
+        .x(d => parent.xScale(d.week % 100))
         .y(d => parent.yScale(d.data))
 
     data.map(d => {

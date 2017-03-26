@@ -16,7 +16,7 @@ export default class Actual {
 
   plot (parent, data) {
     let line = d3.line()
-        .x(d => parent.xScaleWeek(d.week % 100))
+        .x(d => parent.xScale(d.week % 100))
         .y(d => parent.yScale(d.data))
 
     // Save data for queries
@@ -39,7 +39,7 @@ export default class Actual {
       .attr('class', 'point-actual')
       .transition(200)
       .ease(d3.easeQuadOut)
-      .attr('cx', d => parent.xScaleWeek(d.week % 100))
+      .attr('cx', d => parent.xScale(d.week % 100))
       .attr('cy', d => parent.yScale(d.data))
       .attr('r', 2)
   }

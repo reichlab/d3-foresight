@@ -14,7 +14,7 @@ export default class TimeRect {
   plot (parent, data) {
     // Save local data
     this.data = data
-    this.scale = parent.xScaleWeek
+    this.scale = parent.xScale
   }
 
   update (idx) {

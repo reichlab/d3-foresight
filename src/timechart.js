@@ -51,10 +51,17 @@ export default class TimeChart {
     let height = divHeight - margin.top - margin.bottom
 
     // Initialize scales
-    let xScale = d3.scaleLinear()
+    // This is the underlying continous scale. xScale wraps around this
+    let _xScale = d3.scaleLinear()
         .range([0, width])
+    let xScale
+    // This is the main time scale
     let xScaleDate = d3.scaleTime()
         .range([0, width])
+    // For ticks. Takes in discrete time points (not time indices)
+    let xScalePoint = d3.scalePoint()
+        .range([0, width])
+    // The only linear yscale
     let yScale = d3.scaleLinear()
         .range([height, 0])
 
@@ -72,8 +79,10 @@ export default class TimeChart {
     // Save variables
     this.elementSelection = elementSelection
     this.svg = svg
+    this._xScale = _xScale
     this.xScale = xScale
     this.xScaleDate = xScaleDate
+    this.xScalePoint = xScalePoint
     this.yScale = yScale
     this.height = height
     this.width = width
@@ -113,7 +122,7 @@ export default class TimeChart {
         // payload is `cid`
         this.predictions.map(p => {
           this.cid = p.cid = payload
-          p.update(this.weekIdx)
+          p.update(this.currentIdx)
         })
       } else if (event === 'btn:next') {
         this.forward()
@@ -125,38 +134,42 @@ export default class TimeChart {
 
   // plot data
   plot (data) {
-    let xScale = this.xScale
+    let _xScale = this._xScale
     let xScaleDate = this.xScaleDate
+    let xScalePoint = this.xScalePoint
     let yScale = this.yScale
 
     // Assuming actual data has all the weeks
-    let weeks = data.actual.map(d => d.week % 100)
+    // TODO This could be taken from the non-actual data
+    // Also, the name should be changed
+    let timePoints = data.actual.map(d => d.week % 100)
 
     // Update domains
+    // TODO will need a fix when the structure changes
     yScale.domain([0, Math.min(13, util.getYMax(data))])
+    _xScale.domain([0, timePoints.length - 1])
 
+    // TODO rely on the values being null
     let actualIndices = data.actual
         .filter(d => d.data !== -1)
-        .map(d => weeks.indexOf(d.week % 100))
-    xScale.domain([0, weeks.length - 1])
+        .map(d => timePoints.indexOf(d.week % 100))
 
-    // Setup a scale for ticks
-    this.xScalePoint = d3.scalePoint()
-      .domain(weeks)
-      .range([0, this.width])
+    // Setup a discrete scale for ticks
+    xScalePoint.domain(timePoints)
 
-    // Week domain scale for easy mapping
-    this.xScaleWeek = d => {
+    // Wrapper around _xscale to handle edge cases
+    this.xScale = d => {
       let dInt = Math.floor(d)
       let dFloat = d % 1
       // [0, 1) point fix without changing the scale
-      if (dInt === 0) dInt = Math.max(...weeks)
+      if (dInt === 0) dInt = Math.max(...timePoints)
       if (dInt === 53) dInt = 1
       if (dInt === 29) dFloat = 0
-      return xScale(weeks.indexOf(dInt) + dFloat)
+      return _xScale(timePoints.indexOf(dInt) + dFloat)
     }
 
     // Week to date parser
+    // TODO this will also work without actual
     xScaleDate.domain(d3.extent(data.actual.map(d => {
       let year = Math.floor(d.week / 100)
       let week = d.week % 100
@@ -170,14 +183,15 @@ export default class TimeChart {
     // TODO Simplify this
     let showNowLine = false
     // Use actualIndices as indicator of whether the season is current
-    if (actualIndices.length < weeks.length) {
+    if (actualIndices.length < timePoints.length) {
       // Start at the latest prediction
-      this.weekIdx = Math
+      // TODO move this in utils
+      this.currentIdx = Math
         .max(...data.models
              .map(m => {
                if (m.predictions.length === 0) return 0
                else {
-                 return weeks
+                 return timePoints
                    .indexOf(m.predictions[m.predictions.length - 1].week % 100)
                }
              }))
@@ -188,26 +202,26 @@ export default class TimeChart {
           .map(m => {
             if (m.predictions.length === 0) return -1
             else {
-              return weeks.indexOf(m.predictions[0].week % 100)
+              return timePoints.indexOf(m.predictions[0].week % 100)
             }
           }).filter(d => d !== -1)
 
       if (modelPredictions.length === 0) {
         // Start at the most recent actual data
-        this.weekIdx = actualIndices[actualIndices.length - 1]
+        this.currentIdx = actualIndices[actualIndices.length - 1]
       } else {
-        this.weekIdx = Math.min(...modelPredictions)
+        this.currentIdx = Math.min(...modelPredictions)
       }
     }
 
     this.overlay.plot(this, showNowLine)
 
     this.handleHook({
-      type: 'weekUpdate',
-      value: this.weekIdx
+      type: 'positionUpdate',
+      value: this.currentIdx
     })
 
-    this.weeks = weeks
+    this.timePoints = timePoints
     this.actualIndices = actualIndices
 
     // Update markers with data
@@ -222,12 +236,15 @@ export default class TimeChart {
     // Get meta data and statistics
     this.modelStats = data.models.map(m => m.stats)
 
-    // TODO save these stuff
-    // Reset predictions
-    let colors = d3.schemeCategory10
-
+    // Prediction thing
     let totalModels = data.models.length
     let onsetDiff = (this.onsetHeight - 2) / (totalModels + 1)
+
+    if (totalModels > 10) {
+      this.colors = d3.schemeCategory20
+    } else {
+      this.colors = d3.schemeCategory10
+    }
 
     // Filter markers not needed
     let currentPredictionIds = data.models.map(m => m.id)
@@ -240,7 +257,8 @@ export default class TimeChart {
       }
     })
 
-    // Collect values with zero lags for starting point of prediction markers
+    // Collect values with zero lags
+    // This is used as the first point of the prediction curves
     let zeroLagData = data.observed.map(d => {
       let dataToReturn = -1
       // Handle zero length values
@@ -263,7 +281,7 @@ export default class TimeChart {
           this,
           m.id,
           m.meta,
-          colors[idx],
+          this.colors[idx],
           onsetYPos
         )
         this.predictions.push(predMarker)
@@ -302,7 +320,7 @@ export default class TimeChart {
    * Update marker position
    */
   update (idx) {
-    this.weekIdx = idx
+    this.currentIdx = idx
     this.timerect.update(idx)
     this.predictions.forEach(p => {
       p.update(idx)
@@ -316,13 +334,13 @@ export default class TimeChart {
    * Move chart one step ahead
    */
   forward () {
-    this.update(Math.min(this.weekIdx + 1, this.actualIndices[this.actualIndices.length - 1]))
+    this.update(Math.min(this.currentIdx + 1, this.actualIndices[this.actualIndices.length - 1]))
   }
 
   /**
    * Move chart one step back
    */
   backward () {
-    this.update(Math.max(this.weekIdx - 1, this.actualIndices[0]))
+    this.update(Math.max(this.currentIdx - 1, this.actualIndices[0]))
   }
 }

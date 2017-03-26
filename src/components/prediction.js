@@ -111,9 +111,9 @@ export default class Prediction {
   plot (parent, data, actual) {
     this.data = data
     this.actual = actual
-    this.xScale = parent.xScaleWeek
+    this.xScale = parent.xScale
     this.yScale = parent.yScale
-    this.weeks = parent.weeks
+    this.timePoints = parent.timePoints
     this.legendHidden = !parent.predictionsShow[this.id]
     this.chartTooltip = parent.chartTooltip
   }
@@ -121,9 +121,9 @@ export default class Prediction {
   update (idx) {
     let color = this.color
     let id = this.id
-    let week = this.weeks[idx]
+    let timePoint = this.timePoints[idx]
 
-    let localPosition = this.data.map(d => d.week % 100).indexOf(week)
+    let localPosition = this.data.map(d => d.week % 100).indexOf(timePoint)
 
     if (localPosition === -1) {
       this.hidden = true
@@ -291,20 +291,21 @@ export default class Prediction {
       // Move main pointers
       let predData = this.data[localPosition]
 
-      let startWeek = predData.week
-      let startData = this.actual.filter(d => d.week === startWeek)[0].data
+      let startTimePoint = predData.week
+      let startData = this.actual.filter(d => d.week === startTimePoint)[0].data
 
       let data = [{
-        week: startWeek % 100,
+        week: startTimePoint % 100,
         data: startData,
         low: startData,
         high: startData
       }]
 
       let names = ['oneWk', 'twoWk', 'threeWk', 'fourWk']
-      let nextWeeks = util.getNextWeeks(startWeek, this.weeks)
+      // TODO Here be weeks
+      let nextTimePoints = util.getNextWeeks(startTimePoint, this.timePoints)
 
-      nextWeeks.forEach((item, index) => {
+      nextTimePoints.forEach((item, index) => {
         data.push({
           week: item,
           data: predData[names[index]].point,
@@ -313,10 +314,10 @@ export default class Prediction {
         })
       })
 
-      // Save week indexed data
-      this.displayedData = Array(this.weeks.length).fill(false)
+      // Save indexed data
+      this.displayedData = Array(this.timePoints.length).fill(false)
       data.forEach((d, index) => {
-        if (index > 0) this.displayedData[this.weeks.indexOf(d.week)] = d.data
+        if (index > 0) this.displayedData[this.timePoints.indexOf(d.week)] = d.data
       })
 
       let circles = this.predictionGroup.selectAll('.point-prediction')

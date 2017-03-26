@@ -7,7 +7,7 @@ export default class Overlay {
     let onsetHeight = parent.onsetHeight
     let width = parent.width
     let chartTooltip = parent.chartTooltip
-    let xScale = parent.xScale
+    let _xScale = parent._xScale
     let chartHeight = height + onsetHeight
 
     // Add text for no prediction
@@ -59,8 +59,8 @@ export default class Overlay {
       .on('mousemove', function () {
         let mouse = d3.mouse(this)
         // Snap x to nearest tick
-        let index = Math.round(xScale.invert(mouse[0]))
-        let snappedX = xScale(index)
+        let index = Math.round(_xScale.invert(mouse[0]))
+        let snappedX = _xScale(index)
 
         // Move the cursor
         d3.select('.hover-line')
@@ -78,8 +78,8 @@ export default class Overlay {
       })
       .on('click', function () {
         parent.handleHook({
-          type: 'weekUpdate',
-          value: Math.round(xScale.invert(d3.mouse(this)[0]))
+          type: 'positionUpdate',
+          value: Math.round(_xScale.invert(d3.mouse(this)[0]))
         })
       })
   }

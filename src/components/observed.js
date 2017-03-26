@@ -17,9 +17,8 @@ export default class Observed {
   plot (parent, data) {
     // Save data for queries and updates
     this.data = data
-    this.xScale = parent.xScaleWeek
+    this.xScale = parent.xScale
     this.yScale = parent.yScale
-    this.weeks = parent.weeks
   }
 
   query (idx) {
