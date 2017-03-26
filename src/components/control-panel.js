@@ -82,19 +82,25 @@ class LegendDrawer {
     let legendGroup = panelSelection.append('div')
         .attr('class', 'legend nav-drawer')
 
-    // Contains items including and above the CI buttons
+    // Items above the controls (actual, observed, history)
     let legendActualContainer = legendGroup.append('div')
         .attr('class', 'legend-actual-container')
 
-    let legendCIItem = legendGroup.append('div')
+    // Control buttons (CI, show/hide, search)
+    let legendControlContainer = legendGroup.append('div')
         .attr('class', 'legend-control-container')
-        .append('div')
-        .attr('class', 'item')
 
+    let legendCIItem = legendControlContainer.append('div')
+        .attr('class', 'item control-item')
     legendCIItem.append('span').text('CI')
     let legendCIButtons = legendCIItem.append('span')
-        .attr('class', 'legend-ci-buttons')
 
+    let legendShowHideItem = legendControlContainer.append('div')
+        .attr('class', 'item control-item')
+    legendShowHideItem.append('span').text('Show')
+    let legendShowHideButtons = legendShowHideItem.append('span')
+
+    // Prediction items
     legendGroup.append('div')
       .attr('class', 'legend-prediction-container')
 
@@ -157,20 +163,19 @@ class LegendDrawer {
     let historyItem = this.actualItems[2]
     historyItem.style('cursor', 'pointer')
     this.historyIcon = historyItem.select('i')
-
     historyItem
       .on('click', () => eventHook('legend:history'))
 
     // Add confidence buttons
     this.confButtons = confidenceIntervals.map((c, idx) => {
       let confButton = legendCIButtons.append('span')
-          .attr('class', 'ci-button')
+          .attr('class', 'toggle-button')
           .style('cursor', 'pointer')
           .text(c)
 
       confButton
         .on('click', function () {
-          legendCIButtons.selectAll('.ci-button')
+          legendCIButtons.selectAll('.toggle-button')
             .classed('selected', false)
           d3.select(this).classed('selected', true)
 
@@ -189,6 +194,36 @@ class LegendDrawer {
           }, 'left')
         })
       return confButton
+    })
+
+    // Show / hide all
+    this.showHideButtons = ['all', 'none'].map((c, idx) => {
+      let showHideButton = legendShowHideButtons.append('span')
+          .attr('class', 'toggle-button')
+          .style('cursor', 'pointer')
+          .text(c)
+
+      showHideButton
+        .on('click', function () {
+          legendShowHideButtons.selectAll('.toggle-button')
+            .classed('selected', false)
+          d3.select(this).classed('selected', true)
+
+          eventHook('legend:show-hide', idx)
+        })
+        .on('mouseover', () => infoTooltip.show())
+        .on('mouseout', () => infoTooltip.hide())
+        .on('mousemove', () => {
+          infoTooltip.renderText({
+            title: 'Toggle visibility',
+            text: 'Show / hide all predictions'
+          })
+          infoTooltip.move({
+            x: d3.event.pageX,
+            y: d3.event.pageY
+          }, 'left')
+        })
+      return showHideButton
     })
 
     this.infoTooltip = infoTooltip
