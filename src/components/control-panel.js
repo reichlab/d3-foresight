@@ -520,7 +520,7 @@ export default class ControlPanel {
 
     // Buttons on the side of panel
     this.controlButtons = new ControlButtons(panelSelection, parent.infoTooltip, event => {
-      if (['btn:next', 'btn:prev'].includes(event)) {
+      if (['btn:next', 'btn:back'].includes(event)) {
         // Simple triggers, pass directly
         panelHook(event)
       } else {

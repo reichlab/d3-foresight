@@ -312,14 +312,15 @@ export default class TimeChart {
 
   /**
    * Move chart one step ahead
-   * TODO implement this for control panel
    */
   forward () {
+    this.update(Math.min(this.weekIdx + 1, this.actualIndices[this.actualIndices.length - 1]))
   }
 
   /**
    * Move chart one step back
    */
   backward () {
+    this.update(Math.max(this.weekIdx - 1, this.actualIndices[0]))
   }
 }
