@@ -172,7 +172,10 @@ class LegendDrawer {
     historyItem.style('cursor', 'pointer')
     this.historyIcon = historyItem.select('i')
     historyItem
-      .on('click', () => eventHook('legend:history'))
+      .on('click', () => {
+        this.toggleHistoryIcon()
+        eventHook('legend:history')
+      })
 
     // Add confidence buttons
     this.confButtons = confidenceIntervals.map((c, idx) => {
@@ -553,14 +556,8 @@ export default class ControlPanel {
       panelSelection,
       parent.infoTooltip,
       parent.confidenceIntervals,
-      (event, payload) => {
-        if (event === 'legend:history') {
-          this.legendDrawer.toggleHistoryIcon()
-          panelHook(event)
-        } else {
-          panelHook(event, payload)
-        }
-      })
+      panelHook
+    )
 
     // Set value of historical line selection and default confidence
     this.legendDrawer.toggleConfidenceBtn(parent.cid)
@@ -590,9 +587,7 @@ export default class ControlPanel {
   }
 
   plot (parent, panelHook) {
-    this.legendDrawer.plot(parent.predictions, parent.predictionsShow, (event, payload) => {
-      panelHook(event, payload)
-    })
+    this.legendDrawer.plot(parent.predictions, parent.predictionsShow, panelHook)
 
     this.statsDrawer.plot(
       parent.predictions.map(p => p.id),
