@@ -204,6 +204,8 @@ class LegendDrawer {
       return confButton
     })
 
+    let that = this
+
     // Show / hide all
     this.showHideButtons = ['all', 'none'].map((c, idx) => {
       let showHideButton = legendShowHideButtons.append('span')
@@ -213,11 +215,13 @@ class LegendDrawer {
 
       showHideButton
         .on('click', function () {
+          // Toggle prediction entries
+          that.showHidePredItem(d3.select(this).text() === 'all')
+
+          // Set button active colors
           legendShowHideButtons.selectAll('.toggle-button')
             .classed('selected', false)
           d3.select(this).classed('selected', true)
-
-          eventHook('legend:show-hide', idx)
         })
         .on('mouseover', () => infoTooltip.show())
         .on('mouseout', () => infoTooltip.hide())
@@ -269,30 +273,35 @@ class LegendDrawer {
     })
   }
 
+  resetShowHideButtons () {
+    this.showHideButtons.forEach(button => button.classed('selected', false))
+  }
+
   // Show / hide all the items markers (not the legend div)
   showHidePredItem (show) {
-    
+    this.rows.forEach(predItem => {
+      if (predItem.select('i').classed('fa-circle') !== show) {
+        predItem.on('click')()
+      }
+    })
   }
 
   plot (predictions, predictionsShow, eventHook) {
-    let predictionContainer = this.drawerSelection.select('.legend-prediction-container')
-
     // Clear entries
+    let predictionContainer = this.drawerSelection.select('.legend-prediction-container')
     predictionContainer.selectAll('*').remove()
 
     // Meta data info tooltip
     let infoTooltip = this.infoTooltip
-
     let that = this
 
+    // Bind search event
     this.searchBox.keyup = null
     this.searchBox.on('keyup', function () {
-      console.log('Doing a search !!!')
       // Do a full text search on key event
       let searchBase = predictions.map(p => {
         return `${p.id} ${p.meta.name} + ${p.meta.description}`.toLowerCase()
       })
-
       that.showRows(searchBase.map(sb => sb.includes(this.value.toLowerCase())))
     })
 
@@ -333,6 +342,8 @@ class LegendDrawer {
           predIcon.classed('fa-circle', !isActive)
           predIcon.classed('fa-circle-o', isActive)
 
+          // Reset show all/none buttons on any of these clicks
+          this.resetShowHideButtons()
           eventHook(p.id, isActive)
         })
 
