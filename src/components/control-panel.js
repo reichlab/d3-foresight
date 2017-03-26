@@ -82,19 +82,33 @@ class LegendDrawer {
     let legendGroup = panelSelection.append('div')
         .attr('class', 'legend nav-drawer')
 
-    // Contains items including and above the CI buttons
+    // Items above the controls (actual, observed, history)
     let legendActualContainer = legendGroup.append('div')
         .attr('class', 'legend-actual-container')
 
-    let legendCIItem = legendGroup.append('div')
+    // Control buttons (CI, show/hide, search)
+    let legendControlContainer = legendGroup.append('div')
         .attr('class', 'legend-control-container')
-        .append('div')
-        .attr('class', 'item')
 
+    let legendCIItem = legendControlContainer.append('div')
+        .attr('class', 'item control-item')
     legendCIItem.append('span').text('CI')
     let legendCIButtons = legendCIItem.append('span')
-        .attr('class', 'legend-ci-buttons')
 
+    let legendShowHideItem = legendControlContainer.append('div')
+        .attr('class', 'item control-item')
+    legendShowHideItem.append('span').text('Show')
+    let legendShowHideButtons = legendShowHideItem.append('span')
+
+    // Add filter box
+    let legendSearchItem = legendControlContainer.append('div')
+        .attr('class', 'item')
+    this.searchBox = legendSearchItem.append('input')
+      .attr('class', 'input is-small search-input')
+      .attr('type', 'text')
+      .attr('placeholder', 'Search models')
+
+    // Prediction items
     legendGroup.append('div')
       .attr('class', 'legend-prediction-container')
 
@@ -157,20 +171,19 @@ class LegendDrawer {
     let historyItem = this.actualItems[2]
     historyItem.style('cursor', 'pointer')
     this.historyIcon = historyItem.select('i')
-
     historyItem
       .on('click', () => eventHook('legend:history'))
 
     // Add confidence buttons
     this.confButtons = confidenceIntervals.map((c, idx) => {
       let confButton = legendCIButtons.append('span')
-          .attr('class', 'ci-button')
+          .attr('class', 'toggle-button')
           .style('cursor', 'pointer')
           .text(c)
 
       confButton
         .on('click', function () {
-          legendCIButtons.selectAll('.ci-button')
+          legendCIButtons.selectAll('.toggle-button')
             .classed('selected', false)
           d3.select(this).classed('selected', true)
 
@@ -189,6 +202,40 @@ class LegendDrawer {
           }, 'left')
         })
       return confButton
+    })
+
+    let that = this
+
+    // Show / hide all
+    this.showHideButtons = ['all', 'none'].map((c, idx) => {
+      let showHideButton = legendShowHideButtons.append('span')
+          .attr('class', 'toggle-button')
+          .style('cursor', 'pointer')
+          .text(c)
+
+      showHideButton
+        .on('click', function () {
+          // Toggle prediction entries
+          that.showHidePredItem(d3.select(this).text() === 'all')
+
+          // Set button active colors
+          legendShowHideButtons.selectAll('.toggle-button')
+            .classed('selected', false)
+          d3.select(this).classed('selected', true)
+        })
+        .on('mouseover', () => infoTooltip.show())
+        .on('mouseout', () => infoTooltip.hide())
+        .on('mousemove', () => {
+          infoTooltip.renderText({
+            title: 'Toggle visibility',
+            text: 'Show / hide all predictions'
+          })
+          infoTooltip.move({
+            x: d3.event.pageX,
+            y: d3.event.pageY
+          }, 'left')
+        })
+      return showHideButton
     })
 
     this.infoTooltip = infoTooltip
@@ -215,6 +262,7 @@ class LegendDrawer {
     }
   }
 
+  // Show / hide the "row items divs" while filtering with the search box
   showRows (visibilityStates) {
     this.rows.forEach((row, idx) => {
       if (visibilityStates[idx]) {
@@ -225,36 +273,37 @@ class LegendDrawer {
     })
   }
 
-  plot (predictions, predictionsShow, eventHook) {
-    let predictionContainer = this.drawerSelection.select('.legend-prediction-container')
+  resetShowHideButtons () {
+    this.showHideButtons.forEach(button => button.classed('selected', false))
+  }
 
+  // Show / hide all the items markers (not the legend div)
+  showHidePredItem (show) {
+    this.rows.forEach(predItem => {
+      if (predItem.select('i').classed('fa-circle') !== show) {
+        predItem.on('click')()
+      }
+    })
+  }
+
+  plot (predictions, predictionsShow, eventHook) {
     // Clear entries
+    let predictionContainer = this.drawerSelection.select('.legend-prediction-container')
     predictionContainer.selectAll('*').remove()
 
     // Meta data info tooltip
     let infoTooltip = this.infoTooltip
-
-    // TODO: Don't recreate this
-    let controlContainer = this.drawerSelection.select('.legend-control-container')
-    controlContainer.select('.search-input').remove()
-
-    // Add filter box
-    let filterDiv = controlContainer.append('div')
-        .attr('class', 'item')
-
     let that = this
-    filterDiv.append('input')
-      .attr('class', 'input is-small search-input')
-      .attr('type', 'text')
-      .attr('placeholder', 'Search models')
-      .on('keyup', function () {
-        // Do a full text search on key event
-        let searchBase = predictions.map(p => {
-          return `${p.id} ${p.meta.name} + ${p.meta.description}`.toLowerCase()
-        })
 
-        that.showRows(searchBase.map(sb => sb.includes(this.value.toLowerCase())))
+    // Bind search event
+    this.searchBox.keyup = null
+    this.searchBox.on('keyup', function () {
+      // Do a full text search on key event
+      let searchBase = predictions.map(p => {
+        return `${p.id} ${p.meta.name} + ${p.meta.description}`.toLowerCase()
       })
+      that.showRows(searchBase.map(sb => sb.includes(this.value.toLowerCase())))
+    })
 
     // Add prediction items
     this.rows = predictions.map(p => {
@@ -293,6 +342,8 @@ class LegendDrawer {
           predIcon.classed('fa-circle', !isActive)
           predIcon.classed('fa-circle-o', isActive)
 
+          // Reset show all/none buttons on any of these clicks
+          this.resetShowHideButtons()
           eventHook(p.id, isActive)
         })
 
@@ -520,7 +571,7 @@ export default class ControlPanel {
 
     // Buttons on the side of panel
     this.controlButtons = new ControlButtons(panelSelection, parent.infoTooltip, event => {
-      if (['btn:next', 'btn:prev'].includes(event)) {
+      if (['btn:next', 'btn:back'].includes(event)) {
         // Simple triggers, pass directly
         panelHook(event)
       } else {

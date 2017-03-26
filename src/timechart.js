@@ -156,7 +156,8 @@ export default class TimeChart {
     xScaleDate.domain(d3.extent(data.actual.map(d => {
       let year = Math.floor(d.week / 100)
       let week = d.week % 100
-      return mmwr.MMWRWeekToDate(year, week).toDate()
+      let mdate = new mmwr.MMWRDate(year, week)
+      return mdate.toMomentDate()
     })))
 
     this.xAxis.plot(this)
@@ -311,14 +312,15 @@ export default class TimeChart {
 
   /**
    * Move chart one step ahead
-   * TODO implement this for control panel
    */
   forward () {
+    this.update(Math.min(this.weekIdx + 1, this.actualIndices[this.actualIndices.length - 1]))
   }
 
   /**
    * Move chart one step back
    */
   backward () {
+    this.update(Math.max(this.weekIdx - 1, this.actualIndices[0]))
   }
 }
