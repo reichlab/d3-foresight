@@ -7,14 +7,11 @@ the development goes on.
 * Styles
 ** Work on the examples page for this
 ** Bulma inside
-** Font-awesome inside
+** TODO Font-awesome inside
+SCHEDULED: <2017-03-27 Mon>
 * Things to ask user for
-** Axes + baseline text
-This will go in the constructor i guess.
-- text
-- description
-- urls (if any)
-*** TODO Keep a sensible default and move the specific text in flusight :micro:
+** DONE Axes + baseline text
+CLOSED: [2017-03-27 Mon 04:21]
 ** Metadata about
 *** confidence intervals
 *** statistics
@@ -22,7 +19,8 @@ This needs a bit of metadata inside with headers to show
 *** [#A] model meta
 Probably this is okay because this is one for each series of predictions. Needs
 CI though.
-** X-scale
+** TODO X-scale
+SCHEDULED: <2017-03-27 Mon>
 *** A date axis
 *** A timepoint series
 *** timepoints mapping to datetime
@@ -51,7 +49,6 @@ Dict of key (identifier of history) and values (array like actual)
 Each element corresponding to the x-scale will be a list like
 - [{lag: <lagInDiscreteUnits>, value: }, ...]
 This can be done with plain list too. Keep in mind that the order is reversed.
-
 * Notes
 If a component needs to plot / update something which is not in its file, it
 will trigger a function in the parent (timechart.js) to let it pass the
