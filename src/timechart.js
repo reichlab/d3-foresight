@@ -9,24 +9,20 @@ export default class TimeChart {
   constructor (element, options = {}) {
     let defaultConfig = {
       baseline: {
-        text: ['CDC', 'Baseline'],
-        description: `Baseline ILI value as defined by CDC.
-                      <br><br><em>Click to know more</em>`,
-        url: 'http://www.cdc.gov/flu/weekly/overview.htm'
+        text: 'Baseline',
+        description: 'Baseline value',
+        url: '#'
       },
       axes: {
         x: {
-          title: ['Epidemic', 'Week'],
-          description: `Week of the calendar year, as measured by the CDC.
-                        <br><br><em>Click to know more</em>`,
-          url: 'https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf'
+          title: 'X',
+          description: 'X axis',
+          url: '#'
         },
         y: {
-          title: 'Weighted ILI (%)',
-          description: `Percentage of outpatient doctor visits for
-                        influenza-like illness, weighted by state population.
-                        <br><br><em>Click to know more</em>`,
-          url: 'http://www.cdc.gov/flu/weekly/overview.htm'
+          title: 'Y',
+          description: 'Y axis',
+          url: '#'
         }
       }
     }
