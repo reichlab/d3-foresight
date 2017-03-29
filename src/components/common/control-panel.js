@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import palette from '../styles/palette.json'
+import palette from '../../styles/palette.json'
 
 /**
  * Side buttons in control panel

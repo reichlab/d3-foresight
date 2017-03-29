@@ -1,9 +1,10 @@
 // Chart plotting functions
 
-import * as util from './utils'
-import * as mmwr from 'mmwr-week'
 import * as d3 from 'd3'
-import * as component from './components'
+import * as mmwr from 'mmwr-week'
+import * as utils from './utilities'
+import * as commonComponents from './components/common'
+import * as timeChartComponents from './components/time-chart'
 
 export default class TimeChart {
   constructor (element, options = {}) {
@@ -69,8 +70,8 @@ export default class TimeChart {
         .attr('transform', `translate(${margin.left},${margin.top})`)
 
     // Add tooltips
-    this.chartTooltip = new component.ChartTooltip(elementSelection)
-    this.infoTooltip = new component.InfoTooltip(elementSelection)
+    this.chartTooltip = new commonComponents.ChartTooltip(elementSelection)
+    this.infoTooltip = new commonComponents.InfoTooltip(elementSelection)
 
     // Save variables
     this.elementSelection = elementSelection
@@ -86,16 +87,16 @@ export default class TimeChart {
     this.eventHooks = []
 
     // Axes markers
-    this.yAxis = new component.YAxis(this)
-    this.xAxis = new component.XAxis(this)
+    this.yAxis = new commonComponents.YAxis(this)
+    this.xAxis = new commonComponents.XAxisDate(this)
 
-    this.timerect = new component.TimeRect(this)
-    this.overlay = new component.Overlay(this)
+    this.timerect = new timeChartComponents.TimeRect(this)
+    this.overlay = new timeChartComponents.Overlay(this)
 
-    this.history = new component.HistoricalLines(this)
-    this.baseline = new component.Baseline(this)
-    this.actual = new component.Actual(this)
-    this.observed = new component.Observed(this)
+    this.history = new timeChartComponents.HistoricalLines(this)
+    this.baseline = new timeChartComponents.Baseline(this)
+    this.actual = new timeChartComponents.Actual(this)
+    this.observed = new timeChartComponents.Observed(this)
     this.predictions = []
 
     this.confidenceIntervals = ['90%', '50%']
@@ -106,7 +107,7 @@ export default class TimeChart {
     this.predictionsShow = {}
 
     // Control panel
-    this.controlPanel = new component.ControlPanel(this, (event, payload) => {
+    this.controlPanel = new commonComponents.ControlPanel(this, (event, payload) => {
       if (event === 'legend:history') {
         // On history toggle action
         // payload is `hide`
@@ -142,7 +143,7 @@ export default class TimeChart {
 
     // Update domains
     // TODO will need a fix when the structure changes
-    yScale.domain([0, Math.min(13, util.getYMax(data))])
+    yScale.domain([0, Math.min(13, utils.getYMax(data))])
     _xScale.domain([0, timePoints.length - 1])
 
     // TODO rely on the values being null
@@ -273,7 +274,7 @@ export default class TimeChart {
       let markerIndex = this.predictions.map(p => p.id).indexOf(m.id)
       if (markerIndex === -1) {
         let onsetYPos = (idx + 1) * onsetDiff + this.height + 1
-        predMarker = new component.Prediction(
+        predMarker = new timeChartComponents.Prediction(
           this,
           m.id,
           m.meta,

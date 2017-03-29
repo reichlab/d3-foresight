@@ -1,6 +1,9 @@
 import * as d3 from 'd3'
 import textures from 'textures'
 
+/**
+ * Simple linear Y axis with informative label
+ */
 export class YAxis {
   constructor (parent) {
     let height = parent.height
@@ -41,7 +44,77 @@ export class YAxis {
   }
 }
 
+/**
+ * Simple linear X axis with informative label
+ */
 export class XAxis {
+  constructor (parent) {
+    let svg = parent.svg
+    let height = parent.height
+    let width = parent.width
+    let config = parent.config
+    let infoTooltip = parent.infoTooltip
+
+    // Main axis with ticks below the onset panel
+    svg.append('g')
+      .attr('class', 'axis axis-x')
+      .attr('transform', `translate(0,${height})`)
+
+    let axisGroup = svg.append('g')
+        .attr('class', 'axis axis-x-date')
+        .attr('transform', `translate(0,${height + 25})`)
+
+    let xText = axisGroup
+        .append('text')
+        .attr('class', 'title')
+        .attr('text-anchor', 'start')
+        .attr('transform', `translate(${width + 10},-15)`)
+
+    // Setup multiline text
+    let xTitle = config.axes.x.title
+    if (Array.isArray(xTitle)) {
+      xText.append('tspan')
+        .text(xTitle[0])
+        .attr('x', 0)
+      xTitle.slice(1).forEach(txt => {
+        xText.append('tspan')
+          .text(txt)
+          .attr('x', 0)
+          .attr('dy', '1em')
+      })
+    } else {
+      xText.append('tspan')
+        .text(xTitle)
+        .attr('x', 0)
+    }
+
+    xText.style('cursor', 'pointer')
+      .on('mouseover', () => infoTooltip.show())
+      .on('mouseout', () => infoTooltip.hide())
+      .on('mousemove', () => {
+        infoTooltip.renderText({
+          title: null,
+          text: config.axes.x.description
+        })
+        infoTooltip.move({
+          x: d3.event.pageX,
+          y: d3.event.pageY
+        }, 'left')
+      })
+      .on('click', () => {
+        window.open(config.axes.x.url, '_blank')
+      })
+  }
+
+  plot (parent) {
+    //
+  }
+}
+
+/**
+ * X axis with week numbers, time and onset panel
+ */
+export class XAxisDate {
   constructor (parent) {
     let svg = parent.svg
     let width = parent.width

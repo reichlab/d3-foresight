@@ -1,8 +1,3 @@
-// Utility functions for timechart family
-// --------------------------------------
-
-import tinycolor from 'tinycolor2'
-
 /**
  * Return maximum value to be displayed (y axis) in the given subset
  */
@@ -45,13 +40,4 @@ export const getNextWeeks = (currentWeek, weeks) => {
     if (current < weeks.length) nextWeeks.push(weeks[current])
   }
   return nextWeeks
-}
-
-/**
- * Return rgba for hex
- */
-export const hexToRgba = (hex, alpha) => {
-  let color = tinycolor(hex)
-  color.setAlpha(alpha)
-  return color.toRgbString()
 }

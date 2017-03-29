@@ -61,3 +61,8 @@ For example, right now, this applies to events from legend panel while
 * Other tasks
 ** TODO Plot for showing probability distribution
 - Might have to make the control-panel survive outside the timeChart
+- Needs
+  - list of models with
+    - x values (131 or 33 numbers)
+    - y values (probabilities for each x)
+  - actual value, if present
