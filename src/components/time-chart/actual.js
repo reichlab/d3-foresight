@@ -14,23 +14,28 @@ export default class Actual {
     this.group = group
   }
 
-  plot (parent, data) {
+  plot (parent, timePoints, actualData) {
     let line = d3.line()
-        .x(d => parent.xScale(d.week % 100))
-        .y(d => parent.yScale(d.data))
+        .x(d => parent.xScale(d.x))
+        .y(d => parent.yScale(d.y))
 
     // Save data for queries
-    this.data = data
+    this.data = timePoints.map((tp, idx) => {
+      return {
+        x: tp.week,
+        y: actualData[idx]
+      }
+    })
 
     this.group.select('.line-actual')
-      .datum(this.data.filter(d => d.data))
+      .datum(this.data.filter(d => d.y))
       .transition()
       .duration(200)
       .attr('d', line)
 
-    // Only plot non -1
+    // Only plot non nulls
     let circles = this.group.selectAll('.point-actual')
-        .data(this.data.filter(d => d.data))
+        .data(this.data.filter(d => d.y))
 
     circles.exit().remove()
 
@@ -39,12 +44,12 @@ export default class Actual {
       .attr('class', 'point-actual')
       .transition(200)
       .ease(d3.easeQuadOut)
-      .attr('cx', d => parent.xScale(d.week % 100))
-      .attr('cy', d => parent.yScale(d.data))
+      .attr('cx', d => parent.xScale(d.x))
+      .attr('cy', d => parent.yScale(d.y))
       .attr('r', 2)
   }
 
   query (idx) {
-    return this.data[idx].data
+    return this.data[idx].y
   }
 }

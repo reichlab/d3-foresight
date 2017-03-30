@@ -5,16 +5,13 @@ import * as mmwr from 'mmwr-week'
  * Get index to start the plot at
  */
 export const getFirstPlottingIndex = (data, isLiveSeason) => {
-  let timePoints = data.actual.map(d => d.week % 100)
-  let actualIndices = data.actual.filter(d => d.data)
-      .map(d => timePoints.indexOf(d.week % 100))
-
+  let timePointsWeek = data.timePoints.map(tp => tp.week)
   if (isLiveSeason) {
     // Start at the latest prediction
     return Math.max(...data.models.map(m => {
       if (m.predictions.length === 0) return 0
       else {
-        return timePoints
+        return timePointsWeek
           .indexOf(m.predictions[m.predictions.length - 1].week % 100)
       }
     }))
@@ -24,13 +21,13 @@ export const getFirstPlottingIndex = (data, isLiveSeason) => {
         .map(m => {
           if (m.predictions.length === 0) return -1
           else {
-            return timePoints.indexOf(m.predictions[0].week % 100)
+            return timePointsWeek.indexOf(m.predictions[0].week % 100)
           }
         }).filter(d => d !== -1)
 
     if (modelPredictions.length === 0) {
       // Start at the most recent actual data
-      return actualIndices[actualIndices.length - 1]
+      return data.actualIndices[data.actualIndices.length - 1]
     } else {
       return Math.min(...modelPredictions)
     }
@@ -43,46 +40,45 @@ export const getFirstPlottingIndex = (data, isLiveSeason) => {
  */
 export const getPredictionStartingPoints = data => {
   return data.observed.map(d => {
-    let dataToReturn = -1
     // Handle zero length values
-    if (d.data.length !== 0) {
-      dataToReturn = d.data.filter(ld => ld.lag === 0)[0].value
-    }
-    return {
-      week: d.week,
-      data: dataToReturn
+    if (d.length !== 0) {
+      return d.filter(ld => ld.lag === 0)[0].value
+    } else {
+      return null
     }
   })
 }
 
 export const getXDateDomain = (data, pointType) => {
-  return d3.extent(data.actual.map(d => {
-    let year = Math.floor(d.week / 100)
-    let week = d.week % 100
+  return d3.extent(data.timePoints.map(d => {
     if (pointType === 'mmwr-week') {
-      return (new mmwr.MMWRDate(year, week)).toMomentDate()
+      return (new mmwr.MMWRDate(d.year, d.week)).toMomentDate()
     } else if (pointType === 'regular-week') {
-      return d3.timeParse('%Y-%W')(year + '-' + week)
+      return d3.timeParse('%Y-%W')(d.year + '-' + d.week)
     } else {
       return null
     }
   }))
 }
 
-export const getXPointDomain = data => {
-  return data.actual.map(d => d.week % 100)
+export const getXPointDomain = (data, pointType) => {
+  if (pointType.endsWith('-week')) {
+    return data.timePoints.map(d => d.week)
+  } else {
+    return null
+  }
 }
 
 export const getYDomain = data => {
   // Max from actual data
-  let maxValues = [Math.max(...data.actual.map(d => d.data))]
+  let maxValues = [Math.max(...data.actual.filter(d => d))]
   // Max from observed data
   maxValues.push(Math.max(...data.observed.map(d => {
-    return Math.max(...d.data.map(dl => dl.value))
+    return Math.max(...d.map(dl => dl.value))
   })))
   // Max from historical data
   data.history.forEach(h => {
-    maxValues.push(Math.max(...h.actual.map(d => d.data)))
+    maxValues.push(Math.max(...h.actual))
   })
   // Max from all the models
   data.models.map(mdl => {

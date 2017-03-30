@@ -60,8 +60,8 @@ export default class Baseline {
     this.group = group
   }
 
-  plot (parent, data) {
-    if (data) this.show()
+  plot (parent, baselineData) {
+    if (baselineData) this.show()
     else {
       this.hide()
       return
@@ -70,13 +70,13 @@ export default class Baseline {
     this.group.select('.baseline')
       .transition()
       .duration(300)
-      .attr('y1', parent.yScale(data))
-      .attr('y2', parent.yScale(data))
+      .attr('y1', parent.yScale(baselineData))
+      .attr('y2', parent.yScale(baselineData))
 
     this.group.select('.title')
       .transition()
       .duration(300)
-      .attr('dy', parent.yScale(data))
+      .attr('dy', parent.yScale(baselineData))
   }
 
   // Hide baseline

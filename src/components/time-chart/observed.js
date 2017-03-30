@@ -14,19 +14,12 @@ export default class Observed {
     this.group = group
   }
 
-  plot (parent, data) {
+  plot (parent, timePoints, observedData) {
     // Save data for queries and updates
-    this.data = data
+    this.timePoints = timePoints
+    this.observedData = observedData
     this.xScale = parent.xScale
     this.yScale = parent.yScale
-  }
-
-  query (idx) {
-    try {
-      return this.filteredData[idx].data
-    } catch (e) {
-      return false
-    }
   }
 
   update (idx) {
@@ -34,8 +27,8 @@ export default class Observed {
 
     for (let i = 0; i <= idx; i++) {
       filteredData.push({
-        week: this.data[idx - i].week,
-        data: this.data[idx - i].data.filter(d => d.lag === i)[0].value
+        x: this.timePoints[idx - i].week,
+        y: this.observedData[idx - i].filter(d => d.lag === i)[0].value
       })
     }
 
@@ -50,13 +43,13 @@ export default class Observed {
       .transition()
       .duration(200)
       .ease(d3.easeQuadOut)
-      .attr('cx', d => this.xScale(d.week % 100))
-      .attr('cy', d => this.yScale(d.data))
+      .attr('cx', d => this.xScale(d.x))
+      .attr('cy', d => this.yScale(d.y))
       .attr('r', 2)
 
     let line = d3.line()
-        .x(d => this.xScale(d.week % 100))
-        .y(d => this.yScale(d.data))
+        .x(d => this.xScale(d.x))
+        .y(d => this.yScale(d.y))
 
     this.group.select('.line-observed')
       .datum(filteredData)
@@ -66,5 +59,13 @@ export default class Observed {
 
     filteredData.reverse()
     this.filteredData = filteredData
+  }
+
+  query (idx) {
+    try {
+      return this.filteredData[idx].y
+    } catch (e) {
+      return false
+    }
   }
 }

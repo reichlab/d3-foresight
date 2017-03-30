@@ -11,16 +11,16 @@ export default class TimeRect {
       .attr('class', 'timerect')
   }
 
-  plot (parent, data) {
+  plot (parent, timePoints) {
     // Save local data
-    this.data = data
-    this.scale = parent.xScale
+    this.timePoints = timePoints
+    this.xScale = parent.xScale
   }
 
   update (idx) {
     this.rect
       .transition()
       .duration(200)
-      .attr('width', this.scale(this.data[idx].week % 100))
+      .attr('width', this.xScale(this.timePoints[idx].week))
   }
 }

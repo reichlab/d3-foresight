@@ -70,7 +70,7 @@ export default class Overlay {
           .attr('x2', snappedX)
 
         timeChartTooltip.renderValues(parent.observed, parent.actual,
-                                  parent.predictions, index)
+                                      parent.predictions, index)
         timeChartTooltip.move({
           x: d3.event.pageX,
           y: d3.event.pageY

@@ -10,27 +10,35 @@ export default class HistoricalLines {
     this.timeChartTooltip = parent.timeChartTooltip
   }
 
-  plot (parent, data) {
+  plot (parent, timePoints, historicalData) {
     this.clear()
     let timeChartTooltip = this.timeChartTooltip
 
     let line = d3.line()
-        .x(d => parent.xScale(d.week % 100))
-        .y(d => parent.yScale(d.data))
+        .x(d => parent.xScale(d.x))
+        .y(d => parent.yScale(d.y))
 
-    data.map(d => {
+    let plottingData
+    historicalData.map(hd => {
+      plottingData = timePoints.map((tp, idx) => {
+        return {
+          x: tp.week,
+          y: hd.actual[idx]
+        }
+      })
+
       let path = this.group.append('path')
           .attr('class', 'line-history')
-          .attr('id', d.id + '-history')
+          .attr('id', hd.id + '-history')
 
-      path.datum(d.actual)
+      path.datum(plottingData)
         .transition()
         .duration(200)
         .attr('d', line)
 
       path.on('mouseover', function () {
         d3.select('.line-history.highlight')
-          .datum(d.actual)
+          .datum(plottingData)
           .attr('d', line)
         timeChartTooltip.show()
       }).on('mouseout', function () {
@@ -39,7 +47,7 @@ export default class HistoricalLines {
           .attr('d', line)
         timeChartTooltip.hide()
       }).on('mousemove', () => {
-        timeChartTooltip.renderText(d.id)
+        timeChartTooltip.renderText(hd.id)
         timeChartTooltip.move({
           x: d3.event.pageX,
           y: d3.event.pageY

@@ -70,38 +70,36 @@ export default class TimeChart extends Chart {
     let xScalePoint = this.xScalePoint
     let yScale = this.yScale
 
-    // Assuming actual data has all the weeks
-    // TODO This could be taken from the non-actual data
-    // Also, the name should be changed
-    let timePoints = data.actual.map(d => d.week % 100)
-    let actualIndices = data.actual.filter(d => d.data)
-        .map(d => timePoints.indexOf(d.week % 100))
+    this.timePoints = data.timePoints
+    this.actualIndices = data.actual.map((d, idx) => {
+      return (d ? idx : null)
+    }).filter(d => d !== null)
 
     // Update domains
-    // TODO will need a fix when the structure changes
     yScale.domain(utils.getYDomain(data))
-    _xScale.domain([0, timePoints.length - 1])
+    _xScale.domain([0, this.timePoints.length - 1])
 
     // Setup a discrete scale for ticks
-    xScalePoint.domain(utils.getXPointDomain(data))
+    xScalePoint.domain(utils.getXPointDomain(data, this.config.pointType))
     xScaleDate.domain(utils.getXDateDomain(data, this.config.pointType))
 
     // Wrapper around _xscale to handle edge cases
+    // TODO Make this agnostic of timepoint type
     this.xScale = d => {
       let dInt = Math.floor(d)
       let dFloat = d % 1
       // [0, 1) point fix without changing the scale
-      if (dInt === 0) dInt = Math.max(...timePoints)
+      if (dInt === 0) dInt = Math.max(...this.timePoints)
       if (dInt === 53) dInt = 1
       if (dInt === 29) dFloat = 0
-      return _xScale(timePoints.indexOf(dInt) + dFloat)
+      return _xScale(this.timePoints.map(tp => tp.week).indexOf(dInt) + dFloat)
     }
 
     this.xAxis.plot(this)
     this.yAxis.plot(this)
 
     // Check if it is live data
-    let showNowLine = actualIndices.length < timePoints.length
+    let showNowLine = this.actualIndices.length < this.timePoints.length
     this.currentIdx = utils.getFirstPlottingIndex(data, showNowLine)
     this.overlay.plot(this, showNowLine)
 
@@ -110,17 +108,14 @@ export default class TimeChart extends Chart {
       value: this.currentIdx
     })
 
-    this.timePoints = timePoints
-    this.actualIndices = actualIndices
-
     // Update markers with data
-    this.timerect.plot(this, data.actual)
+    this.timerect.plot(this, this.timePoints)
     this.baseline.plot(this, data.baseline)
-    this.actual.plot(this, data.actual)
-    this.observed.plot(this, data.observed)
+    this.actual.plot(this, this.timePoints, data.actual)
+    this.observed.plot(this, this.timePoints, data.observed)
 
     // Reset history lines
-    this.history.plot(this, data.history)
+    this.history.plot(this, this.timePoints, data.history)
 
     // Get meta data and statistics
     this.modelStats = data.models.map(m => m.stats)

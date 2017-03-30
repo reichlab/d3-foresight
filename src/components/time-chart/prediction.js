@@ -121,23 +121,23 @@ export default class Prediction {
     this.noData = true
   }
 
-  plot (parent, data, actual) {
-    this.data = data
-    this.actual = actual
+  plot (parent, modelData, startingPointsData) {
+    this.modelData = modelData
+    this.startingPointsData = startingPointsData
     this.xScale = parent.xScale
     this.yScale = parent.yScale
-    this.timePoints = parent.timePoints
+    this.timePointsWeek = parent.timePoints.map(tp => tp.week)
     this.timeChartTooltip = parent.timeChartTooltip
-    this.displayedData = Array(this.timePoints.length).fill(false)
+    this.displayedData = Array(this.timePointsWeek.length).fill(false)
   }
 
   update (idx) {
     let color = this.color
     let colorHover = hexToRgba(color, 0.3)
     let id = this.id
-    let timePoint = this.timePoints[idx]
+    let timePointWeek = this.timePointsWeek[idx]
 
-    let currentPosition = this.data.map(d => d.week % 100).indexOf(timePoint)
+    let currentPosition = this.modelData.map(d => d.week % 100).indexOf(timePointWeek)
 
     if (currentPosition === -1) {
       // There is no data for current point, hide the markers without
@@ -155,7 +155,7 @@ export default class Prediction {
       let timeChartTooltip = this.timeChartTooltip
 
       // Move things
-      let onset = this.data[currentPosition].onsetWeek
+      let onset = this.modelData[currentPosition].onsetWeek
 
       this.onsetGroup.select('.onset-mark')
         .transition()
@@ -208,8 +208,8 @@ export default class Prediction {
         .attr('x1', this.xScale(onset.high[cid]))
         .attr('x2', this.xScale(onset.high[cid]))
 
-      let pw = this.data[currentPosition].peakWeek
-      let pp = this.data[currentPosition].peakPercent
+      let pw = this.modelData[currentPosition].peakWeek
+      let pp = this.modelData[currentPosition].peakPercent
 
       let leftW = this.xScale(pw.point)
       let leftP = this.yScale(pp.point)
@@ -301,9 +301,9 @@ export default class Prediction {
         .attr('y2', this.yScale(pp.high[cid]))
 
       // Move main pointers
-      let predData = this.data[currentPosition]
+      let predData = this.modelData[currentPosition]
       let startTimePoint = predData.week
-      let startData = this.actual.filter(d => d.week === startTimePoint)[0].data
+      let startData = this.startingPointsData[currentPosition]
 
       // Actual point/area to be shown
       let nextTimeData = [{
@@ -315,7 +315,7 @@ export default class Prediction {
 
       let names = ['oneWk', 'twoWk', 'threeWk', 'fourWk']
       // TODO Here be weeks
-      let nextTimePoints = utils.getNextWeeks(startTimePoint, this.timePoints)
+      let nextTimePoints = utils.getNextWeeks(startTimePoint, this.timePointsWeek)
 
       nextTimePoints.forEach((item, index) => {
         nextTimeData.push({
@@ -327,9 +327,9 @@ export default class Prediction {
       })
 
       // Save indexed data for query
-      this.displayedData = Array(this.timePoints.length).fill(false)
+      this.displayedData = Array(this.timePointsWeek.length).fill(false)
       nextTimeData.forEach((d, index) => {
-        if (index > 0) this.displayedData[this.timePoints.indexOf(d.week)] = d.data
+        if (index > 0) this.displayedData[this.timePointsWeek.indexOf(d.week)] = d.data
       })
 
       let circles = this.predictionGroup.selectAll('.point-prediction')
