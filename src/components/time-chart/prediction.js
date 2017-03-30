@@ -1,11 +1,5 @@
-import tinycolor from 'tinycolor2'
 import * as d3 from 'd3'
 import * as utils from '../../utilities/time-chart'
-
-/**
- * Return rgba for hex
- */
-const hexToRgba = (hex, alpha) => tinycolor(hex).setAlpha(alpha).toRgbString()
 
 /**
  * Prediction marker with following components
@@ -16,8 +10,8 @@ const hexToRgba = (hex, alpha) => tinycolor(hex).setAlpha(alpha).toRgbString()
  */
 export default class Prediction {
   constructor (parent, id, meta, color, onsetY) {
-    let colorPoint = hexToRgba(color, 0.8)
-    let colorRange = hexToRgba(color, 0.6)
+    let colorPoint = utils.hexToRgba(color, 0.8)
+    let colorRange = utils.hexToRgba(color, 0.6)
 
     // Prediction group
     let predictionGroup = parent.svg.append('g')
@@ -126,14 +120,16 @@ export default class Prediction {
     this.startingPointsData = startingPointsData
     this.xScale = parent.xScale
     this.yScale = parent.yScale
+    this.ticks = parent.ticks
     this.timeChartTooltip = parent.timeChartTooltip
     this.displayedData = Array(this.modelData.length).fill(false)
   }
 
   update (idx) {
     let color = this.color
-    let colorHover = hexToRgba(color, 0.3)
+    let colorHover = utils.hexToRgba(color, 0.3)
     let id = this.id
+    let ticks = this.ticks
 
     if (this.modelData[idx] === null) {
       // There is no data for current point, hide the markers without
@@ -168,7 +164,7 @@ export default class Prediction {
           timeChartTooltip.renderPoint(id, [
             {
               key: 'Season Onset',
-              value: onset.point
+              value: ticks[onset.point]
             }
           ], color)
         })
@@ -229,7 +225,7 @@ export default class Prediction {
             },
             {
               key: 'Peak Week',
-              value: pw.point
+              value: ticks[pw.point]
             }
           ], color)
         })

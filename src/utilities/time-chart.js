@@ -1,3 +1,4 @@
+import tinycolor from 'tinycolor2'
 import * as d3 from 'd3'
 import * as mmwr from 'mmwr-week'
 
@@ -97,3 +98,8 @@ export const getNextIndices = (currentIndex, limit) => {
   }
   return nextIndices
 }
+
+/**
+ * Return rgba for hex
+ */
+export const hexToRgba = (hex, alpha) => tinycolor(hex).setAlpha(alpha).toRgbString()
