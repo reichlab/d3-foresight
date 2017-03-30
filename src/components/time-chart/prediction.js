@@ -1,6 +1,6 @@
 import tinycolor from 'tinycolor2'
 import * as d3 from 'd3'
-import * as utils from '../../utilities'
+import * as utils from '../../utilities/time-chart'
 
 /**
  * Return rgba for hex

@@ -1,8 +1,5 @@
-// Chart plotting functions
-
 import * as d3 from 'd3'
-import * as mmwr from 'mmwr-week'
-import * as utils from './utilities'
+import * as utils from './utilities/time-chart'
 import * as commonComponents from './components/common'
 import * as timeChartComponents from './components/time-chart'
 
@@ -86,13 +83,11 @@ export default class TimeChart {
     this.onsetHeight = onsetHeight
     this.eventHooks = []
 
-    // Axes markers
     this.yAxis = new commonComponents.YAxis(this)
     this.xAxis = new commonComponents.XAxisDate(this)
 
     this.timerect = new timeChartComponents.TimeRect(this)
     this.overlay = new timeChartComponents.Overlay(this)
-
     this.history = new timeChartComponents.HistoricalLines(this)
     this.baseline = new timeChartComponents.Baseline(this)
     this.actual = new timeChartComponents.Actual(this)
@@ -105,7 +100,6 @@ export default class TimeChart {
     // Control panel
     this.controlPanel = new commonComponents.ControlPanel(this, (event, payload) => {
       if (event === 'legend:history') {
-        // On history toggle action
         this.history.hidden = !this.history.hidden
       } else if (event === 'legend:ci') {
         // On ci change events
@@ -133,19 +127,19 @@ export default class TimeChart {
     // TODO This could be taken from the non-actual data
     // Also, the name should be changed
     let timePoints = data.actual.map(d => d.week % 100)
-
-    // Update domains
-    // TODO will need a fix when the structure changes
-    yScale.domain([0, Math.min(13, utils.getYMax(data))])
-    _xScale.domain([0, timePoints.length - 1])
-
     // TODO rely on the values being null
     let actualIndices = data.actual
         .filter(d => d.data !== -1)
         .map(d => timePoints.indexOf(d.week % 100))
 
+    // Update domains
+    // TODO will need a fix when the structure changes
+    yScale.domain(utils.getYDomain(data))
+    _xScale.domain([0, timePoints.length - 1])
+
     // Setup a discrete scale for ticks
-    xScalePoint.domain(timePoints)
+    xScalePoint.domain(utils.getXPointDomain(data))
+    xScaleDate.domain(utils.getXDateDomain(data))
 
     // Wrapper around _xscale to handle edge cases
     this.xScale = d => {
@@ -158,52 +152,12 @@ export default class TimeChart {
       return _xScale(timePoints.indexOf(dInt) + dFloat)
     }
 
-    // Week to date parser
-    // TODO this will also work without actual
-    xScaleDate.domain(d3.extent(data.actual.map(d => {
-      let year = Math.floor(d.week / 100)
-      let week = d.week % 100
-      let mdate = new mmwr.MMWRDate(year, week)
-      return mdate.toMomentDate()
-    })))
-
     this.xAxis.plot(this)
     this.yAxis.plot(this)
 
-    // TODO Simplify this
-    let showNowLine = false
-    // Use actualIndices as indicator of whether the season is current
-    if (actualIndices.length < timePoints.length) {
-      // Start at the latest prediction
-      // TODO move this in utils
-      this.currentIdx = Math
-        .max(...data.models
-             .map(m => {
-               if (m.predictions.length === 0) return 0
-               else {
-                 return timePoints
-                   .indexOf(m.predictions[m.predictions.length - 1].week % 100)
-               }
-             }))
-      showNowLine = true
-    } else {
-      // Start at the oldest prediction
-      let modelPredictions = data.models
-          .map(m => {
-            if (m.predictions.length === 0) return -1
-            else {
-              return timePoints.indexOf(m.predictions[0].week % 100)
-            }
-          }).filter(d => d !== -1)
-
-      if (modelPredictions.length === 0) {
-        // Start at the most recent actual data
-        this.currentIdx = actualIndices[actualIndices.length - 1]
-      } else {
-        this.currentIdx = Math.min(...modelPredictions)
-      }
-    }
-
+    // Check if it is live data
+    let showNowLine = actualIndices.length < timePoints.length
+    this.currentIdx = utils.getFirstPlottingIndex(data, showNowLine)
     this.overlay.plot(this, showNowLine)
 
     this.handleHook({
@@ -226,31 +180,17 @@ export default class TimeChart {
     // Get meta data and statistics
     this.modelStats = data.models.map(m => m.stats)
 
-    // Setup colors
     let totalModels = data.models.length
     let onsetDiff = (this.onsetHeight - 2) / (totalModels + 1)
 
+    // Setup colors
     if (totalModels > 10) {
       this.colors = d3.schemeCategory20
     } else {
       this.colors = d3.schemeCategory10
     }
 
-    // Collect values with zero lags
-    // This is used as the first point of the prediction curves
-    let zeroLagData = data.observed.map(d => {
-      let dataToReturn = -1
-      // Handle zero length values
-      if (d.data.length !== 0) {
-        dataToReturn = d.data.filter(ld => ld.lag === 0)[0].value
-      }
-      return {
-        week: d.week,
-        data: dataToReturn
-      }
-    })
-
-    // Filter markers not needed
+    // Clear markers not needed
     let currentPredictionIds = data.models.map(m => m.id)
     this.predictions = this.predictions.filter(p => {
       if (currentPredictionIds.indexOf(p.id) === -1) {
@@ -261,6 +201,8 @@ export default class TimeChart {
       }
     })
 
+    // Generate markers for predictions if not already there
+    // Assume unique model ids
     data.models.forEach((m, idx) => {
       let predMarker
       let markerIndex = this.predictions.map(p => p.id).indexOf(m.id)
@@ -278,10 +220,14 @@ export default class TimeChart {
       } else {
         predMarker = this.predictions[markerIndex]
       }
-      predMarker.plot(this, m.predictions, zeroLagData)
+      predMarker.plot(
+        this,
+        m.predictions,
+        utils.getPredictionStartingPoints(data)
+      )
     })
 
-    // Update submission entries shown in control panel
+    // Update models shown in control panel
     this.controlPanel.plot(this, (predictionId, hidePrediction) => {
       let predMarker = this.predictions[this.predictions.map(p => p.id).indexOf(predictionId)]
       predMarker.hidden = hidePrediction
