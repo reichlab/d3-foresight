@@ -5,11 +5,7 @@ import * as utils from '../../utilities/time-chart'
 /**
  * Return rgba for hex
  */
-const hexToRgba = (hex, alpha) => {
-  let color = tinycolor(hex)
-  color.setAlpha(alpha)
-  return color.toRgbString()
-}
+const hexToRgba = (hex, alpha) => tinycolor(hex).setAlpha(alpha).toRgbString()
 
 /**
  * Prediction marker with following components
@@ -20,6 +16,9 @@ const hexToRgba = (hex, alpha) => {
  */
 export default class Prediction {
   constructor (parent, id, meta, color, onsetY) {
+    let colorPoint = hexToRgba(color, 0.8)
+    let colorRange = hexToRgba(color, 0.6)
+
     // Prediction group
     let predictionGroup = parent.svg.append('g')
         .attr('class', 'prediction-group')
@@ -52,26 +51,26 @@ export default class Prediction {
       .attr('y1', onsetY)
       .attr('y2', onsetY)
       .attr('class', 'range onset-range')
-      .style('stroke', hexToRgba(color, 0.6))
+      .style('stroke', colorRange)
 
     onsetGroup.append('line')
       .attr('y1', onsetY - stp / 2)
       .attr('y2', onsetY + stp / 2)
       .attr('class', 'stopper onset-stopper onset-low')
-      .style('stroke', hexToRgba(color, 0.6))
+      .style('stroke', colorRange)
 
     onsetGroup.append('line')
       .attr('y1', onsetY - stp / 2)
       .attr('y2', onsetY + stp / 2)
       .attr('class', 'stopper onset-stopper onset-high')
-      .style('stroke', hexToRgba(color, 0.6))
+      .style('stroke', colorRange)
 
     onsetGroup.append('circle')
       .attr('r', 3)
       .attr('cy', onsetY)
       .attr('class', 'onset-mark')
       .style('stroke', 'transparent')
-      .style('fill', hexToRgba(color, 0.8))
+      .style('fill', colorPoint)
 
     this.onsetGroup = onsetGroup
 
@@ -82,33 +81,33 @@ export default class Prediction {
 
     peakGroup.append('line')
       .attr('class', 'range peak-range peak-range-x')
-      .style('stroke', hexToRgba(color, 0.6))
+      .style('stroke', colorRange)
 
     peakGroup.append('line')
       .attr('class', 'range peak-range peak-range-y')
-      .style('stroke', hexToRgba(color, 0.6))
+      .style('stroke', colorRange)
 
     peakGroup.append('line')
       .attr('class', 'stopper peak-stopper peak-low-x')
-      .style('stroke', hexToRgba(color, 0.6))
+      .style('stroke', colorRange)
 
     peakGroup.append('line')
       .attr('class', 'stopper peak-stopper peak-high-x')
-      .style('stroke', hexToRgba(color, 0.6))
+      .style('stroke', colorRange)
 
     peakGroup.append('line')
       .attr('class', 'stopper peak-stopper peak-low-y')
-      .style('stroke', hexToRgba(color, 0.6))
+      .style('stroke', colorRange)
 
     peakGroup.append('line')
       .attr('class', 'stopper peak-stopper peak-high-y')
-      .style('stroke', hexToRgba(color, 0.6))
+      .style('stroke', colorRange)
 
     peakGroup.append('circle')
       .attr('r', 5)
       .attr('class', 'peak-mark')
       .style('stroke', 'transparent')
-      .style('fill', hexToRgba(color, 0.8))
+      .style('fill', colorPoint)
 
     this.peakGroup = peakGroup
 
@@ -134,6 +133,7 @@ export default class Prediction {
 
   update (idx) {
     let color = this.color
+    let colorHover = hexToRgba(color, 0.3)
     let id = this.id
     let timePoint = this.timePoints[idx]
 
@@ -167,7 +167,7 @@ export default class Prediction {
           d3.select(this)
             .transition()
             .duration(300)
-            .style('stroke', hexToRgba(color, 0.3))
+            .style('stroke', colorHover)
           timeChartTooltip.show()
           timeChartTooltip.renderPoint(id, [
             {
@@ -224,7 +224,7 @@ export default class Prediction {
           d3.select(this)
             .transition()
             .duration(300)
-            .style('stroke', hexToRgba(color, 0.3))
+            .style('stroke', colorHover)
           timeChartTooltip.show()
           timeChartTooltip.renderPoint(id, [
             {
