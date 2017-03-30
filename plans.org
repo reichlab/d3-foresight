@@ -7,7 +7,7 @@ the development goes on.
 * Styles
 ** Work on the examples page for this
 ** Bulma inside
-** TODO Font-awesome inside
+** Font-awesome inside
 SCHEDULED: <2017-03-27 Mon>
 * Things to ask user for
 ** DONE Axes + baseline text
@@ -68,5 +68,3 @@ For example, right now, this applies to events from legend panel while
   - actual value, if present
 ** Optimize bundle
 https://hackernoon.com/optimising-your-application-bundle-size-with-webpack-e85b00bab579
-** Fix x label
-** Fix index to week value in tooltip
