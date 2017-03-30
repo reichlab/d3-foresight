@@ -55,12 +55,17 @@ export const getPredictionStartingPoints = data => {
   })
 }
 
-export const getXDateDomain = data => {
+export const getXDateDomain = (data, pointType) => {
   return d3.extent(data.actual.map(d => {
     let year = Math.floor(d.week / 100)
     let week = d.week % 100
-    let mdate = new mmwr.MMWRDate(year, week)
-    return mdate.toMomentDate()
+    if (pointType === 'mmwr-week') {
+      return (new mmwr.MMWRDate(year, week)).toMomentDate()
+    } else if (pointType === 'regular-week') {
+      return d3.timeParse('%Y-%W')(year + '-' + week)
+    } else {
+      return null
+    }
   }))
 }
 

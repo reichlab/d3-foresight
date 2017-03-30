@@ -24,10 +24,10 @@ SCHEDULED: <2017-03-27 Mon>
 *** A date axis
 *** A timepoint series
 *** timepoints mapping to datetime
-** Actual
+** TODO Actual
 Array of pure values like:
 - [1.3, 3.4, null, null, null]
-** History
+** TODO History
 Dict of key (identifier of history) and values (array like actual)
 ** Models
 - for each model
@@ -66,5 +66,5 @@ For example, right now, this applies to events from legend panel while
     - x values (131 or 33 numbers)
     - y values (probabilities for each x)
   - actual value, if present
-** Create a super class for charts
-*** Take sizing information
+** Optimize bundle
+https://hackernoon.com/optimising-your-application-bundle-size-with-webpack-e85b00bab579

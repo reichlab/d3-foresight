@@ -11,7 +11,8 @@ export default class TimeChart extends Chart {
         text: 'Baseline',
         description: 'Baseline value',
         utl: '#'
-      }
+      },
+      pointType: 'regular-week'
     }
 
     let elementSelection = d3.select(element)
@@ -83,7 +84,7 @@ export default class TimeChart extends Chart {
 
     // Setup a discrete scale for ticks
     xScalePoint.domain(utils.getXPointDomain(data))
-    xScaleDate.domain(utils.getXDateDomain(data))
+    xScaleDate.domain(utils.getXDateDomain(data, this.config.pointType))
 
     // Wrapper around _xscale to handle edge cases
     this.xScale = d => {
