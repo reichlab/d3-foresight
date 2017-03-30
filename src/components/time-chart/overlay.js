@@ -6,7 +6,7 @@ export default class Overlay {
     let height = parent.height
     let onsetHeight = parent.onsetHeight
     let width = parent.width
-    let chartTooltip = parent.chartTooltip
+    let timeChartTooltip = parent.timeChartTooltip
     let _xScale = parent._xScale
     let chartHeight = height + onsetHeight
 
@@ -47,11 +47,11 @@ export default class Overlay {
       .attr('width', width)
       .on('mouseover', () => {
         line.style('display', null)
-        chartTooltip.show()
+        timeChartTooltip.show()
       })
       .on('mouseout', () => {
         line.style('display', 'none')
-        chartTooltip.hide()
+        timeChartTooltip.hide()
       })
 
     // Add mouse move and click events
@@ -69,9 +69,9 @@ export default class Overlay {
           .attr('x1', snappedX)
           .attr('x2', snappedX)
 
-        chartTooltip.renderValues(parent.observed, parent.actual,
+        timeChartTooltip.renderValues(parent.observed, parent.actual,
                                   parent.predictions, index)
-        chartTooltip.move({
+        timeChartTooltip.move({
           x: d3.event.pageX,
           y: d3.event.pageY
         })

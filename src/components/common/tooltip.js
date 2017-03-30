@@ -29,9 +29,9 @@ class Tooltip {
   }
 }
 
-export class ChartTooltip extends Tooltip {
+export class TimeChartTooltip extends Tooltip {
   constructor (rootSelector) {
-    super(rootSelector, 'd3-foresight-chart-tooltip')
+    super(rootSelector, 'd3-foresight-time-chart-tooltip')
   }
 
   renderText (data) {

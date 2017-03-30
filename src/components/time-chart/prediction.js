@@ -128,7 +128,7 @@ export default class Prediction {
     this.xScale = parent.xScale
     this.yScale = parent.yScale
     this.timePoints = parent.timePoints
-    this.chartTooltip = parent.chartTooltip
+    this.timeChartTooltip = parent.timeChartTooltip
     this.displayedData = Array(this.timePoints.length).fill(false)
   }
 
@@ -152,7 +152,7 @@ export default class Prediction {
       }
 
       let cid = this.cid
-      let chartTooltip = this.chartTooltip
+      let timeChartTooltip = this.timeChartTooltip
 
       // Move things
       let onset = this.data[currentPosition].onsetWeek
@@ -168,8 +168,8 @@ export default class Prediction {
             .transition()
             .duration(300)
             .style('stroke', hexToRgba(color, 0.3))
-          chartTooltip.show()
-          chartTooltip.renderPoint(id, [
+          timeChartTooltip.show()
+          timeChartTooltip.renderPoint(id, [
             {
               key: 'Season Onset',
               value: onset.point
@@ -181,10 +181,10 @@ export default class Prediction {
             .transition()
             .duration(200)
             .style('stroke', 'transparent')
-          chartTooltip.hide()
+          timeChartTooltip.hide()
         })
         .on('mousemove', function () {
-          chartTooltip.move({
+          timeChartTooltip.move({
             x: d3.event.pageX,
             y: d3.event.pageY
           })
@@ -225,8 +225,8 @@ export default class Prediction {
             .transition()
             .duration(300)
             .style('stroke', hexToRgba(color, 0.3))
-          chartTooltip.show()
-          chartTooltip.renderPoint(id, [
+          timeChartTooltip.show()
+          timeChartTooltip.renderPoint(id, [
             {
               key: 'Peak Percent',
               value: pp.point
@@ -242,10 +242,10 @@ export default class Prediction {
             .transition()
             .duration(200)
             .style('stroke', 'transparent')
-          chartTooltip.hide()
+          timeChartTooltip.hide()
         })
         .on('mousemove', function () {
-          chartTooltip.move({
+          timeChartTooltip.move({
             x: d3.event.pageX,
             y: d3.event.pageY
           })

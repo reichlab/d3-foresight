@@ -28,12 +28,12 @@
   }
 
   .text {
-    margin-top: 0;
     @include cell-padding;
+    margin-top: 0;
   }
 }
 
-.d3-foresight-chart-tooltip {
+.d3-foresight-time-chart-tooltip {
   .bold {
     float: right;
     font-weight: bold;
@@ -42,20 +42,20 @@
 
   .actual,
   .observed {
+    @include cell-padding;
     background-color: $white;
     color: $gray;
-    @include cell-padding;
   }
 
   .prediction {
-    color: $white;
     @include cell-padding;
+    color: $white;
   }
 
   .point,
   .text {
-    color: $gray;
     @include cell-padding;
+    color: $gray;
 
     &.head {
       color: $white;

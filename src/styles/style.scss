@@ -1,6 +1,21 @@
 // Main stylesheet
 
-@import 'commons';
-@import 'markers';
+@import 'palette';
+
+.d3-foresight-chart {
+  @import 'commons';
+}
+
+.d3-foresight-time-chart {
+  @import 'time-chart';
+}
+
+.d3-foresight-distribution-chart {
+  @import 'distribution-chart';
+}
+
+.d3-foresight-controls {
+  @import 'control-panel';
+}
+
 @import 'tooltips';
-@import 'controls';

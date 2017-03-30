@@ -31,7 +31,7 @@ export default class TimeChart {
 
     // Get div dimensions
     let elementSelection = d3.select(element)
-        .attr('class', 'd3-foresight-timechart')
+        .attr('class', 'd3-foresight-chart d3-foresight-time-chart')
 
     let chartBB = elementSelection.node().getBoundingClientRect()
     let divWidth = chartBB.width
@@ -70,7 +70,7 @@ export default class TimeChart {
         .attr('transform', `translate(${margin.left},${margin.top})`)
 
     // Add tooltips
-    this.chartTooltip = new commonComponents.ChartTooltip(elementSelection)
+    this.timeChartTooltip = new commonComponents.TimeChartTooltip(elementSelection)
     this.infoTooltip = new commonComponents.InfoTooltip(elementSelection)
 
     // Save variables

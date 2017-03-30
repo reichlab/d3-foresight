@@ -1,4 +1,4 @@
-// Styles for the graphical elements
+// Styles for time-chart
 
 .overlay {
   cursor: pointer;
@@ -12,21 +12,6 @@
   stroke-width: 1px;
 }
 
-// Axes styles
-.axis {
-  path,
-  line {
-    fill: none;
-    stroke: $axis-ticks;
-  }
-
-  .title {
-    fill: $gray;
-    font: 10px sans-serif;
-  }
-}
-
-// Onset markers
 .onset-group {
   .onset-mark {
     stroke-width: 6px;
@@ -50,7 +35,6 @@
   }
 }
 
-// Prediction area, line and dots
 .prediction-group {
   pointer-events: none;
 
@@ -69,7 +53,6 @@
   }
 }
 
-// Observed line and dots
 .observed-group {
   pointer-events: none;
 
@@ -87,7 +70,6 @@
   }
 }
 
-// Actual data
 .actual-group {
   pointer-events: none;
 
@@ -143,19 +125,6 @@
   }
 }
 
-// No prediction text
-.no-pred-text {
-  font-size: 10px;
-  left: 70px;
-  letter-spacing: 1px;
-  line-height: 25px;
-  margin-bottom: 5px;
-  position: absolute;
-  text-transform: uppercase;
-  top: 60px;
-}
-
-// Today line
 .now-group {
   .now-line {
     stroke: $black;

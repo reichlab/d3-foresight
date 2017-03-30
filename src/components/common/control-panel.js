@@ -115,7 +115,7 @@ class LegendDrawer {
     // Add rows for actual lines
     this.actualItems = [
       {
-        id: 'legend-actual',
+        class: 'legend-item-actual',
         color: palette.actual,
         text: 'Actual',
         tooltipData: {
@@ -124,7 +124,7 @@ class LegendDrawer {
         }
       },
       {
-        id: 'legend-observed',
+        class: 'legend-item-observed',
         color: palette.observed,
         text: 'Observed',
         tooltipData: {
@@ -133,7 +133,7 @@ class LegendDrawer {
         }
       },
       {
-        id: 'legend-history',
+        class: 'legend-item-history',
         color: palette['history-highlight'],
         text: 'History',
         tooltipData: {
@@ -143,8 +143,7 @@ class LegendDrawer {
       }
     ].map(data => {
       let item = legendActualContainer.append('div')
-          .attr('class', 'item')
-          .attr('id', data.id)
+          .attr('class', `item ${data.id}`)
 
       item.append('i')
         .attr('class', 'fa fa-circle')
@@ -311,8 +310,7 @@ class LegendDrawer {
     // Add prediction items
     this.rows = predictions.map(p => {
       let predItem = predictionContainer.append('div')
-          .attr('class', 'item')
-          .attr('id', 'legend-' + p.id)
+          .attr('class', `item legend-item-${p.id}`)
           .style('cursor', 'pointer')
 
       let predIcon = predItem.append('i')
@@ -369,7 +367,7 @@ class LegendDrawer {
 
   update (predictions) {
     predictions.forEach(p => {
-      let pDiv = this.drawerSelection.select('#legend-' + p.id)
+      let pDiv = this.drawerSelection.select('.legend-item-' + p.id)
       pDiv.classed('na', p.noData)
     })
   }
@@ -449,8 +447,7 @@ class StatsDrawer {
       // Create header
       let headerSpan = heading.append('span')
       this.previousBtn = headerSpan.append('a')
-        .attr('id', 'previous-stat-btn')
-        .attr('class', 'stat-btn button is-small')
+        .attr('class', 'stat-btn button is-small previous-stat-btn')
         .on('click', () => {
           this.selectedStat = Math.max(this.selectedStat - 1, 0)
           this.plot(modelIds, modelMeta, stats, colors)
@@ -467,8 +464,7 @@ class StatsDrawer {
         .text(statsMeta.name)
 
       this.nextBtn = headerSpan.append('a')
-        .attr('id', 'next-stat-btn')
-        .attr('class', 'stat-btn button is-small')
+        .attr('class', 'stat-btn button is-small next-stat-btn')
         .on('click', () => {
           this.selectedStat = Math.min(this.selectedStat + 1, this.statsMeta.length - 1)
           this.plot(modelIds, modelMeta, stats, colors)
