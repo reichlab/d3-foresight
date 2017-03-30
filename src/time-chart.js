@@ -210,11 +210,7 @@ export default class TimeChart {
         // The marker is not present from previous calls to plot
         let onsetYPos = (idx + 1) * onsetDiff + this.height + 1
         predMarker = new timeChartComponents.Prediction(
-          this,
-          m.id,
-          m.meta,
-          this.colors[idx],
-          onsetYPos
+          this, m.id, m.meta, this.colors[idx], onsetYPos
         )
         this.predictions.push(predMarker)
       } else {

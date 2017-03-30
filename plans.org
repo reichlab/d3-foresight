@@ -19,7 +19,7 @@ This needs a bit of metadata inside with headers to show
 *** [#A] model meta
 Probably this is okay because this is one for each series of predictions. Needs
 CI though.
-** TODO X-scale
+** TODO x-scale-date
 SCHEDULED: <2017-03-27 Mon>
 *** A date axis
 *** A timepoint series
@@ -66,3 +66,5 @@ For example, right now, this applies to events from legend panel while
     - x values (131 or 33 numbers)
     - y values (probabilities for each x)
   - actual value, if present
+** Create a super class for charts
+*** Take sizing information

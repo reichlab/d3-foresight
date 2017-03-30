@@ -55,14 +55,9 @@ export class XAxis {
     let config = parent.config
     let infoTooltip = parent.infoTooltip
 
-    // Main axis with ticks below the onset panel
-    svg.append('g')
-      .attr('class', 'axis axis-x')
-      .attr('transform', `translate(0,${height})`)
-
     let axisGroup = svg.append('g')
-        .attr('class', 'axis axis-x-date')
-        .attr('transform', `translate(0,${height + 25})`)
+        .attr('class', 'axis axis-x')
+        .attr('transform', `translate(0,${height})`)
 
     let xText = axisGroup
         .append('text')
@@ -107,7 +102,9 @@ export class XAxis {
   }
 
   plot (parent) {
-    //
+    let xAxis = d3.axisBottom(parent.xScale)
+    parent.svg.select('.axis-x')
+      .transition().duration(200).call(xAxis)
   }
 }
 
