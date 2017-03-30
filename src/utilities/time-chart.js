@@ -6,8 +6,7 @@ import * as mmwr from 'mmwr-week'
  */
 export const getFirstPlottingIndex = (data, isLiveSeason) => {
   let timePoints = data.actual.map(d => d.week % 100)
-  let actualIndices = data.actual
-      .filter(d => d.data !== -1)
+  let actualIndices = data.actual.filter(d => d.data)
       .map(d => timePoints.indexOf(d.week % 100))
 
   if (isLiveSeason) {

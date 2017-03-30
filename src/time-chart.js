@@ -127,9 +127,7 @@ export default class TimeChart {
     // TODO This could be taken from the non-actual data
     // Also, the name should be changed
     let timePoints = data.actual.map(d => d.week % 100)
-    // TODO rely on the values being null
-    let actualIndices = data.actual
-        .filter(d => d.data !== -1)
+    let actualIndices = data.actual.filter(d => d.data)
         .map(d => timePoints.indexOf(d.week % 100))
 
     // Update domains

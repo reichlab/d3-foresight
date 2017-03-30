@@ -23,14 +23,14 @@ export default class Actual {
     this.data = data
 
     this.group.select('.line-actual')
-      .datum(this.data.filter(d => d.data !== -1))
+      .datum(this.data.filter(d => d.data))
       .transition()
       .duration(200)
       .attr('d', line)
 
     // Only plot non -1
     let circles = this.group.selectAll('.point-actual')
-        .data(this.data.filter(d => d.data !== -1))
+        .data(this.data.filter(d => d.data))
 
     circles.exit().remove()
 
@@ -45,7 +45,6 @@ export default class Actual {
   }
 
   query (idx) {
-    let value = this.data[idx].data
-    return (value === -1 ? false : value)
+    return this.data[idx].data
   }
 }
