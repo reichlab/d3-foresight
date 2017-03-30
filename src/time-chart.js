@@ -23,6 +23,7 @@ export default class TimeChart extends Chart {
     // This is the underlying continous scale
     this.xScale = d3.scaleLinear().range([0, this.width])
     this.xScaleDate = d3.scaleTime().range([0, this.width])
+    this.xScalePoint = d3.scalePoint().range([0, this.width])
     this.yScale = d3.scaleLinear().range([this.height, 0])
 
     this.yAxis = new commonComponents.YAxis(this)
@@ -61,19 +62,22 @@ export default class TimeChart extends Chart {
 
   // plot data
   plot (data) {
-    let xScale = this.xScale
-    let xScaleDate = this.xScaleDate
-    let yScale = this.yScale
-
     this.timePoints = data.timePoints
+    if (this.config.pointType.endsWith('-week')) {
+      this.ticks = this.timePoints.map(tp => tp.week)
+    } else {
+      throw utils.UnknownPointTypeException()
+    }
+
     this.actualIndices = data.actual.map((d, idx) => {
       return (d ? idx : null)
     }).filter(d => d !== null)
 
     // Update domains
-    yScale.domain(utils.getYDomain(data))
-    xScale.domain([0, this.timePoints.length - 1])
-    xScaleDate.domain(utils.getXDateDomain(data, this.config.pointType))
+    this.yScale.domain(utils.getYDomain(data))
+    this.xScale.domain([0, this.timePoints.length - 1])
+    this.xScaleDate.domain(utils.getXDateDomain(data, this.config.pointType))
+    this.xScalePoint.domain(this.ticks)
 
     this.xAxis.plot(this)
     this.yAxis.plot(this)

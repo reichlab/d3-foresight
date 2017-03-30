@@ -1,6 +1,10 @@
 import * as d3 from 'd3'
 import * as mmwr from 'mmwr-week'
 
+export const UnknownPointTypeException = message => {
+  this.message = message
+}
+
 /**
  * Get index to start the plot at
  */
@@ -52,7 +56,7 @@ export const getXDateDomain = (data, pointType) => {
     } else if (pointType === 'regular-week') {
       return d3.timeParse('%Y-%W')(d.year + '-' + d.week)
     } else {
-      return null
+      throw UnknownPointTypeException()
     }
   }))
 }
