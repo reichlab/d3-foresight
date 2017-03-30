@@ -100,16 +100,9 @@ export default class Overlay {
 
   update (predictions) {
     // Update no prediction text
-    if (predictions.filter(p => p.hidden).length !== 0) {
-      this.noPredText
-        .transition()
-        .duration(100)
-        .style('display', null)
-    } else {
-      this.noPredText
-        .transition()
-        .duration(100)
-        .style('display', 'none')
-    }
+    this.noPredText
+      .transition()
+      .duration(100)
+      .style('display', (predictions.filter(p => p.noData).length !== 0) ? null : 'none')
   }
 }
