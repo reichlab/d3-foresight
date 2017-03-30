@@ -45,6 +45,7 @@ export default class Actual {
   }
 
   query (idx) {
-    return this.data[idx].data
+    let value = this.data[idx].data
+    return (value === -1 ? false : value)
   }
 }

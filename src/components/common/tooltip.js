@@ -54,7 +54,7 @@ export class ChartTooltip extends Tooltip {
 
     // Ask actual
     let actualValue = actualObj.query(index)
-    if (actualValue !== -1) {
+    if (actualValue) {
       html += `<div class="actual">
                  Actual
                  <span class="bold">
