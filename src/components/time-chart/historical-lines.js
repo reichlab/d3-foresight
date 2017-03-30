@@ -10,7 +10,7 @@ export default class HistoricalLines {
     this.timeChartTooltip = parent.timeChartTooltip
   }
 
-  plot (parent, timePoints, historicalData) {
+  plot (parent, historicalData) {
     this.clear()
     let timeChartTooltip = this.timeChartTooltip
 
@@ -20,10 +20,10 @@ export default class HistoricalLines {
 
     let plottingData
     historicalData.map(hd => {
-      plottingData = timePoints.map((tp, idx) => {
+      plottingData = hd.actual.map((data, idx) => {
         return {
-          x: tp.week,
-          y: hd.actual[idx]
+          x: idx,
+          y: data
         }
       })
 

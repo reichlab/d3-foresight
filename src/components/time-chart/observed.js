@@ -14,9 +14,8 @@ export default class Observed {
     this.group = group
   }
 
-  plot (parent, timePoints, observedData) {
+  plot (parent, observedData) {
     // Save data for queries and updates
-    this.timePoints = timePoints
     this.observedData = observedData
     this.xScale = parent.xScale
     this.yScale = parent.yScale
@@ -27,7 +26,7 @@ export default class Observed {
 
     for (let i = 0; i <= idx; i++) {
       filteredData.push({
-        x: this.timePoints[idx - i].week,
+        x: idx - i,
         y: this.observedData[idx - i].filter(d => d.lag === i)[0].value
       })
     }

@@ -14,16 +14,16 @@ export default class Actual {
     this.group = group
   }
 
-  plot (parent, timePoints, actualData) {
+  plot (parent, actualData) {
     let line = d3.line()
         .x(d => parent.xScale(d.x))
         .y(d => parent.yScale(d.y))
 
     // Save data for queries
-    this.data = timePoints.map((tp, idx) => {
+    this.data = actualData.map((data, idx) => {
       return {
-        x: tp.week,
-        y: actualData[idx]
+        x: idx,
+        y: data
       }
     })
 

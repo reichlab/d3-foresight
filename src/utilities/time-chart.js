@@ -5,24 +5,20 @@ import * as mmwr from 'mmwr-week'
  * Get index to start the plot at
  */
 export const getFirstPlottingIndex = (data, isLiveSeason) => {
-  let timePointsWeek = data.timePoints.map(tp => tp.week)
   if (isLiveSeason) {
     // Start at the latest prediction
     return Math.max(...data.models.map(m => {
-      if (m.predictions.length === 0) return 0
-      else {
-        return timePointsWeek
-          .indexOf(m.predictions[m.predictions.length - 1].week % 100)
+      let index = m.predictions.length - 1
+      for (let i = index; i >= 0; i--) {
+        if (m.predictions[i] !== null) return i
       }
+      return 0
     }))
   } else {
-    // Start at the oldest prediction
+    // Start at the first prediction
     let modelPredictions = data.models
         .map(m => {
-          if (m.predictions.length === 0) return -1
-          else {
-            return timePointsWeek.indexOf(m.predictions[0].week % 100)
-          }
+          return m.predictions[0].week
         }).filter(d => d !== -1)
 
     if (modelPredictions.length === 0) {
@@ -61,14 +57,6 @@ export const getXDateDomain = (data, pointType) => {
   }))
 }
 
-export const getXPointDomain = (data, pointType) => {
-  if (pointType.endsWith('-week')) {
-    return data.timePoints.map(d => d.week)
-  } else {
-    return null
-  }
-}
-
 export const getYDomain = data => {
   // Max from actual data
   let maxValues = [Math.max(...data.actual.filter(d => d))]
@@ -82,7 +70,7 @@ export const getYDomain = data => {
   })
   // Max from all the models
   data.models.map(mdl => {
-    maxValues.push(Math.max(...mdl.predictions.map(d => Math.max(...[
+    maxValues.push(Math.max(...mdl.predictions.filter(m => m).map(d => Math.max(...[
       Math.max(...d.oneWk.high),
       Math.max(...d.twoWk.high),
       Math.max(...d.threeWk.high),
@@ -95,14 +83,13 @@ export const getYDomain = data => {
 }
 
 /**
- * Return next four week numbers for given week
+ * Return next four indices for given index
  */
-export const getNextWeeks = (currentWeek, weeks) => {
-  let current = weeks.indexOf(currentWeek % 100)
-  let nextWeeks = []
+export const getNextIndices = (currentIndex, limit) => {
+  let nextIndices = []
   for (let i = 0; i < 4; i++) {
-    current += 1
-    if (current < weeks.length) nextWeeks.push(weeks[current])
+    currentIndex += 1
+    if (currentIndex < limit) nextIndices.push(currentIndex)
   }
-  return nextWeeks
+  return nextIndices
 }

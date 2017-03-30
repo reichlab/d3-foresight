@@ -19,10 +19,8 @@ This needs a bit of metadata inside with headers to show
 *** [#A] model meta
 Probably this is okay because this is one for each series of predictions. Needs
 CI though.
-** TODO TimePoints
-Keep an identifier based timepoints series.
-Will need a transformer for mapping to the axis (label & value).
-Might need to change the xScale to work with indices instead of weeks.
+** DONE TimePoints
+CLOSED: [2017-03-30 Thu 18:20]
 ** DONE Actual
 CLOSED: [2017-03-30 Thu 15:43]
 Array of pure values like:
@@ -70,3 +68,5 @@ For example, right now, this applies to events from legend panel while
   - actual value, if present
 ** Optimize bundle
 https://hackernoon.com/optimising-your-application-bundle-size-with-webpack-e85b00bab579
+** Fix x label
+** Fix index to week value in tooltip

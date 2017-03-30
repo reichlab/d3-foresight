@@ -197,15 +197,16 @@ export class XAxisDate {
   }
 
   plot (parent) {
-    let xScalePoint = parent.xScalePoint
+    let xScale = parent.xScale
     let xScaleDate = parent.xScaleDate
     let svg = parent.svg
+    let ticks = parent.timePoints.map(tp => tp.week)
 
-    let xAxis = d3.axisBottom(xScalePoint)
-        .tickValues(xScalePoint.domain().filter((d, i) => !(i % 2)))
+    let xAxis = d3.axisBottom(xScale)
+        .tickValues(ticks.filter((d, i) => !(i % 2)))
 
-    let xAxisReverseTick = d3.axisTop(xScalePoint)
-        .tickValues(xScalePoint.domain().filter((d, i) => !(i % 2)))
+    let xAxisReverseTick = d3.axisTop(xScale)
+        .tickValues(ticks.filter((d, i) => !(i % 2)))
 
     let xAxisDate = d3.axisBottom(xScaleDate)
         .ticks(d3.timeMonth)
@@ -214,7 +215,7 @@ export class XAxisDate {
     // Mobile view fix
     if (parent.width < 420) {
       xAxisDate.ticks(2)
-      xAxis.tickValues(xScalePoint.domain().filter((d, i) => !(i % 10)))
+      xAxis.tickValues(ticks.filter((d, i) => !(i % 10)))
     }
 
     svg.select('.axis-x')

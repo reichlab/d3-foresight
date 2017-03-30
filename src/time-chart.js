@@ -20,13 +20,9 @@ export default class TimeChart extends Chart {
     super(elementSelection, 30, Object.assign({}, defaultConfig, options))
 
     // Initialize scales
-    // This is the underlying continous scale. xScale wraps around this
-    this._xScale = d3.scaleLinear().range([0, this.width])
-    this.xScale = null
-    // This is the main time scale
+    // This is the underlying continous scale
+    this.xScale = d3.scaleLinear().range([0, this.width])
     this.xScaleDate = d3.scaleTime().range([0, this.width])
-    // For ticks. Takes in discrete time points (not time indices)
-    this.xScalePoint = d3.scalePoint().range([0, this.width])
     this.yScale = d3.scaleLinear().range([this.height, 0])
 
     this.yAxis = new commonComponents.YAxis(this)
@@ -65,9 +61,8 @@ export default class TimeChart extends Chart {
 
   // plot data
   plot (data) {
-    let _xScale = this._xScale
+    let xScale = this.xScale
     let xScaleDate = this.xScaleDate
-    let xScalePoint = this.xScalePoint
     let yScale = this.yScale
 
     this.timePoints = data.timePoints
@@ -77,23 +72,8 @@ export default class TimeChart extends Chart {
 
     // Update domains
     yScale.domain(utils.getYDomain(data))
-    _xScale.domain([0, this.timePoints.length - 1])
-
-    // Setup a discrete scale for ticks
-    xScalePoint.domain(utils.getXPointDomain(data, this.config.pointType))
+    xScale.domain([0, this.timePoints.length - 1])
     xScaleDate.domain(utils.getXDateDomain(data, this.config.pointType))
-
-    // Wrapper around _xscale to handle edge cases
-    // TODO Make this agnostic of timepoint type
-    this.xScale = d => {
-      let dInt = Math.floor(d)
-      let dFloat = d % 1
-      // [0, 1) point fix without changing the scale
-      if (dInt === 0) dInt = Math.max(...this.timePoints)
-      if (dInt === 53) dInt = 1
-      if (dInt === 29) dFloat = 0
-      return _xScale(this.timePoints.map(tp => tp.week).indexOf(dInt) + dFloat)
-    }
 
     this.xAxis.plot(this)
     this.yAxis.plot(this)
@@ -109,13 +89,13 @@ export default class TimeChart extends Chart {
     })
 
     // Update markers with data
-    this.timerect.plot(this, this.timePoints)
+    this.timerect.plot(this)
     this.baseline.plot(this, data.baseline)
-    this.actual.plot(this, this.timePoints, data.actual)
-    this.observed.plot(this, this.timePoints, data.observed)
+    this.actual.plot(this, data.actual)
+    this.observed.plot(this, data.observed)
 
     // Reset history lines
-    this.history.plot(this, this.timePoints, data.history)
+    this.history.plot(this, data.history)
 
     // Get meta data and statistics
     this.modelStats = data.models.map(m => m.stats)

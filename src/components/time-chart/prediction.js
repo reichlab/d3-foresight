@@ -126,20 +126,16 @@ export default class Prediction {
     this.startingPointsData = startingPointsData
     this.xScale = parent.xScale
     this.yScale = parent.yScale
-    this.timePointsWeek = parent.timePoints.map(tp => tp.week)
     this.timeChartTooltip = parent.timeChartTooltip
-    this.displayedData = Array(this.timePointsWeek.length).fill(false)
+    this.displayedData = Array(this.modelData.length).fill(false)
   }
 
   update (idx) {
     let color = this.color
     let colorHover = hexToRgba(color, 0.3)
     let id = this.id
-    let timePointWeek = this.timePointsWeek[idx]
 
-    let currentPosition = this.modelData.map(d => d.week % 100).indexOf(timePointWeek)
-
-    if (currentPosition === -1) {
+    if (this.modelData[idx] === null) {
       // There is no data for current point, hide the markers without
       // setting exposed hidden flag
       this.noData = true
@@ -155,7 +151,7 @@ export default class Prediction {
       let timeChartTooltip = this.timeChartTooltip
 
       // Move things
-      let onset = this.modelData[currentPosition].onsetWeek
+      let onset = this.modelData[idx].onsetWeek
 
       this.onsetGroup.select('.onset-mark')
         .transition()
@@ -208,8 +204,8 @@ export default class Prediction {
         .attr('x1', this.xScale(onset.high[cid]))
         .attr('x2', this.xScale(onset.high[cid]))
 
-      let pw = this.modelData[currentPosition].peakWeek
-      let pp = this.modelData[currentPosition].peakPercent
+      let pw = this.modelData[idx].peakWeek
+      let pp = this.modelData[idx].peakPercent
 
       let leftW = this.xScale(pw.point)
       let leftP = this.yScale(pp.point)
@@ -301,35 +297,33 @@ export default class Prediction {
         .attr('y2', this.yScale(pp.high[cid]))
 
       // Move main pointers
-      let predData = this.modelData[currentPosition]
-      let startTimePoint = predData.week
-      let startData = this.startingPointsData[currentPosition]
+      let predData = this.modelData[idx]
+      let startData = this.startingPointsData[idx]
 
       // Actual point/area to be shown
       let nextTimeData = [{
-        week: startTimePoint % 100,
-        data: startData,
+        index: idx,
+        point: startData,
         low: startData,
         high: startData
       }]
 
       let names = ['oneWk', 'twoWk', 'threeWk', 'fourWk']
-      // TODO Here be weeks
-      let nextTimePoints = utils.getNextWeeks(startTimePoint, this.timePointsWeek)
+      let nextTimePoints = utils.getNextIndices(idx, this.modelData.length)
 
       nextTimePoints.forEach((item, index) => {
         nextTimeData.push({
-          week: item,
-          data: predData[names[index]].point,
+          index: item,
+          point: predData[names[index]].point,
           low: predData[names[index]].low[cid],
           high: predData[names[index]].high[cid]
         })
       })
 
       // Save indexed data for query
-      this.displayedData = Array(this.timePointsWeek.length).fill(false)
-      nextTimeData.forEach((d, index) => {
-        if (index > 0) this.displayedData[this.timePointsWeek.indexOf(d.week)] = d.data
+      this.displayedData = Array(this.modelData.length).fill(false)
+      nextTimeData.forEach(d => {
+        this.displayedData[d.index] = d.point
       })
 
       let circles = this.predictionGroup.selectAll('.point-prediction')
@@ -343,14 +337,14 @@ export default class Prediction {
         .transition()
         .duration(200)
         .ease(d3.easeQuadOut)
-        .attr('cx', d => this.xScale(d.week))
-        .attr('cy', d => this.yScale(d.data))
+        .attr('cx', d => this.xScale(d.index))
+        .attr('cy', d => this.yScale(d.point))
         .attr('r', 3)
         .style('stroke', this.color)
 
       let line = d3.line()
-          .x(d => this.xScale(d.week % 100))
-          .y(d => this.yScale(d.data))
+          .x(d => this.xScale(d.index))
+          .y(d => this.yScale(d.point))
 
       this.predictionGroup.select('.line-prediction')
         .datum(nextTimeData)
@@ -359,7 +353,7 @@ export default class Prediction {
         .attr('d', line)
 
       let area = d3.area()
-          .x(d => this.xScale(d.week % 100))
+          .x(d => this.xScale(d.index))
           .y1(d => this.yScale(d.low))
           .y0(d => this.yScale(d.high))
 
