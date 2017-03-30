@@ -102,18 +102,13 @@ export default class TimeChart {
     this.confidenceIntervals = ['90%', '50%']
     this.cid = 1 // Use 50% as default
 
-    // Legend toggle state
-    this.historyShow = true
     this.predictionsShow = {}
 
     // Control panel
     this.controlPanel = new commonComponents.ControlPanel(this, (event, payload) => {
       if (event === 'legend:history') {
         // On history toggle action
-        // payload is `hide`
-        this.historyShow = !this.historyShow
-        if (this.historyShow) this.history.show()
-        else this.history.hide()
+        this.history.hidden = !this.history.hidden
       } else if (event === 'legend:ci') {
         // On ci change events
         // payload is `cid`

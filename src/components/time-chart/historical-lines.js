@@ -12,9 +12,6 @@ export default class HistoricalLines {
 
   plot (parent, data) {
     this.clear()
-    if (parent.historyShow) this.show()
-    else this.hide()
-
     let chartTooltip = this.chartTooltip
 
     let line = d3.line()
@@ -55,14 +52,12 @@ export default class HistoricalLines {
       .attr('class', 'line-history highlight')
   }
 
-  hide () {
-    this.group
-      .style('visibility', 'hidden')
+  get hidden () {
+    return this.group.style('visibility') === 'hidden'
   }
 
-  show () {
-    this.group
-      .style('visibility', null)
+  set hidden (value) {
+    this.group.style('visibility', value ? 'hidden' : null)
   }
 
   clear () {
