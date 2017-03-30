@@ -421,6 +421,6 @@ export default class Prediction {
    */
   query (idx) {
     // Don't show anything if predictions are hidden
-    return (!this.hidden && this.displayedData[idx])
+    return (!this.noData && !this.hidden && this.displayedData[idx])
   }
 }
