@@ -1,3 +1,6 @@
+/**
+ * Tooltip super
+ */
 class Tooltip {
   constructor (rootSelector, tooltipClass) {
     this.selection = rootSelector.append('div')
@@ -29,6 +32,9 @@ class Tooltip {
   }
 }
 
+/**
+ * Tooltip used in timechart's overlay div
+ */
 export class TimeChartTooltip extends Tooltip {
   constructor (rootSelector) {
     super(rootSelector, 'd3-foresight-time-chart-tooltip')
@@ -100,6 +106,9 @@ export class TimeChartTooltip extends Tooltip {
   }
 }
 
+/**
+ * Tooltip used in control panel and axes labels
+ */
 export class InfoTooltip extends Tooltip {
   constructor (rootSelector) {
     super(rootSelector, 'd3-foresight-info-tooltip')
