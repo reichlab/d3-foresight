@@ -102,8 +102,6 @@ export default class TimeChart {
     this.confidenceIntervals = ['90%', '50%']
     this.cid = 1 // Use 50% as default
 
-    this.predictionsShow = {}
-
     // Control panel
     this.controlPanel = new commonComponents.ControlPanel(this, (event, payload) => {
       if (event === 'legend:history') {
@@ -228,7 +226,7 @@ export default class TimeChart {
     // Get meta data and statistics
     this.modelStats = data.models.map(m => m.stats)
 
-    // Prediction thing
+    // Setup colors
     let totalModels = data.models.length
     let onsetDiff = (this.onsetHeight - 2) / (totalModels + 1)
 
@@ -237,17 +235,6 @@ export default class TimeChart {
     } else {
       this.colors = d3.schemeCategory10
     }
-
-    // Filter markers not needed
-    let currentPredictionIds = data.models.map(m => m.id)
-    this.predictions = this.predictions.filter(p => {
-      if (currentPredictionIds.indexOf(p.id) === -1) {
-        p.clear()
-        return false
-      } else {
-        return true
-      }
-    })
 
     // Collect values with zero lags
     // This is used as the first point of the prediction curves
@@ -263,11 +250,22 @@ export default class TimeChart {
       }
     })
 
+    // Filter markers not needed
+    let currentPredictionIds = data.models.map(m => m.id)
+    this.predictions = this.predictions.filter(p => {
+      if (currentPredictionIds.indexOf(p.id) === -1) {
+        p.clear()
+        return false
+      } else {
+        return true
+      }
+    })
+
     data.models.forEach((m, idx) => {
-      // Add marker if not present
       let predMarker
       let markerIndex = this.predictions.map(p => p.id).indexOf(m.id)
       if (markerIndex === -1) {
+        // The marker is not present from previous calls to plot
         let onsetYPos = (idx + 1) * onsetDiff + this.height + 1
         predMarker = new timeChartComponents.Prediction(
           this,
@@ -277,25 +275,16 @@ export default class TimeChart {
           onsetYPos
         )
         this.predictions.push(predMarker)
-
-        if (!(m.id in this.predictionsShow)) this.predictionsShow[m.id] = true
       } else {
         predMarker = this.predictions[markerIndex]
       }
       predMarker.plot(this, m.predictions, zeroLagData)
-      predMarker.hideMarkers()
     })
 
     // Update submission entries shown in control panel
-    this.controlPanel.plot(this, (event, payload) => {
-      // On prediction toggle action
-      // payload is the value of `hide`
-      let pred = this.predictions[this.predictions.map(p => p.id).indexOf(event)]
-      this.predictionsShow[event] = !payload
-      pred.legendHidden = payload
-
-      if (payload) pred.hideMarkers()
-      else pred.showMarkers()
+    this.controlPanel.plot(this, (predictionId, hidePrediction) => {
+      let predMarker = this.predictions[this.predictions.map(p => p.id).indexOf(predictionId)]
+      predMarker.hidden = hidePrediction
     })
   }
 

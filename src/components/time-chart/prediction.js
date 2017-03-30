@@ -12,14 +12,14 @@ const hexToRgba = (hex, alpha) => {
 }
 
 /**
- * Prediction markers
+ * Prediction marker with following components
  * - Area
  * - Line and dots
  * - Onset
  * - Peak
  */
 export default class Prediction {
-  constructor (parent, id, meta, color, cy) {
+  constructor (parent, id, meta, color, onsetY) {
     // Prediction group
     let predictionGroup = parent.svg.append('g')
         .attr('class', 'prediction-group')
@@ -49,26 +49,26 @@ export default class Prediction {
     let stp = 6
 
     onsetGroup.append('line')
-      .attr('y1', cy)
-      .attr('y2', cy)
+      .attr('y1', onsetY)
+      .attr('y2', onsetY)
       .attr('class', 'range onset-range')
       .style('stroke', hexToRgba(color, 0.6))
 
     onsetGroup.append('line')
-      .attr('y1', cy - stp / 2)
-      .attr('y2', cy + stp / 2)
+      .attr('y1', onsetY - stp / 2)
+      .attr('y2', onsetY + stp / 2)
       .attr('class', 'stopper onset-stopper onset-low')
       .style('stroke', hexToRgba(color, 0.6))
 
     onsetGroup.append('line')
-      .attr('y1', cy - stp / 2)
-      .attr('y2', cy + stp / 2)
+      .attr('y1', onsetY - stp / 2)
+      .attr('y2', onsetY + stp / 2)
       .attr('class', 'stopper onset-stopper onset-high')
       .style('stroke', hexToRgba(color, 0.6))
 
     onsetGroup.append('circle')
       .attr('r', 3)
-      .attr('cy', cy)
+      .attr('cy', onsetY)
       .attr('class', 'onset-mark')
       .style('stroke', 'transparent')
       .style('fill', hexToRgba(color, 0.8))
@@ -116,6 +116,10 @@ export default class Prediction {
     this.id = id
     this.meta = meta
     this.cid = parent.cid
+    // Tells if the prediction is hidden by some other component
+    this._hidden = false
+    // Tells if data is available to be shown for current time
+    this.noData = true
   }
 
   plot (parent, data, actual) {
@@ -124,8 +128,8 @@ export default class Prediction {
     this.xScale = parent.xScale
     this.yScale = parent.yScale
     this.timePoints = parent.timePoints
-    this.legendHidden = !parent.predictionsShow[this.id]
     this.chartTooltip = parent.chartTooltip
+    this.displayedData = Array(this.timePoints.length).fill(false)
   }
 
   update (idx) {
@@ -133,25 +137,25 @@ export default class Prediction {
     let id = this.id
     let timePoint = this.timePoints[idx]
 
-    let localPosition = this.data.map(d => d.week % 100).indexOf(timePoint)
+    let currentPosition = this.data.map(d => d.week % 100).indexOf(timePoint)
 
-    if (localPosition === -1) {
-      this.hidden = true
+    if (currentPosition === -1) {
+      // There is no data for current point, hide the markers without
+      // setting exposed hidden flag
+      this.noData = true
       this.hideMarkers()
     } else {
-      this.hidden = false
-      if (!this.legendHidden) {
+      this.noData = false
+      if (!this.hidden) {
+        // No one is hiding me
         this.showMarkers()
       }
-
-      this.displayedPoints = {}
 
       let cid = this.cid
       let chartTooltip = this.chartTooltip
 
       // Move things
-      let onset = this.data[localPosition].onsetWeek
-      this.displayedPoints.onset = onset.point
+      let onset = this.data[currentPosition].onsetWeek
 
       this.onsetGroup.select('.onset-mark')
         .transition()
@@ -204,10 +208,8 @@ export default class Prediction {
         .attr('x1', this.xScale(onset.high[cid]))
         .attr('x2', this.xScale(onset.high[cid]))
 
-      let pw = this.data[localPosition].peakWeek
-      let pp = this.data[localPosition].peakPercent
-
-      this.displayedPoints.peak = pw.point
+      let pw = this.data[currentPosition].peakWeek
+      let pp = this.data[currentPosition].peakPercent
 
       let leftW = this.xScale(pw.point)
       let leftP = this.yScale(pp.point)
@@ -299,12 +301,12 @@ export default class Prediction {
         .attr('y2', this.yScale(pp.high[cid]))
 
       // Move main pointers
-      let predData = this.data[localPosition]
-
+      let predData = this.data[currentPosition]
       let startTimePoint = predData.week
       let startData = this.actual.filter(d => d.week === startTimePoint)[0].data
 
-      let data = [{
+      // Actual point/area to be shown
+      let nextTimeData = [{
         week: startTimePoint % 100,
         data: startData,
         low: startData,
@@ -316,7 +318,7 @@ export default class Prediction {
       let nextTimePoints = utils.getNextWeeks(startTimePoint, this.timePoints)
 
       nextTimePoints.forEach((item, index) => {
-        data.push({
+        nextTimeData.push({
           week: item,
           data: predData[names[index]].point,
           low: predData[names[index]].low[cid],
@@ -324,14 +326,14 @@ export default class Prediction {
         })
       })
 
-      // Save indexed data
+      // Save indexed data for query
       this.displayedData = Array(this.timePoints.length).fill(false)
-      data.forEach((d, index) => {
+      nextTimeData.forEach((d, index) => {
         if (index > 0) this.displayedData[this.timePoints.indexOf(d.week)] = d.data
       })
 
       let circles = this.predictionGroup.selectAll('.point-prediction')
-          .data(data.slice(1))
+          .data(nextTimeData.slice(1))
 
       circles.exit().remove()
 
@@ -351,7 +353,7 @@ export default class Prediction {
           .y(d => this.yScale(d.data))
 
       this.predictionGroup.select('.line-prediction')
-        .datum(data)
+        .datum(nextTimeData)
         .transition()
         .duration(200)
         .attr('d', line)
@@ -362,11 +364,29 @@ export default class Prediction {
           .y0(d => this.yScale(d.high))
 
       this.predictionGroup.select('.area-prediction')
-        .datum(data)
+        .datum(nextTimeData)
         .transition()
         .duration(200)
         .attr('d', area)
     }
+  }
+
+  /**
+   * Check if we are hidden
+   */
+  get hidden () {
+    return this._hidden
+  }
+
+  set hidden (hide) {
+    if (hide) {
+      this.hideMarkers()
+    } else {
+      if (!this.noData) {
+        this.showMarkers()
+      }
+    }
+    this._hidden = hide
   }
 
   hideMarkers () {
@@ -379,9 +399,6 @@ export default class Prediction {
   }
 
   showMarkers () {
-    // Only show if not hidden
-    if (this.hidden) return
-
     [
       this.onsetGroup,
       this.peakGroup,
@@ -390,16 +407,20 @@ export default class Prediction {
       })
   }
 
+  /**
+   * Remove the markers
+   */
   clear () {
     this.onsetGroup.remove()
     this.peakGroup.remove()
     this.predictionGroup.remove()
   }
 
+  /**
+   * Ask if we have something to show at the index
+   */
   query (idx) {
     // Don't show anything if predictions are hidden
-    if (this.hidden || this.legendHidden) return false
-
-    return this.displayedData[idx]
+    return (!this.hidden && this.displayedData[idx])
   }
 }

@@ -289,7 +289,7 @@ class LegendDrawer {
     })
   }
 
-  plot (predictions, predictionsShow, eventHook) {
+  plot (predictions, eventHook) {
     // Clear entries
     let predictionContainer = this.drawerSelection.select('.legend-prediction-container')
     predictionContainer.selectAll('*').remove()
@@ -319,7 +319,7 @@ class LegendDrawer {
           .attr('class', 'fa')
           .style('color', p.color)
 
-      let showThis = predictionsShow[p.id]
+      let showThis = !p.hidden
       predIcon.classed('fa-circle', showThis)
       predIcon.classed('fa-circle-o', !showThis)
 
@@ -370,7 +370,7 @@ class LegendDrawer {
   update (predictions) {
     predictions.forEach(p => {
       let pDiv = this.drawerSelection.select('#legend-' + p.id)
-      pDiv.classed('na', p.hidden)
+      pDiv.classed('na', p.noData)
     })
   }
 }
@@ -586,7 +586,7 @@ export default class ControlPanel {
   }
 
   plot (parent, panelHook) {
-    this.legendDrawer.plot(parent.predictions, parent.predictionsShow, panelHook)
+    this.legendDrawer.plot(parent.predictions, panelHook)
 
     this.statsDrawer.plot(
       parent.predictions.map(p => p.id),
