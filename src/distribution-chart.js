@@ -1,64 +1,17 @@
 import * as d3 from 'd3'
 import * as commonComponents from './components/common'
 import * as distributionChartComponents from './components/distribution-chart'
+import Chart from './chart'
 
-export default class DistributionChart {
+export default class DistributionChart extends Chart {
   constructor (element, options = {}) {
-    let defaultConfig = {
-      axes: {
-        x: {
-          title: 'X',
-          description: 'X axis',
-          url: '#'
-        },
-        y: {
-          title: 'Y',
-          description: 'Y axis',
-          url: '#'
-        }
-      }
-    }
-    this.config = Object.assign({}, defaultConfig, options)
-
-    // Get div dimensions
     let elementSelection = d3.select(element)
         .attr('class', 'd3-foresight-chart d3-foresight-distribution-chart')
-
-    let chartBB = elementSelection.node().getBoundingClientRect()
-    let divWidth = chartBB.width
-    let divHeight = 500
-
-    // Create blank chart
-    let margin = {
-      top: 5, right: 50, bottom: 70, left: 40
-    }
-    let width = divWidth - margin.left - margin.right
-    let height = divHeight - margin.top - margin.bottom
+    super(elementSelection, 0, options)
 
     // Initialize scales
-    let xScale = d3.scaleLinear()
-        .range([0, width])
-    let yScale = d3.scaleLinear()
-        .range([height, 0])
-
-    // Add svg
-    let svg = elementSelection.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`)
-
-    // Add tooltips
-    this.timeChartTooltip = new commonComponents.TimeChartTooltip(elementSelection)
-    this.infoTooltip = new commonComponents.InfoTooltip(elementSelection)
-
-    // Save variables
-    this.elementSelection = elementSelection
-    this.svg = svg
-    this.xScale = xScale
-    this.yScale = yScale
-    this.height = height
-    this.width = width
+    this.xScale = d3.scaleLinear().range([0, this.width])
+    this.yScale = d3.scaleLinear().range([this.height, 0])
 
     this.yAxis = new commonComponents.YAxis(this)
     this.xAxis = new commonComponents.XAxis(this)
@@ -80,7 +33,6 @@ export default class DistributionChart {
   // plot data
   plot (data) {
     // TODO Setup domains
-
     this.xAxis.plot(this)
     this.yAxis.plot(this)
 

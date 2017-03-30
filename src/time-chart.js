@@ -2,90 +2,36 @@ import * as d3 from 'd3'
 import * as utils from './utilities/time-chart'
 import * as commonComponents from './components/common'
 import * as timeChartComponents from './components/time-chart'
+import Chart from './chart'
 
-export default class TimeChart {
+export default class TimeChart extends Chart {
   constructor (element, options = {}) {
     let defaultConfig = {
       baseline: {
         text: 'Baseline',
         description: 'Baseline value',
-        url: '#'
-      },
-      axes: {
-        x: {
-          title: 'X',
-          description: 'X axis',
-          url: '#'
-        },
-        y: {
-          title: 'Y',
-          description: 'Y axis',
-          url: '#'
-        }
+        utl: '#'
       }
     }
-    this.config = Object.assign({}, defaultConfig, options)
 
-    // Get div dimensions
     let elementSelection = d3.select(element)
         .attr('class', 'd3-foresight-chart d3-foresight-time-chart')
-
-    let chartBB = elementSelection.node().getBoundingClientRect()
-    let divWidth = chartBB.width
-    let divHeight = 500
-
-    // Height of onset panel above x axis
-    let onsetHeight = 30
-
-    // Create blank chart
-    let margin = {
-      top: 5, right: 50, bottom: 70 + onsetHeight, left: 40
-    }
-    let width = divWidth - margin.left - margin.right
-    let height = divHeight - margin.top - margin.bottom
+    super(elementSelection, 30, Object.assign({}, defaultConfig, options))
 
     // Initialize scales
     // This is the underlying continous scale. xScale wraps around this
-    let _xScale = d3.scaleLinear()
-        .range([0, width])
-    let xScale
+    this._xScale = d3.scaleLinear().range([0, this.width])
+    this.xScale = null
     // This is the main time scale
-    let xScaleDate = d3.scaleTime()
-        .range([0, width])
+    this.xScaleDate = d3.scaleTime().range([0, this.width])
     // For ticks. Takes in discrete time points (not time indices)
-    let xScalePoint = d3.scalePoint()
-        .range([0, width])
-    // The only linear yscale
-    let yScale = d3.scaleLinear()
-        .range([height, 0])
-
-    // Add svg
-    let svg = elementSelection.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`)
-
-    // Add tooltips
-    this.timeChartTooltip = new commonComponents.TimeChartTooltip(elementSelection)
-    this.infoTooltip = new commonComponents.InfoTooltip(elementSelection)
-
-    // Save variables
-    this.elementSelection = elementSelection
-    this.svg = svg
-    this._xScale = _xScale
-    this.xScale = xScale
-    this.xScaleDate = xScaleDate
-    this.xScalePoint = xScalePoint
-    this.yScale = yScale
-    this.height = height
-    this.width = width
-    this.onsetHeight = onsetHeight
-    this.eventHooks = []
+    this.xScalePoint = d3.scalePoint().range([0, this.width])
+    this.yScale = d3.scaleLinear().range([this.height, 0])
 
     this.yAxis = new commonComponents.YAxis(this)
     this.xAxis = new commonComponents.XAxisDate(this)
 
+    this.timeChartTooltip = new commonComponents.TimeChartTooltip(elementSelection)
     this.timerect = new timeChartComponents.TimeRect(this)
     this.overlay = new timeChartComponents.Overlay(this)
     this.history = new timeChartComponents.HistoricalLines(this)
@@ -93,6 +39,7 @@ export default class TimeChart {
     this.actual = new timeChartComponents.Actual(this)
     this.observed = new timeChartComponents.Observed(this)
     this.predictions = []
+    this.eventHooks = []
 
     this.confidenceIntervals = ['90%', '50%']
     this.cid = 1 // Use 50% as default
@@ -102,7 +49,6 @@ export default class TimeChart {
       if (event === 'legend:history') {
         this.history.hidden = !this.history.hidden
       } else if (event === 'legend:ci') {
-        // On ci change events
         // payload is `cid`
         this.predictions.map(p => {
           this.cid = p.cid = payload
