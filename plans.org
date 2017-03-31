@@ -5,20 +5,16 @@ This is a temporary document for laying out the interface for `d3-foresight` as
 the development goes on.
 
 * Styles
-** Work on the examples page for this
-** Bulma inside
-** Font-awesome inside
-SCHEDULED: <2017-03-27 Mon>
+** TODO Examples page
+** TODO Bulma inside 
+** TODO FIx position of control panel
+** TODO Font-awesome inside
+** TODO control buttons padding fix
 * Things to ask user for
 ** DONE Axes + baseline text
 CLOSED: [2017-03-27 Mon 04:21]
-** Metadata about
-*** confidence intervals
-*** statistics
-This needs a bit of metadata inside with headers to show
-*** [#A] model meta
-Probably this is okay because this is one for each series of predictions. Needs
-CI though.
+** DONE Metadata about
+CLOSED: [2017-03-31 Fri 03:59]
 ** DONE TimePoints
 CLOSED: [2017-03-30 Thu 18:20]
 ** DONE Actual
@@ -46,18 +42,6 @@ Dict of key (identifier of history) and values (array like actual)
        null]
 ** DONE Observed
 CLOSED: [2017-03-30 Thu 15:47]
-Each element corresponding to the x-scale will be a list like
-- [{lag: <lagInDiscreteUnits>, value: }, ...]
-This can be done with plain list too. Keep in mind that the order is reversed.
-* Notes
-If a component needs to plot / update something which is not in its file, it
-will trigger a function in the parent (timechart.js) to let it pass the
-information to the child instead of using ~parent~ argument or something.
-For example, right now, this applies to events from legend panel while
-- toggling historical lines (inform history component)
-- change confidence interval (prediction component)
-- toggling prediction markers (prediction components)
-- pressing next / prev buttons (all components)
 * Other tasks
 ** DONE Plot for showing probability distribution
 CLOSED: [2017-03-31 Fri 00:52]
@@ -70,6 +54,9 @@ CLOSED: [2017-03-31 Fri 00:52]
     - x values (131 or 33 numbers)
     - y values (probabilities for each x)
   - actual value, if present
-** TODO Take arguments in control-panel
+** DONE Take arguments in control-panel
+CLOSED: [2017-03-31 Fri 03:58]
+** TODO Fix mutation of model getter
+** TODO Handle stats cases with no predictions
 ** Optimize bundle
 https://hackernoon.com/optimising-your-application-bundle-size-with-webpack-e85b00bab579
