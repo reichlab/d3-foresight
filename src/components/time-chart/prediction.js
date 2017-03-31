@@ -304,15 +304,15 @@ export default class Prediction {
         high: startData
       }]
 
-      let names = ['oneWk', 'twoWk', 'threeWk', 'fourWk']
-      let nextTimePoints = utils.getNextIndices(idx, this.modelData.length)
+      let idxLimit = Math.min(0, (idx + 4) - this.modelData.length)
+      let targetNames = ['oneWk', 'twoWk', 'threeWk', 'fourWk'].slice(0, 4 - idxLimit)
 
-      nextTimePoints.forEach((item, index) => {
+      targetNames.forEach((item, index) => {
         nextTimeData.push({
-          index: item,
-          point: predData[names[index]].point,
-          low: predData[names[index]].low[cid],
-          high: predData[names[index]].high[cid]
+          index: index + idx + 1,
+          point: predData[item].point,
+          low: predData[item].low[cid],
+          high: predData[item].high[cid]
         })
       })
 

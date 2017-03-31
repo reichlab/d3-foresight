@@ -88,18 +88,6 @@ export const getYDomain = data => {
 }
 
 /**
- * Return next four indices for given index
- */
-export const getNextIndices = (currentIndex, limit) => {
-  let nextIndices = []
-  for (let i = 0; i < 4; i++) {
-    currentIndex += 1
-    if (currentIndex < limit) nextIndices.push(currentIndex)
-  }
-  return nextIndices
-}
-
-/**
  * Return rgba for hex
  */
 export const hexToRgba = (hex, alpha) => tinycolor(hex).setAlpha(alpha).toRgbString()
