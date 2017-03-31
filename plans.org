@@ -59,12 +59,17 @@ For example, right now, this applies to events from legend panel while
 - toggling prediction markers (prediction components)
 - pressing next / prev buttons (all components)
 * Other tasks
-** TODO Plot for showing probability distribution
+** DONE Plot for showing probability distribution
+CLOSED: [2017-03-31 Fri 00:52]
 - Might have to make the control-panel survive outside the timeChart
 - Needs
   - list of models with
+    - id
+    - meta
+    - stats
     - x values (131 or 33 numbers)
     - y values (probabilities for each x)
   - actual value, if present
+** TODO Take arguments in control-panel
 ** Optimize bundle
 https://hackernoon.com/optimising-your-application-bundle-size-with-webpack-e85b00bab579

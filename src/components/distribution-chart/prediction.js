@@ -1,3 +1,5 @@
+import * as d3 from 'd3'
+
 /**
  * Prediction marker with following components
  * - Area
@@ -31,8 +33,8 @@ export default class Prediction {
     this.noData = true
   }
 
-  plot (parent, data) {
-    if (data === null) {
+  plot (parent, modelData) {
+    if (modelData.x.length === null) {
       // There is no data for current point, hide the markers without
       // setting exposed hidden flag
       this.noData = true
@@ -43,6 +45,36 @@ export default class Prediction {
         // No one is hiding me
         this.showMarkers()
       }
+
+      let plottingData = modelData.x.map((px, idx) => {
+        return {
+          x: px,
+          y: modelData.y[idx]
+        }
+      })
+
+      let line = d3.line()
+          .curve(d3.curveBasis)
+          .x(d => parent.xScale(d.x))
+          .y(d => parent.yScale(d.y))
+
+      this.predictionGroup.select('.line-prediction')
+        .datum(plottingData)
+        .transition()
+        .duration(200)
+        .attr('d', line)
+
+      let area = d3.area()
+          .curve(d3.curveBasis)
+          .x(d => parent.xScale(d.x))
+          .y1(d => parent.yScale(0))
+          .y0(d => parent.yScale(d.y))
+
+      this.predictionGroup.select('.area-prediction')
+        .datum(plottingData)
+        .transition()
+        .duration(200)
+        .attr('d', area)
     }
   }
 

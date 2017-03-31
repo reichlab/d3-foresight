@@ -87,6 +87,10 @@ export const getYDomain = data => {
   return [0, Math.max(13, 1.1 * Math.max(...maxValues))]
 }
 
+export const getXDomain = data => {
+  return [0, data.timePoints.length - 1]
+}
+
 /**
  * Return rgba for hex
  */

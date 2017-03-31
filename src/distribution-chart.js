@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 import * as commonComponents from './components/common'
 import * as distributionChartComponents from './components/distribution-chart'
+import * as utils from './utilities/distribution-chart'
 import Chart from './chart'
 
 export default class DistributionChart extends Chart {
@@ -16,9 +17,12 @@ export default class DistributionChart extends Chart {
     this.yAxis = new commonComponents.YAxis(this)
     this.xAxis = new commonComponents.XAxis(this)
 
-    this.overlay = new distributionChartComponents.Overlay(this)
     this.actual = new distributionChartComponents.Actual(this)
     this.predictions = []
+
+    // Dummy fill-ins
+    this.confidenceIntervals = ['a', 'b']
+    this.cid = 0
 
     // Control panel
     this.controlPanel = new commonComponents.ControlPanel(this, (event, payload) => {
@@ -32,7 +36,9 @@ export default class DistributionChart extends Chart {
 
   // plot data
   plot (data) {
-    // TODO Setup domains
+    this.xScale.domain(utils.getXDomain(data))
+    this.yScale.domain(utils.getYDomain(data))
+
     this.xAxis.plot(this)
     this.yAxis.plot(this)
 
@@ -74,7 +80,7 @@ export default class DistributionChart extends Chart {
       } else {
         predMarker = this.predictions[markerIndex]
       }
-      predMarker.plot(this, m.data)
+      predMarker.plot(this, m.predictions)
     })
 
     // Update models shown in control panel
