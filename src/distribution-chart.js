@@ -45,9 +45,6 @@ export default class DistributionChart extends Chart {
     // Update markers with data
     this.actual.plot(this, data.actual)
 
-    // Get meta data and statistics
-    this.modelStats = data.models.map(m => m.stats)
-
     // Setup colors
     if (data.models.length > 10) {
       this.colors = d3.schemeCategory20
@@ -74,7 +71,7 @@ export default class DistributionChart extends Chart {
       if (markerIndex === -1) {
         // The marker is not present from previous calls to plot
         predMarker = new distributionChartComponents.Prediction(
-          this, m.id, m.meta, this.colors[idx]
+          this, m.id, m.meta, m.stats, this.colors[idx]
         )
         this.predictions.push(predMarker)
       } else {
@@ -84,7 +81,7 @@ export default class DistributionChart extends Chart {
     })
 
     // Update models shown in control panel
-    this.controlPanel.plot(this, (predictionId, hidePrediction) => {
+    this.controlPanel.plot(this.predictions, (predictionId, hidePrediction) => {
       let predMarker = this.predictions[this.predictions.map(p => p.id).indexOf(predictionId)]
       predMarker.hidden = hidePrediction
     })

@@ -101,9 +101,6 @@ export default class TimeChart extends Chart {
     // Reset history lines
     this.history.plot(this, data.history)
 
-    // Get meta data and statistics
-    this.modelStats = data.models.map(m => m.stats)
-
     let totalModels = data.models.length
     let onsetDiff = (this.onsetHeight - 2) / (totalModels + 1)
 
@@ -134,7 +131,7 @@ export default class TimeChart extends Chart {
         // The marker is not present from previous calls to plot
         let onsetYPos = (idx + 1) * onsetDiff + this.height + 1
         predMarker = new timeChartComponents.Prediction(
-          this, m.id, m.meta, this.colors[idx], onsetYPos
+          this, m.id, m.meta, m.stats, this.colors[idx], onsetYPos
         )
         this.predictions.push(predMarker)
       } else {
@@ -148,7 +145,7 @@ export default class TimeChart extends Chart {
     })
 
     // Update models shown in control panel
-    this.controlPanel.plot(this, (predictionId, hidePrediction) => {
+    this.controlPanel.plot(this.predictions, (predictionId, hidePrediction) => {
       let predMarker = this.predictions[this.predictions.map(p => p.id).indexOf(predictionId)]
       predMarker.hidden = hidePrediction
     })

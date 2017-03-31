@@ -409,20 +409,25 @@ class StatsDrawer {
     }
   }
 
-  plot (modelIds, modelMeta, stats, colors) {
+  plot (predictions) {
     this.drawerSelection.selectAll('*').remove()
 
     let heading = this.drawerSelection.append('div')
         .attr('class', 'stat-heading')
 
+    let modelStats = predictions.map(p => p.stats)
+    let modelIds = predictions.map(p => p.id)
+    let modelMeta = predictions.map(p => p.meta)
+    let modelColors = predictions.map(p => p.color)
+
     // Assume if one model has no stats, no one has
-    if (stats[0]) {
+    if (modelStats[0]) {
       // Formatted stuff
       let statsData = {}
       let statsMeta = this.statsMeta[this.selectedStat]
       let keys = ['oneWk', 'twoWk', 'threeWk', 'fourWk']
 
-      let data = stats.map(s => s[statsMeta.id])
+      let data = modelStats.map(s => s[statsMeta.id])
       statsData = data.map(d => {
         let ob = {}
         keys.forEach(key => {
@@ -450,7 +455,7 @@ class StatsDrawer {
         .attr('class', 'stat-btn button is-small previous-stat-btn')
         .on('click', () => {
           this.selectedStat = Math.max(this.selectedStat - 1, 0)
-          this.plot(modelIds, modelMeta, stats, colors)
+          this.plot(predictions)
         })
 
       this.previousBtn.append('span')
@@ -467,7 +472,7 @@ class StatsDrawer {
         .attr('class', 'stat-btn button is-small next-stat-btn')
         .on('click', () => {
           this.selectedStat = Math.min(this.selectedStat + 1, this.statsMeta.length - 1)
-          this.plot(modelIds, modelMeta, stats, colors)
+          this.plot(predictions)
         })
 
       this.nextBtn.append('span')
@@ -504,7 +509,7 @@ class StatsDrawer {
       this.rows = modelIds.map((id, index) => {
         let statsItem = statsData[index]
         let tr = tbody.append('tr')
-        tr.html(`<td style="color:${colors[index]}"> ${id} </td>
+        tr.html(`<td style="color:${modelColors[index]}"> ${id} </td>
           <td class="${statsItem.oneWk.best ? 'bold' : ''}">${statsItem.oneWk.value}</td>
           <td class="${statsItem.twoWk.best ? 'bold' : ''}">${statsItem.twoWk.value}</td>
           <td class="${statsItem.threeWk.best ? 'bold' : ''}">${statsItem.threeWk.value}</td>
@@ -581,14 +586,9 @@ export default class ControlPanel {
     this.controlButtons.toggleLegendBtn()
   }
 
-  plot (parent, panelHook) {
-    this.legendDrawer.plot(parent.predictions, panelHook)
-
-    this.statsDrawer.plot(
-      parent.predictions.map(p => p.id),
-      parent.predictions.map(p => p.meta),
-      parent.modelStats,
-      parent.predictions.map(p => p.color))
+  plot (predictions, panelHook) {
+    this.legendDrawer.plot(predictions, panelHook)
+    this.statsDrawer.plot(predictions)
   }
 
   update (predictions) {
