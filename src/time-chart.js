@@ -161,6 +161,9 @@ export default class TimeChart extends Chart {
       let predMarker = this.predictions[this.predictions.map(p => p.id).indexOf(predictionId)]
       predMarker.hidden = hidePrediction
     })
+
+    // Hot start the chart
+    this.update(this.currentIdx)
   }
 
   /**
