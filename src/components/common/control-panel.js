@@ -5,12 +5,11 @@ import palette from '../../styles/palette.json'
  * Side buttons in control panel
  */
 class ControlButtons {
-  constructor (panelSelection, infoTooltip, eventHook) {
+  constructor (panelSelection, infoTooltip, panelConfig, eventHook) {
     let navControls = panelSelection.append('div')
         .attr('class', 'nav-controls')
 
-    // Save all the buttons for toggling state and stuff
-    this.buttons = [
+    let buttonData = [
       {
         name: 'legendBtn',
         icon: 'fa-map-o',
@@ -35,7 +34,14 @@ class ControlButtons {
         tooltipText: 'Move forward',
         event: 'btn:next'
       }
-    ].map(data => {
+    ]
+
+    if (!panelConfig.stats) {
+      buttonData.splice(1, 1)
+    }
+
+    // Save all the buttons for toggling state and stuff
+    this.buttons = buttonData.map(data => {
       let btn = navControls.append('a')
           .attr('class', 'button is-small is-info is-outlined')
       btn.append('span')
@@ -78,7 +84,7 @@ class ControlButtons {
  * @param eventHook - Event hook callback to be used by controlpanel
  */
 class LegendDrawer {
-  constructor (panelSelection, infoTooltip, confidenceIntervals, eventHook) {
+  constructor (panelSelection, confidenceIntervals, panelConfig, infoTooltip, eventHook) {
     let legendGroup = panelSelection.append('div')
         .attr('class', 'legend nav-drawer')
 
@@ -90,10 +96,13 @@ class LegendDrawer {
     let legendControlContainer = legendGroup.append('div')
         .attr('class', 'legend-control-container')
 
-    let legendCIItem = legendControlContainer.append('div')
+    let legendCIItem, legendCIButtons
+    if (panelConfig.ci) {
+      legendCIItem = legendControlContainer.append('div')
         .attr('class', 'item control-item')
-    legendCIItem.append('span').text('CI')
-    let legendCIButtons = legendCIItem.append('span')
+      legendCIItem.append('span').text('CI')
+      legendCIButtons = legendCIItem.append('span')
+    }
 
     let legendShowHideItem = legendControlContainer.append('div')
         .attr('class', 'item control-item')
@@ -112,8 +121,7 @@ class LegendDrawer {
     legendGroup.append('div')
       .attr('class', 'legend-prediction-container')
 
-    // Add rows for actual lines
-    this.actualItems = [
+    let actualItems = [
       {
         class: 'legend-item-actual',
         color: palette.actual,
@@ -141,7 +149,17 @@ class LegendDrawer {
           text: 'Toggle historical data lines'
         }
       }
-    ].map(data => {
+    ]
+
+    let flags = [
+      panelConfig.actual,
+      panelConfig.observed,
+      panelConfig.history
+    ]
+    let rowsToShow = actualItems.filter((item, idx) => flags[idx])
+
+    // Add rows for actual lines
+    this.actualItems = rowsToShow.map(data => {
       let item = legendActualContainer.append('div')
           .attr('class', `item ${data.id}`)
 
@@ -166,45 +184,49 @@ class LegendDrawer {
       return item
     })
 
-    // Add extra props to history item
-    let historyItem = this.actualItems[2]
-    historyItem.style('cursor', 'pointer')
-    this.historyIcon = historyItem.select('i')
-    historyItem
-      .on('click', () => {
-        this.toggleHistoryIcon()
-        eventHook('legend:history')
-      })
-
-    // Add confidence buttons
-    this.confButtons = confidenceIntervals.map((c, idx) => {
-      let confButton = legendCIButtons.append('span')
-          .attr('class', 'toggle-button')
-          .style('cursor', 'pointer')
-          .text(c)
-
-      confButton
-        .on('click', function () {
-          legendCIButtons.selectAll('.toggle-button')
-            .classed('selected', false)
-          d3.select(this).classed('selected', true)
-
-          eventHook('legend:ci', idx)
+    if (panelConfig.history) {
+      // Add extra props to history item
+      let historyItem = this.actualItems[2]
+      historyItem.style('cursor', 'pointer')
+      this.historyIcon = historyItem.select('i')
+      historyItem
+        .on('click', () => {
+          this.toggleHistoryIcon()
+          eventHook('legend:history')
         })
-        .on('mouseover', () => infoTooltip.show())
-        .on('mouseout', () => infoTooltip.hide())
-        .on('mousemove', () => {
-          infoTooltip.renderText({
-            title: 'Confidence Interval',
-            text: 'Select confidence interval for prediction markers'
+    }
+
+    if (panelConfig.ci) {
+      // Add confidence buttons
+      this.confButtons = confidenceIntervals.map((c, idx) => {
+        let confButton = legendCIButtons.append('span')
+            .attr('class', 'toggle-button')
+            .style('cursor', 'pointer')
+            .text(c)
+
+        confButton
+          .on('click', function () {
+            legendCIButtons.selectAll('.toggle-button')
+              .classed('selected', false)
+            d3.select(this).classed('selected', true)
+
+            eventHook('legend:ci', idx)
           })
-          infoTooltip.move({
-            x: d3.event.pageX,
-            y: d3.event.pageY
-          }, 'left')
-        })
-      return confButton
-    })
+          .on('mouseover', () => infoTooltip.show())
+          .on('mouseout', () => infoTooltip.hide())
+          .on('mousemove', () => {
+            infoTooltip.renderText({
+              title: 'Confidence Interval',
+              text: 'Select confidence interval for prediction markers'
+            })
+            infoTooltip.move({
+              x: d3.event.pageX,
+              y: d3.event.pageY
+            }, 'left')
+          })
+        return confButton
+      })
+    }
 
     let that = this
 
@@ -377,28 +399,14 @@ class LegendDrawer {
  * Stats nav drawer
  */
 class StatsDrawer {
-  constructor (panelSelection, infoTooltip) {
+  constructor (panelSelection, statsMeta, infoTooltip) {
     this.drawerSelection = panelSelection.append('div')
       .attr('class', 'stats nav-drawer')
 
-    // TODO Don't write stuff here
     this.infoTooltip = infoTooltip
-    this.statsMeta = [
-      {
-        id: 'mae',
-        name: 'Mean Absolute Error',
-        url: 'https://en.wikipedia.org/wiki/Mean_absolute_error',
-        bestFunc: Math.min
-      }, {
-        id: 'log',
-        name: 'Mean Log Score',
-        url: 'https://en.wikipedia.org/wiki/Scoring_rule#Logarithmic_scoring_rule',
-        bestFunc: Math.max
-      }
-    ]
-
-    // Use log score as default
-    this.selectedStat = 1
+    this.statsMeta = statsMeta
+    // Use last stat as default
+    this.selectedStat = statsMeta.length - 1
   }
 
   toggleDrawer () {
@@ -421,32 +429,25 @@ class StatsDrawer {
     let modelColors = predictions.map(p => p.color)
 
     // Assume if one model has no stats, no one has
-    if (modelStats[0]) {
+    if (modelStats.length > 0) {
       // Formatted stuff
-      let statsData = {}
       let statsMeta = this.statsMeta[this.selectedStat]
-      let keys = ['oneWk', 'twoWk', 'threeWk', 'fourWk']
 
-      let data = modelStats.map(s => s[statsMeta.id])
-      statsData = data.map(d => {
-        let ob = {}
-        keys.forEach(key => {
-          ob[key] = {
-            value: d[key] ? d[key].toFixed(2) : 'NA',
+      let selectedModelStats = modelStats.map(s => s[statsMeta.id])
+      let statsData = selectedModelStats.map(ms => {
+        return ms.map(value => {
+          return {
+            value: value ? parseFloat(value.toFixed(2)) : 0,
             best: false
           }
         })
-        return ob
       })
 
-      // Apply properties to best item
-      // Don't go for it when value is null
-      if (data[0]['oneWk']) {
-        keys.forEach(key => {
-          let perKey = data.map(d => d[key])
-          let bestIdx = perKey.indexOf(statsMeta.bestFunc(...perKey))
-          statsData[bestIdx][key].best = true
-        })
+      // Get the best item from each column
+      for (let colIdx = 0; colIdx < statsData[0].length; colIdx++) {
+        let column = statsData.map(row => row[colIdx].value)
+        let bestIdx = column.indexOf(statsMeta.bestFunc(...column))
+        statsData[bestIdx][colIdx].best = true
       }
 
       // Create header
@@ -488,32 +489,22 @@ class StatsDrawer {
 
       let tableWrapper = this.drawerSelection.append('div')
           .attr('class', 'table-wrapper')
-      // Create Tables
       let table = tableWrapper.append('table')
           .attr('class', 'table is-striped is-bordered')
-
       let thead = table.append('thead')
       thead.append('tr')
-        .html(`<th class="center">Model</th>
-               <th colspan="4" class="center">Weekly predictions</th>`)
-
-      thead.append('tr')
-        .html(`<th></th>
-               <th>1 wk</th>
-               <th>2 wk</th>
-               <th>3 wk</th>
-               <th>4 wk</th>`)
-
+        .html(['<th>Model</th>', ...statsMeta.header.map(d => `<th>${d}</th>`)].join(''))
       let tbody = table.append('tbody')
 
       this.rows = modelIds.map((id, index) => {
-        let statsItem = statsData[index]
         let tr = tbody.append('tr')
-        tr.html(`<td style="color:${modelColors[index]}"> ${id} </td>
-          <td class="${statsItem.oneWk.best ? 'bold' : ''}">${statsItem.oneWk.value}</td>
-          <td class="${statsItem.twoWk.best ? 'bold' : ''}">${statsItem.twoWk.value}</td>
-          <td class="${statsItem.threeWk.best ? 'bold' : ''}">${statsItem.threeWk.value}</td>
-          <td class="${statsItem.fourWk.best ? 'bold' : ''}">${statsItem.fourWk.value}</td>`)
+        let row = [
+          `<td style="color:${modelColors[index]}"> ${id} </td>`,
+          ...statsData[index].map(sd => {
+            return `<td class="${sd.best ? 'bold' : ''}">${sd.value}</td>`
+          })
+        ]
+        tr.html(row.join(''))
 
         tr.select('td')
           .on('mouseover', () => this.infoTooltip.show())
@@ -546,41 +537,51 @@ class StatsDrawer {
  * nav-drawers and buttons
  */
 export default class ControlPanel {
-  constructor (parent, panelHook) {
+  constructor (parent, panelConfig, panelHook) {
     // Main panel selection
     let panelSelection = parent.elementSelection.append('div')
         .attr('class', 'd3-foresight-controls')
 
+    this.config = panelConfig
+
     // Add legend drawer
     this.legendDrawer = new LegendDrawer(
       panelSelection,
+      parent.config.confidenceIntervals,
+      this.config,
       parent.infoTooltip,
-      parent.confidenceIntervals,
       panelHook
     )
 
-    // Set value of historical line selection and default confidence
-    this.legendDrawer.toggleConfidenceBtn(parent.cid)
+    if (this.config.ci) {
+      this.legendDrawer.toggleConfidenceBtn(parent.cid)
+    }
 
-    // Model statistics drawer
-    this.statsDrawer = new StatsDrawer(panelSelection, parent.infoTooltip)
-    this.statsDrawer.toggleDrawer()
+    if (this.config.stats) {
+      // Model statistics drawer
+      this.statsDrawer = new StatsDrawer(
+        panelSelection, parent.config.statsMeta, parent.infoTooltip
+      )
+      this.statsDrawer.toggleDrawer()
+    }
 
     // Buttons on the side of panel
-    this.controlButtons = new ControlButtons(panelSelection, parent.infoTooltip, event => {
-      if (['btn:next', 'btn:back'].includes(event)) {
-        // Simple triggers, pass directly
-        panelHook(event)
-      } else {
-        if (event === 'btn:legend') {
-          this.legendDrawer.toggleDrawer()
-          this.controlButtons.toggleLegendBtn()
-        } else if (event === 'btn:stats') {
-          this.statsDrawer.toggleDrawer()
-          this.controlButtons.toggleStatsBtn()
+    this.controlButtons = new ControlButtons(
+      panelSelection, parent.infoTooltip, this.config, event => {
+        if (['btn:next', 'btn:back'].includes(event)) {
+          // Simple triggers, pass directly
+          panelHook(event)
+        } else {
+          if (event === 'btn:legend') {
+            this.legendDrawer.toggleDrawer()
+            this.controlButtons.toggleLegendBtn()
+          } else if (event === 'btn:stats') {
+            this.statsDrawer.toggleDrawer()
+            this.controlButtons.toggleStatsBtn()
+          }
         }
       }
-    })
+    )
 
     // Turn on legend by default
     this.controlButtons.toggleLegendBtn()
@@ -588,7 +589,9 @@ export default class ControlPanel {
 
   plot (predictions, panelHook) {
     this.legendDrawer.plot(predictions, panelHook)
-    this.statsDrawer.plot(predictions)
+    if (this.config.stats) {
+      this.statsDrawer.plot(predictions)
+    }
   }
 
   update (predictions) {

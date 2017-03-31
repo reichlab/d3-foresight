@@ -12,7 +12,8 @@ export default class TimeChart extends Chart {
         description: 'Baseline value',
         utl: '#'
       },
-      pointType: 'regular-week'
+      pointType: 'regular-week',
+      confidenceIntervals: []
     }
 
     let elementSelection = d3.select(element)
@@ -38,26 +39,37 @@ export default class TimeChart extends Chart {
     this.observed = new timeChartComponents.Observed(this)
     this.predictions = []
     this.eventHooks = []
+    this.cid = this.config.confidenceIntervals.length - 1
 
-    this.confidenceIntervals = ['90%', '50%']
-    this.cid = 1 // Use 50% as default
+    let showCi = this.cid !== -1
+    let showStats = this.config.statsMeta.length > 0
+    let panelConfig = {
+      actual: true,
+      observed: true,
+      history: true,
+      ci: showCi,
+      stats: showStats
+    }
 
     // Control panel
-    this.controlPanel = new commonComponents.ControlPanel(this, (event, payload) => {
-      if (event === 'legend:history') {
-        this.history.hidden = !this.history.hidden
-      } else if (event === 'legend:ci') {
-        // payload is `cid`
-        this.predictions.map(p => {
-          this.cid = p.cid = payload
-          p.update(this.currentIdx)
-        })
-      } else if (event === 'btn:next') {
-        this.forward()
-      } else if (event === 'btn:back') {
-        this.backward()
+    this.controlPanel = new commonComponents.ControlPanel(
+      this,
+      panelConfig,
+      (event, payload) => {
+        if (event === 'legend:history') {
+          this.history.hidden = !this.history.hidden
+        } else if (event === 'legend:ci') {
+          this.predictions.map(p => {
+            this.cid = p.cid = payload
+            p.update(this.currentIdx)
+          })
+        } else if (event === 'btn:next') {
+          this.forward()
+        } else if (event === 'btn:back') {
+          this.backward()
+        }
       }
-    })
+    )
   }
 
   // plot data
@@ -145,7 +157,7 @@ export default class TimeChart extends Chart {
     })
 
     // Update models shown in control panel
-    this.controlPanel.plot(this.predictions, (predictionId, hidePrediction) => {
+    this.controlPanel.plot(this.predictions, data.statsMeta, (predictionId, hidePrediction) => {
       let predMarker = this.predictions[this.predictions.map(p => p.id).indexOf(predictionId)]
       predMarker.hidden = hidePrediction
     })

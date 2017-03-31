@@ -17,7 +17,8 @@ export default class Chart {
           description: 'Y axis',
           url: '#'
         }
-      }
+      },
+      statsMeta: []
     }
     this.config = Object.assign({}, defaultConfig, options)
 
