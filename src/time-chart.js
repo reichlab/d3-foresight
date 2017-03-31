@@ -157,7 +157,7 @@ export default class TimeChart extends Chart {
     })
 
     // Update models shown in control panel
-    this.controlPanel.plot(this.predictions, data.statsMeta, (predictionId, hidePrediction) => {
+    this.controlPanel.plot(this.predictions, (predictionId, hidePrediction) => {
       let predMarker = this.predictions[this.predictions.map(p => p.id).indexOf(predictionId)]
       predMarker.hidden = hidePrediction
     })
