@@ -30,7 +30,16 @@ export default class DistributionChart extends Chart {
     }
 
     // Control panel
-    this.controlPanel = new commonComponents.ControlPanel(this, panelConfig, () => {})
+    this.controlPanel = new commonComponents.ControlPanel(
+      this, panelConfig,
+      (event, payload) => {
+        if (event === 'btn:next') {
+          this.forward()
+        } else if (event === 'btn:back') {
+          this.backward()
+        }
+      }
+    )
   }
 
   // plot data
