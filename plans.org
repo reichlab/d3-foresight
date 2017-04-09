@@ -60,5 +60,12 @@ CLOSED: [2017-03-31 Fri 00:52]
 CLOSED: [2017-03-31 Fri 03:58]
 ** TODO Fix mutation of model getter
 ** TODO Handle stats cases with no predictions
+** Distributions chart
+- Take complete data for each week and pass to each panel
+- Panel generates a dropdown and uses ~Prediction~ and ~Actual~ to plot the curves
+- Main class probably maintains week pointer and updates across the major axis
+  (time axis)
+- Pointer gets updated on each forward/backward event from control-panel and
+  also triggers a hook (check how this works in time-chart)
 ** Optimize bundle
 https://hackernoon.com/optimising-your-application-bundle-size-with-webpack-e85b00bab579
