@@ -110,9 +110,10 @@ class LegendDrawer {
     let legendShowHideButtons = legendShowHideItem.append('span')
 
     // Add filter box
-    let legendSearchItem = legendControlContainer.append('div')
-        .attr('class', 'item')
-    this.searchBox = legendSearchItem.append('input')
+    this.legendSearchItem = legendControlContainer.append('div')
+      .attr('class', 'item')
+      .style('display', 'none')
+    this.searchBox = this.legendSearchItem.append('input')
       .attr('class', 'input is-small search-input')
       .attr('type', 'text')
       .attr('placeholder', 'Search models')
@@ -319,15 +320,22 @@ class LegendDrawer {
     let infoTooltip = this.infoTooltip
     let that = this
 
-    // Bind search event
-    this.searchBox.keyup = null
-    this.searchBox.on('keyup', function () {
-      // Do a full text search on key event
-      let searchBase = predictions.map(p => {
-        return `${p.id} ${p.meta.name} + ${p.meta.description}`.toLowerCase()
+    // Don't show search bar if predictions are less than or equal to maxNPreds
+    let maxNPreds = 10
+    if (predictions.length > maxNPreds) {
+      this.legendSearchItem.style('display', null)
+      // Bind search event
+      this.searchBox.keyup = null
+      this.searchBox.on('keyup', function () {
+        // Do a full text search on key event
+        let searchBase = predictions.map(p => {
+          return `${p.id} ${p.meta.name} + ${p.meta.description}`.toLowerCase()
+        })
+        that.showRows(searchBase.map(sb => sb.includes(this.value.toLowerCase())))
       })
-      that.showRows(searchBase.map(sb => sb.includes(this.value.toLowerCase())))
-    })
+    } else {
+      this.legendSearchItem.style('display', 'none')
+    }
 
     // Add prediction items
     this.rows = predictions.map(p => {

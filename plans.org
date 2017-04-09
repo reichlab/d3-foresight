@@ -10,6 +10,8 @@ the development goes on.
 ** TODO FIx position of control panel
 ** TODO Font-awesome inside
 ** TODO control buttons padding fix
+** DONE Hide search button when not overflowing
+CLOSED: [2017-04-09 Sun 04:59]
 * Things to ask user for
 ** DONE Axes + baseline text
 CLOSED: [2017-03-27 Mon 04:21]
