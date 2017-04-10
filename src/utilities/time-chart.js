@@ -21,10 +21,12 @@ export const getFirstPlottingIndex = (data, isLiveSeason) => {
     }))
   } else {
     // Start at the first prediction
-    let modelPredictions = data.models
-        .map(m => {
-          return m.predictions[0].week
-        }).filter(d => d !== -1)
+    let modelPredictions = data.models.map(m => {
+      for (let i = 0; i < m.predictions.length; i++) {
+        if (m.predictions[i] !== null) return i
+      }
+      return 0
+    })
 
     if (modelPredictions.length === 0) {
       // Start at the most recent actual data

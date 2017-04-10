@@ -26,7 +26,8 @@ Array of pure values like:
 ** DONE History
 CLOSED: [2017-03-30 Thu 15:43]
 Dict of key (identifier of history) and values (array like actual)
-** TODO Models
+** DONE Models
+CLOSED: [2017-04-10 Mon 10:43]
 - for each model
   - id: unique identifier
   - stats: TODO
