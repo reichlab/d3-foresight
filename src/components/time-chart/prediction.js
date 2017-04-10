@@ -148,7 +148,7 @@ export default class Prediction {
       let timeChartTooltip = this.timeChartTooltip
 
       // Move things
-      let onset = this.modelData[idx].onsetWeek
+      let onset = this.modelData[idx].onsetTime
 
       this.onsetGroup.select('.onset-mark')
         .transition()
@@ -201,8 +201,8 @@ export default class Prediction {
         .attr('x1', this.xScale(onset.high[cid]))
         .attr('x2', this.xScale(onset.high[cid]))
 
-      let pw = this.modelData[idx].peakWeek
-      let pp = this.modelData[idx].peakPercent
+      let pw = this.modelData[idx].peakTime
+      let pp = this.modelData[idx].peakValue
 
       let leftW = this.xScale(pw.point)
       let leftP = this.yScale(pp.point)

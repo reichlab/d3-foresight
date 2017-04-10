@@ -80,7 +80,7 @@ export const getYDomain = data => {
       Math.max(...d.twoWk.high),
       Math.max(...d.threeWk.high),
       Math.max(...d.fourWk.high),
-      Math.max(...d.peakPercent.high)
+      Math.max(...d.peakValue.high)
     ]))))
   })
   // Clipping at 13 since we don't predict beyond that
