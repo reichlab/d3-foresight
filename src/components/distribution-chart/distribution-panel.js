@@ -9,7 +9,7 @@ import * as utils from '../../utilities/distribution-chart'
  */
 export default class DistributionPanel {
   constructor (svg, width, height, infoTooltip) {
-    this.xScale = d3.scaleLinear().range([0, width])
+    this.xScale = d3.scalePoint().range([0, width])
     this.yScale = d3.scaleLinear().range([height, 0])
 
     this.xAxis = new commonComponents.XAxis(
@@ -33,14 +33,15 @@ export default class DistributionPanel {
     // List of targets to display
     this.targets = []
     this.selectedTargetIdx = 0
+    this.svg = svg
   }
 
   plot (data) {
     // Populate list of targets using the first model
     this.targets = data.models[0].targets.map(t => t.name)
 
-    this.xScale.domain(utils.getXDomain(data), this.selectedTargetIdx)
-    this.yScale.domain(utils.getYDomain(data), this.selectedTargetIdx)
+    this.xScale.domain(utils.getXDomain(data, this.selectedTargetIdx))
+    this.yScale.domain(utils.getYDomain(data, this.selectedTargetIdx))
 
     this.xAxis.plot(this.xScale)
     this.yAxis.plot(this.yScale)
@@ -74,13 +75,13 @@ export default class DistributionPanel {
       if (markerIndex === -1) {
         // The marker is not present from previous calls to plot
         predMarker = new Prediction(
-          this, m.id, m.meta, m.stats, this.colors[idx]
+          this.svg, m.id, m.meta, m.stats, this.colors[idx]
         )
         this.predictions.push(predMarker)
       } else {
         predMarker = this.predictions[markerIndex]
       }
-      predMarker.plot(this, m.predictions)
+      predMarker.plot(this, m.targets[this.selectedTargetIdx])
     })
   }
 }

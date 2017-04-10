@@ -19,7 +19,7 @@ export const getXDateDomain = (timePoints, pointType) => {
 
 export const getYDomain = (data, targetIdx) => {
   let modelMaxes = data.models.map(m => {
-    Math.max(...m.targets[targetIdx].data.map(d => d[1]))
+    return Math.max(...m.targets[targetIdx].data.map(d => d[1]))
   })
   return [0, Math.max(...modelMaxes)]
 }

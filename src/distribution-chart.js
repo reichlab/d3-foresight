@@ -8,13 +8,18 @@ export default class DistributionChart extends Chart {
   constructor (element, options = {}) {
     let defaultConfig = {
       pointType: 'regular-week',
-      confidenceIntervals: []
+      confidenceIntervals: [],
+      margin: {
+        top: 5,
+        right: 50,
+        bottom: 80,
+        left: 5
+      }
     }
 
     let elementSelection = d3.select(element)
         .attr('class', 'd3-foresight-chart d3-foresight-distribution-chart')
-    // Using onset height of 10 give space for pointer
-    super(elementSelection, 10, Object.assign({}, defaultConfig, options))
+    super(elementSelection, 0, Object.assign({}, defaultConfig, options))
 
     // Initialize scales
     this.xScale = d3.scaleLinear().range([0, this.width])
@@ -34,7 +39,7 @@ export default class DistributionChart extends Chart {
 
     // create 4 panels and assign new svgs to them
     let panelMargin = {
-      top: 10, right: 10, bottom: 10, left: 10
+      top: 5, right: 10, bottom: 50, left: 30
     }
     let panelHeight = this.height / 2
     let panelWidth = this.width / 2
@@ -116,7 +121,10 @@ export default class DistributionChart extends Chart {
     this.pointer.plot(data.currentIdx)
 
     // Provide curve data to the panels
-    this.panels.forEach(p => p.plot(data))
+    this.panels.forEach((p, idx) => {
+      p.selectedTargetIdx = idx
+      p.plot(data)
+    })
 
     // Update models shown in control panel
     this.controlPanel.plot(this.panels[0].predictions, (predictionId, hidePrediction) => {
