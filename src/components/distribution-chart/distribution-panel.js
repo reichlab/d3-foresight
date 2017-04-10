@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import * as commonComponents from '../common'
-// import Actual from './actual'
+import Actual from './actual'
 import Prediction from './prediction'
 import * as utils from '../../utilities/distribution-chart'
 
@@ -28,12 +28,14 @@ export default class DistributionPanel {
       infoTooltip
     )
 
-    // this.actual = new Actual(this)
+    this.svg = svg
+    this.height = height
+    this.width = width
+    this.actual = new Actual(this)
     this.predictions = []
     // List of targets to display
     this.targets = []
     this.selectedTargetIdx = 0
-    this.svg = svg
   }
 
   plot (data) {
@@ -46,8 +48,8 @@ export default class DistributionPanel {
     this.xAxis.plot(this.xScale)
     this.yAxis.plot(this.yScale)
 
-    // Update markers with data
-    // this.actual.plot(this, data.actual)
+    // Use actual from first model
+    this.actual.plot(data.models[0].targets[this.selectedTargetIdx].actual, this.xScale)
 
     // Setup colors
     if (data.models.length > 10) {

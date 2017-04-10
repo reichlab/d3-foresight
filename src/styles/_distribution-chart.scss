@@ -10,3 +10,10 @@
     opacity: .05;
   }
 }
+
+.actual-group {
+  .actual {
+    stroke: $actual;
+    stroke-width: 2px;
+  }
+}
