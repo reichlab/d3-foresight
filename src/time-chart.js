@@ -100,8 +100,8 @@ export default class TimeChart extends Chart {
 
     // Update domains
     this.yScale.domain(utils.getYDomain(data))
-    this.xScale.domain(utils.getXDomain(data))
-    this.xScaleDate.domain(utils.getXDateDomain(data, this.config.pointType))
+    this.xScale.domain(utils.getXDomain(this.timePoints))
+    this.xScaleDate.domain(utils.getXDateDomain(this.timePoints, this.config.pointType))
     this.xScalePoint.domain(this.ticks)
 
     this.xAxis.plot(this.xScalePoint, this.xScaleDate)

@@ -1,16 +1,12 @@
 import * as d3 from 'd3'
 
 /**
- * Prediction marker with following components
- * - Area
- * - Line and dots
- * - Onset
- * - Peak
+ * Prediction marker for distribution chart
  */
 export default class Prediction {
-  constructor (parent, id, meta, stats, color) {
+  constructor (svg, id, meta, stats, color) {
     // Prediction group
-    let predictionGroup = parent.svg.append('g')
+    let predictionGroup = svg.append('g')
         .attr('class', 'prediction-group')
         .attr('id', id + '-marker')
 
@@ -34,8 +30,8 @@ export default class Prediction {
     this.noData = true
   }
 
-  plot (parent, modelData) {
-    if (modelData.x.length === null) {
+  plot (parent, targetData) {
+    if (targetData.data.length === null) {
       // There is no data for current point, hide the markers without
       // setting exposed hidden flag
       this.noData = true
@@ -47,32 +43,25 @@ export default class Prediction {
         this.showMarkers()
       }
 
-      let plottingData = modelData.x.map((px, idx) => {
-        return {
-          x: px,
-          y: modelData.y[idx]
-        }
-      })
-
       let line = d3.line()
           .curve(d3.curveBasis)
-          .x(d => parent.xScale(d.x))
-          .y(d => parent.yScale(d.y))
+          .x(d => parent.xScale(d[0]))
+          .y(d => parent.yScale(d[1]))
 
       this.predictionGroup.select('.line-prediction')
-        .datum(plottingData)
+        .datum(targetData.data)
         .transition()
         .duration(200)
         .attr('d', line)
 
       let area = d3.area()
           .curve(d3.curveBasis)
-          .x(d => parent.xScale(d.x))
+          .x(d => parent.xScale(d[0]))
           .y1(d => parent.yScale(0))
-          .y0(d => parent.yScale(d.y))
+          .y0(d => parent.yScale(d[1]))
 
       this.predictionGroup.select('.area-prediction')
-        .datum(plottingData)
+        .datum(targetData.data)
         .transition()
         .duration(200)
         .attr('d', area)
@@ -110,13 +99,5 @@ export default class Prediction {
    */
   clear () {
     this.predictionGroup.remove()
-  }
-
-  /**
-   * Ask if we have something to show at the index
-   */
-  query (idx) {
-    // Don't show anything if predictions are hidden
-    return (!this.noData && !this.hidden && this.displayedData[idx])
   }
 }

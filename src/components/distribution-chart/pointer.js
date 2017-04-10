@@ -1,6 +1,12 @@
 /**
  * Pointer over current position in time axis
  */
-export class Pointer {
-  //
+export default class Pointer {
+  constructor () {
+    //
+  }
+
+  plot (currentIdx) {
+    //
+  }
 }

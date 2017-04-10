@@ -50,8 +50,8 @@ export const getPredictionStartingPoints = data => {
   })
 }
 
-export const getXDateDomain = (data, pointType) => {
-  return d3.extent(data.timePoints.map(d => {
+export const getXDateDomain = (timePoints, pointType) => {
+  return d3.extent(timePoints.map(d => {
     if (pointType === 'mmwr-week') {
       return (new mmwr.MMWRDate(d.year, d.week)).toMomentDate()
     } else if (pointType === 'regular-week') {
@@ -87,8 +87,8 @@ export const getYDomain = data => {
   return [0, Math.max(13, 1.1 * Math.max(...maxValues))]
 }
 
-export const getXDomain = data => {
-  return [0, data.timePoints.length - 1]
+export const getXDomain = timePoints => {
+  return [0, timePoints.length - 1]
 }
 
 /**
