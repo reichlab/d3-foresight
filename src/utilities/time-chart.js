@@ -75,15 +75,11 @@ export const getYDomain = data => {
   })
   // Max from all the models
   data.models.map(mdl => {
-    maxValues.push(Math.max(...mdl.predictions.filter(m => m).map(d => Math.max(...[
-      Math.max(...d.oneWk.high),
-      Math.max(...d.twoWk.high),
-      Math.max(...d.threeWk.high),
-      Math.max(...d.fourWk.high),
-      Math.max(...d.peakValue.high)
-    ]))))
+    maxValues.push(Math.max(...mdl.predictions.filter(m => m).map(d => {
+      return Math.max(...[...d.series.map(s => Math.max(...s.high)), Math.max(...d.peakValue.high)])
+    })))
   })
-  // Clipping at 13 since we don't predict beyond that
+  // HACK Clipping at 13 since we don't predict beyond that
   return [0, Math.max(13, 1.1 * Math.max(...maxValues))]
 }
 

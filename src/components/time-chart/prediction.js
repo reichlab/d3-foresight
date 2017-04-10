@@ -305,17 +305,17 @@ export default class Prediction {
         high: startData
       }]
 
-      let idxLimit = Math.min(0, (idx + 4) - this.modelData.length)
-      let targetNames = ['oneWk', 'twoWk', 'threeWk', 'fourWk'].slice(0, 4 - idxLimit)
+      let idxOverflow = Math.min(0, this.modelData.length - (idx + predData.series.length))
+      let displayLimit = predData.series.length - idxOverflow
 
-      targetNames.forEach((item, index) => {
+      for (let i = 0; i < displayLimit; i++) {
         nextTimeData.push({
-          index: index + idx + 1,
-          point: predData[item].point,
-          low: predData[item].low[cid],
-          high: predData[item].high[cid]
+          index: i + idx + 1,
+          point: predData.series[i].point,
+          low: predData.series[i].low[cid],
+          high: predData.series[i].high[cid]
         })
-      })
+      }
 
       // Save indexed data for query
       this.displayedData = Array(this.modelData.length).fill(false)
