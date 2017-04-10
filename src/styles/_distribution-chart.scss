@@ -14,6 +14,13 @@
 .actual-group {
   .actual {
     stroke: $actual;
-    stroke-width: 2px;
+    stroke-dasharray: 5, 5;
+    stroke-width: 1px;
+  }
+}
+
+.time-pointer-group {
+  .pointer-triangle {
+    fill: 'red';
   }
 }

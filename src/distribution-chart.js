@@ -67,7 +67,7 @@ export default class DistributionChart extends Chart {
       )
     })
 
-    this.pointer = new distributionChartComponents.Pointer()
+    this.pointer = new distributionChartComponents.Pointer(this)
 
     this.eventHooks = []
     let showStats = this.config.statsMeta.length > 0
@@ -118,7 +118,7 @@ export default class DistributionChart extends Chart {
     this.xAxis.plot(this.xScalePoint, this.xScaleDate)
 
     // Plot pointer position
-    this.pointer.plot(data.currentIdx)
+    this.pointer.plot(data.currentIdx, this.xScale)
 
     // Provide curve data to the panels
     this.panels.forEach((p, idx) => {
