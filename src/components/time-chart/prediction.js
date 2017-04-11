@@ -319,7 +319,7 @@ export default class Prediction {
 
       // Save indexed data for query
       this.displayedData = Array(this.modelData.length).fill(false)
-      nextTimeData.forEach(d => {
+      nextTimeData.slice(1).forEach(d => {
         this.displayedData[d.index] = d.point
       })
 
