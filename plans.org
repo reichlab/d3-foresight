@@ -7,9 +7,11 @@ the development goes on.
 * Styles
 ** TODO Examples page
 ** TODO Bulma inside 
-** TODO FIx position of control panel
 ** TODO Font-awesome inside
-** TODO control buttons padding fix
+** DONE FIx position of control panel
+CLOSED: [2017-04-11 Tue 03:09]
+** DONE control buttons padding fix
+CLOSED: [2017-04-11 Tue 03:09]
 ** DONE Hide search button when not overflowing
 CLOSED: [2017-04-09 Sun 04:59]
 * Things to ask user for
@@ -59,7 +61,8 @@ CLOSED: [2017-03-31 Fri 00:52]
   - actual value, if present
 ** DONE Take arguments in control-panel
 CLOSED: [2017-03-31 Fri 03:58]
-** TODO Fix mutation of model getter
+** DONE Fix mutation of model getter
+CLOSED: [2017-04-11 Tue 03:09]
 ** TODO Handle stats cases with no predictions
 ** Distributions chart
 - Take complete data for each week and pass to each panel
@@ -70,3 +73,8 @@ CLOSED: [2017-03-31 Fri 03:58]
   also triggers a hook (check how this works in time-chart)
 ** Optimize bundle
 https://hackernoon.com/optimising-your-application-bundle-size-with-webpack-e85b00bab579
+** TODO Document usage
+** TODO Move starting week thing in flusight
+** TODO Add text specifying the target for panels
+** TODO Convert that text to dropdown menu
+** TODO Clear and redraw plots on tab change but with same season / region /  week
