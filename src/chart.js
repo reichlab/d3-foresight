@@ -30,7 +30,7 @@ export default class Chart {
 
     let chartBB = elementSelection.node().getBoundingClientRect()
     let divWidth = chartBB.width
-    let divHeight = 500
+    let divHeight = 480
 
     // Create blank chart
     this.width = divWidth - this.config.margin.left - this.config.margin.right
