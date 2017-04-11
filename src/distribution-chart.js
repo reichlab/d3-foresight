@@ -115,6 +115,7 @@ export default class DistributionChart extends Chart {
     }
     this.xScaleDate.domain(utils.getXDateDomain(this.timePoints, this.config.pointType))
     this.xScalePoint.domain(this.ticks)
+    this.xScale.domain([0, this.timePoints.length - 1])
     this.xAxis.plot(this.xScalePoint, this.xScaleDate)
 
     // Plot pointer position

@@ -6,7 +6,7 @@ const generateTrianglePoints = origin => {
   return [
     [origin[0] - side / 2, origin[1] - side / Math.sqrt(2)],
     [origin[0] + side / 2, origin[1] - side / Math.sqrt(2)],
-    origin
+    [origin[0], origin[1] - 2]
   ].map(p => p[0] + ',' + p[1]).join(' ')
 }
 
