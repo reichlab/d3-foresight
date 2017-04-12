@@ -81,6 +81,7 @@ export default class DistributionPanel {
         )
         this.predictions.push(predMarker)
       } else {
+        this.predictions[markerIndex].stats = m.stats
         predMarker = this.predictions[markerIndex]
       }
       predMarker.plot(this, m.targets[this.selectedTargetIdx])

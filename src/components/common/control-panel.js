@@ -436,10 +436,17 @@ class StatsDrawer {
     let modelMeta = predictions.map(p => p.meta)
     let modelColors = predictions.map(p => p.color)
 
+    console.log(modelStats)
+
     // Assume if one model has no stats, no one has
     if (modelStats.length > 0) {
       // Formatted stuff
       let statsMeta = this.statsMeta[this.selectedStat]
+
+      if (modelStats[0] === null) {
+        heading.append('span').text('No data found')
+        return
+      }
 
       let selectedModelStats = modelStats.map(s => s[statsMeta.id])
       let statsData = selectedModelStats.map(ms => {
@@ -604,5 +611,8 @@ export default class ControlPanel {
 
   update (predictions) {
     this.legendDrawer.update(predictions)
+    if (this.config.stats) {
+      this.statsDrawer.plot(predictions)
+    }
   }
 }

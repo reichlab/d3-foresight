@@ -160,6 +160,7 @@ export default class TimeChart extends Chart {
         )
         this.predictions.push(predMarker)
       } else {
+        this.predictions[markerIndex].stats = m.stats
         predMarker = this.predictions[markerIndex]
       }
       predMarker.plot(
