@@ -63,7 +63,8 @@ CLOSED: [2017-03-31 Fri 00:52]
 CLOSED: [2017-03-31 Fri 03:58]
 ** DONE Fix mutation of model getter
 CLOSED: [2017-04-11 Tue 03:09]
-** TODO Handle stats cases with no predictions
+** DONE Handle stats cases with no predictions
+CLOSED: [2017-04-12 Wed 00:52]
 *** In regional data for 2015, the statspanel screws up
 ** Distributions chart
 - Take complete data for each week and pass to each panel
