@@ -64,6 +64,7 @@ CLOSED: [2017-03-31 Fri 03:58]
 ** DONE Fix mutation of model getter
 CLOSED: [2017-04-11 Tue 03:09]
 ** TODO Handle stats cases with no predictions
+*** In regional data for 2015, the statspanel screws up
 ** Distributions chart
 - Take complete data for each week and pass to each panel
 - Panel generates a dropdown and uses ~Prediction~ and ~Actual~ to plot the curves

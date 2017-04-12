@@ -82,7 +82,7 @@ export const getYDomain = data => {
     })))
   })
   // HACK Clipping at 13 since we don't predict beyond that
-  return [0, Math.max(13, 1.1 * Math.max(...maxValues))]
+  return [0, Math.min(13, 1.1 * Math.max(...maxValues))]
 }
 
 export const getXDomain = timePoints => {
