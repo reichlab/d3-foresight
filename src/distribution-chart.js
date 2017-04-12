@@ -6,20 +6,70 @@ import Chart from './chart'
 
 export default class DistributionChart extends Chart {
   constructor (element, options = {}) {
+    let defaultConfig = {
+      pointType: 'regular-week',
+      confidenceIntervals: [],
+      margin: {
+        top: 5,
+        right: 50,
+        bottom: 80,
+        left: 5
+      }
+    }
+
     let elementSelection = d3.select(element)
         .attr('class', 'd3-foresight-chart d3-foresight-distribution-chart')
-    super(elementSelection, 0, options)
+    super(elementSelection, 0, Object.assign({}, defaultConfig, options))
 
     // Initialize scales
     this.xScale = d3.scaleLinear().range([0, this.width])
-    this.yScale = d3.scaleLinear().range([this.height, 0])
+    this.xScaleDate = d3.scaleTime().range([0, this.width])
+    this.xScalePoint = d3.scalePoint().range([0, this.width])
 
-    this.yAxis = new commonComponents.YAxis(this)
-    this.xAxis = new commonComponents.XAxis(this)
+    // Time axis for indicating current position
+    this.xAxis = new commonComponents.XAxisDate(
+      this.svg,
+      this.width,
+      this.height,
+      0,
+      this.onsetHeight,
+      this.config.axes.x,
+      this.infoTooltip
+    )
 
-    this.actual = new distributionChartComponents.Actual(this)
-    this.predictions = []
+    // create 4 panels and assign new svgs to them
+    let panelMargin = {
+      top: 5, right: 10, bottom: 50, left: 30
+    }
+    let panelHeight = this.height / 2
+    let panelWidth = this.width / 2
+    let panelPositions = [
+      [0, 0],
+      [0, panelHeight],
+      [panelWidth, 0],
+      [panelWidth, panelHeight]
+    ]
 
+    this.panels = panelPositions.map(pos => {
+      let svg = this.svg.append('svg')
+          .attr('x', pos[0])
+          .attr('y', pos[1])
+          .attr('width', panelWidth)
+          .attr('height', panelHeight)
+          .append('g')
+          .attr('transform', `translate(${panelMargin.left}, ${panelMargin.top})`)
+
+      return new distributionChartComponents.DistributionPanel(
+        svg,
+        panelWidth - panelMargin.left - panelMargin.right,
+        panelHeight - panelMargin.top - panelMargin.bottom,
+        this.infoTooltip
+      )
+    })
+
+    this.pointer = new distributionChartComponents.Pointer(this)
+
+    this.eventHooks = []
     let showStats = this.config.statsMeta.length > 0
     let panelConfig = {
       actual: true,
@@ -30,59 +80,59 @@ export default class DistributionChart extends Chart {
     }
 
     // Control panel
-    this.controlPanel = new commonComponents.ControlPanel(this, panelConfig, () => {})
+    this.controlPanel = new commonComponents.ControlPanel(
+      this, panelConfig,
+      (event, payload) => {
+        if (event === 'btn:next') {
+          console.log('forward')
+        } else if (event === 'btn:back') {
+          console.log('backward')
+        }
+      }
+    )
   }
 
   // plot data
   plot (data) {
-    this.xScale.domain(utils.getXDomain(data))
-    this.yScale.domain(utils.getYDomain(data))
+    // NOTE
+    // Data has the following props
+    // timePoints -> to plot the time axis
+    // currentIdx -> to plot the pointer in onsetOffset
+    // models -> list of n items for n models, each with:
+    //   id
+    //   meta
+    //   stats
+    //   targets (or maybe use predictions) list of t items for t targets:
+    //     name -> text naming the target
+    //     data -> series of (x, y) tuples about the distribution
+    //     actual -> actual value // Not planned
 
-    this.xAxis.plot(this)
-    this.yAxis.plot(this)
-
-    // Update markers with data
-    this.actual.plot(this, data.actual)
-
-    // Setup colors
-    if (data.models.length > 10) {
-      this.colors = d3.schemeCategory20
+    this.timePoints = data.timePoints
+    if (this.config.pointType.endsWith('-week')) {
+      this.ticks = this.timePoints.map(tp => tp.week)
     } else {
-      this.colors = d3.schemeCategory10
+      throw utils.UnknownPointTypeException()
     }
+    this.xScaleDate.domain(utils.getXDateDomain(this.timePoints, this.config.pointType))
+    this.xScalePoint.domain(this.ticks)
+    this.xScale.domain([0, this.timePoints.length - 1])
+    this.xAxis.plot(this.xScalePoint, this.xScaleDate)
 
-    // Clear markers not needed
-    let currentPredictionIds = data.models.map(m => m.id)
-    this.predictions = this.predictions.filter(p => {
-      if (currentPredictionIds.indexOf(p.id) === -1) {
-        p.clear()
-        return false
-      } else {
-        return true
-      }
-    })
+    // Plot pointer position
+    this.pointer.plot(data.currentIdx, this.xScale)
 
-    // Generate markers for predictions if not already there
-    // Assume unique model ids
-    data.models.forEach((m, idx) => {
-      let predMarker
-      let markerIndex = this.predictions.map(p => p.id).indexOf(m.id)
-      if (markerIndex === -1) {
-        // The marker is not present from previous calls to plot
-        predMarker = new distributionChartComponents.Prediction(
-          this, m.id, m.meta, m.stats, this.colors[idx]
-        )
-        this.predictions.push(predMarker)
-      } else {
-        predMarker = this.predictions[markerIndex]
-      }
-      predMarker.plot(this, m.predictions)
+    // Provide curve data to the panels
+    this.panels.forEach((p, idx) => {
+      p.selectedTargetIdx = idx
+      p.plot(data)
     })
 
     // Update models shown in control panel
-    this.controlPanel.plot(this.predictions, (predictionId, hidePrediction) => {
-      let predMarker = this.predictions[this.predictions.map(p => p.id).indexOf(predictionId)]
-      predMarker.hidden = hidePrediction
+    this.controlPanel.plot(this.panels[0].predictions, (predictionId, hidePrediction) => {
+      this.panels.forEach(p => {
+        let predMarker = p.predictions[p.predictions.map(p => p.id).indexOf(predictionId)]
+        predMarker.hidden = hidePrediction
+      })
     })
   }
 }

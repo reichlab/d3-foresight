@@ -21,10 +21,12 @@ export const getFirstPlottingIndex = (data, isLiveSeason) => {
     }))
   } else {
     // Start at the first prediction
-    let modelPredictions = data.models
-        .map(m => {
-          return m.predictions[0].week
-        }).filter(d => d !== -1)
+    let modelPredictions = data.models.map(m => {
+      for (let i = 0; i < m.predictions.length; i++) {
+        if (m.predictions[i] !== null) return i
+      }
+      return 0
+    })
 
     if (modelPredictions.length === 0) {
       // Start at the most recent actual data
@@ -50,8 +52,8 @@ export const getPredictionStartingPoints = data => {
   })
 }
 
-export const getXDateDomain = (data, pointType) => {
-  return d3.extent(data.timePoints.map(d => {
+export const getXDateDomain = (timePoints, pointType) => {
+  return d3.extent(timePoints.map(d => {
     if (pointType === 'mmwr-week') {
       return (new mmwr.MMWRDate(d.year, d.week)).toMomentDate()
     } else if (pointType === 'regular-week') {
@@ -75,20 +77,16 @@ export const getYDomain = data => {
   })
   // Max from all the models
   data.models.map(mdl => {
-    maxValues.push(Math.max(...mdl.predictions.filter(m => m).map(d => Math.max(...[
-      Math.max(...d.oneWk.high),
-      Math.max(...d.twoWk.high),
-      Math.max(...d.threeWk.high),
-      Math.max(...d.fourWk.high),
-      Math.max(...d.peakPercent.high)
-    ]))))
+    maxValues.push(Math.max(...mdl.predictions.filter(m => m).map(d => {
+      return Math.max(...[...d.series.map(s => Math.max(...s.high)), Math.max(...d.peakValue.high)])
+    })))
   })
-  // Clipping at 13 since we don't predict beyond that
+  // HACK Clipping at 13 since we don't predict beyond that
   return [0, Math.min(13, 1.1 * Math.max(...maxValues))]
 }
 
-export const getXDomain = data => {
-  return [0, data.timePoints.length - 1]
+export const getXDomain = timePoints => {
+  return [0, timePoints.length - 1]
 }
 
 /**

@@ -7,9 +7,13 @@ the development goes on.
 * Styles
 ** TODO Examples page
 ** TODO Bulma inside 
-** TODO FIx position of control panel
 ** TODO Font-awesome inside
-** TODO control buttons padding fix
+** DONE FIx position of control panel
+CLOSED: [2017-04-11 Tue 03:09]
+** DONE control buttons padding fix
+CLOSED: [2017-04-11 Tue 03:09]
+** DONE Hide search button when not overflowing
+CLOSED: [2017-04-09 Sun 04:59]
 * Things to ask user for
 ** DONE Axes + baseline text
 CLOSED: [2017-03-27 Mon 04:21]
@@ -24,7 +28,8 @@ Array of pure values like:
 ** DONE History
 CLOSED: [2017-03-30 Thu 15:43]
 Dict of key (identifier of history) and values (array like actual)
-** TODO Models
+** DONE Models
+CLOSED: [2017-04-10 Mon 10:43]
 - for each model
   - id: unique identifier
   - stats: TODO
@@ -56,7 +61,21 @@ CLOSED: [2017-03-31 Fri 00:52]
   - actual value, if present
 ** DONE Take arguments in control-panel
 CLOSED: [2017-03-31 Fri 03:58]
-** TODO Fix mutation of model getter
+** DONE Fix mutation of model getter
+CLOSED: [2017-04-11 Tue 03:09]
 ** TODO Handle stats cases with no predictions
+*** In regional data for 2015, the statspanel screws up
+** Distributions chart
+- Take complete data for each week and pass to each panel
+- Panel generates a dropdown and uses ~Prediction~ and ~Actual~ to plot the curves
+- Main class probably maintains week pointer and updates across the major axis
+  (time axis)
+- Pointer gets updated on each forward/backward event from control-panel and
+  also triggers a hook (check how this works in time-chart)
 ** Optimize bundle
 https://hackernoon.com/optimising-your-application-bundle-size-with-webpack-e85b00bab579
+** TODO Document usage
+** TODO Move starting week thing in flusight
+** TODO Add text specifying the target for panels
+** TODO Convert that text to dropdown menu
+** TODO Clear and redraw plots on tab change but with same season / region /  week

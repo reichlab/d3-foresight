@@ -148,7 +148,7 @@ export default class Prediction {
       let timeChartTooltip = this.timeChartTooltip
 
       // Move things
-      let onset = this.modelData[idx].onsetWeek
+      let onset = this.modelData[idx].onsetTime
 
       this.onsetGroup.select('.onset-mark')
         .transition()
@@ -201,8 +201,8 @@ export default class Prediction {
         .attr('x1', this.xScale(onset.high[cid]))
         .attr('x2', this.xScale(onset.high[cid]))
 
-      let pw = this.modelData[idx].peakWeek
-      let pp = this.modelData[idx].peakPercent
+      let pw = this.modelData[idx].peakTime
+      let pp = this.modelData[idx].peakValue
 
       let leftW = this.xScale(pw.point)
       let leftP = this.yScale(pp.point)
@@ -305,21 +305,21 @@ export default class Prediction {
         high: startData
       }]
 
-      let idxLimit = Math.min(0, (idx + 4) - this.modelData.length)
-      let targetNames = ['oneWk', 'twoWk', 'threeWk', 'fourWk'].slice(0, 4 - idxLimit)
+      let idxOverflow = Math.min(0, this.modelData.length - (idx + predData.series.length))
+      let displayLimit = predData.series.length - idxOverflow
 
-      targetNames.forEach((item, index) => {
+      for (let i = 0; i < displayLimit; i++) {
         nextTimeData.push({
-          index: index + idx + 1,
-          point: predData[item].point,
-          low: predData[item].low[cid],
-          high: predData[item].high[cid]
+          index: i + idx + 1,
+          point: predData.series[i].point,
+          low: predData.series[i].low[cid],
+          high: predData.series[i].high[cid]
         })
-      })
+      }
 
       // Save indexed data for query
       this.displayedData = Array(this.modelData.length).fill(false)
-      nextTimeData.forEach(d => {
+      nextTimeData.slice(1).forEach(d => {
         this.displayedData[d.index] = d.point
       })
 

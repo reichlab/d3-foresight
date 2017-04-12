@@ -7,6 +7,20 @@
   }
 
   .area-prediction {
-    opacity: .1;
+    opacity: .05;
+  }
+}
+
+.actual-group {
+  .actual {
+    stroke: $actual;
+    stroke-dasharray: 5, 5;
+    stroke-width: 1px;
+  }
+}
+
+.time-pointer-group {
+  .pointer-triangle {
+    fill: $gray;
   }
 }

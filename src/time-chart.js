@@ -21,14 +21,27 @@ export default class TimeChart extends Chart {
     super(elementSelection, 30, Object.assign({}, defaultConfig, options))
 
     // Initialize scales
-    // This is the underlying continous scale
     this.xScale = d3.scaleLinear().range([0, this.width])
     this.xScaleDate = d3.scaleTime().range([0, this.width])
     this.xScalePoint = d3.scalePoint().range([0, this.width])
     this.yScale = d3.scaleLinear().range([this.height, 0])
 
-    this.yAxis = new commonComponents.YAxis(this)
-    this.xAxis = new commonComponents.XAxisDate(this)
+    this.yAxis = new commonComponents.YAxis(
+      this.svg,
+      this.height,
+      0,
+      this.config.axes.y,
+      this.infoTooltip
+    )
+    this.xAxis = new commonComponents.XAxisDate(
+      this.svg,
+      this.width,
+      this.height,
+      0,
+      this.onsetHeight,
+      this.config.axes.x,
+      this.infoTooltip
+    )
 
     this.timeChartTooltip = new commonComponents.TimeChartTooltip(elementSelection)
     this.timerect = new timeChartComponents.TimeRect(this)
@@ -87,12 +100,12 @@ export default class TimeChart extends Chart {
 
     // Update domains
     this.yScale.domain(utils.getYDomain(data))
-    this.xScale.domain(utils.getXDomain(data))
-    this.xScaleDate.domain(utils.getXDateDomain(data, this.config.pointType))
+    this.xScale.domain(utils.getXDomain(this.timePoints))
+    this.xScaleDate.domain(utils.getXDateDomain(this.timePoints, this.config.pointType))
     this.xScalePoint.domain(this.ticks)
 
-    this.xAxis.plot(this)
-    this.yAxis.plot(this)
+    this.xAxis.plot(this.xScalePoint, this.xScaleDate)
+    this.yAxis.plot(this.yScale)
 
     // Check if it is live data
     let showNowLine = this.actualIndices.length < this.timePoints.length
@@ -157,10 +170,13 @@ export default class TimeChart extends Chart {
     })
 
     // Update models shown in control panel
-    this.controlPanel.plot(this.predictions, data.statsMeta, (predictionId, hidePrediction) => {
+    this.controlPanel.plot(this.predictions, (predictionId, hidePrediction) => {
       let predMarker = this.predictions[this.predictions.map(p => p.id).indexOf(predictionId)]
       predMarker.hidden = hidePrediction
     })
+
+    // Hot start the chart
+    this.update(this.currentIdx)
   }
 
   /**

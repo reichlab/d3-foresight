@@ -18,27 +18,30 @@ export default class Chart {
           url: '#'
         }
       },
-      statsMeta: []
+      statsMeta: [],
+      margin: {
+        top: 5,
+        right: 50,
+        bottom: 70 + onsetHeight,
+        left: 40
+      }
     }
     this.config = Object.assign({}, defaultConfig, options)
 
     let chartBB = elementSelection.node().getBoundingClientRect()
     let divWidth = chartBB.width
-    let divHeight = 500
+    let divHeight = 480
 
     // Create blank chart
-    let margin = {
-      top: 5, right: 50, bottom: 70 + onsetHeight, left: 40
-    }
-    this.width = divWidth - margin.left - margin.right
-    this.height = divHeight - margin.top - margin.bottom
+    this.width = divWidth - this.config.margin.left - this.config.margin.right
+    this.height = divHeight - this.config.margin.top - this.config.margin.bottom
 
     // Add svg
     this.svg = elementSelection.append('svg')
-      .attr('width', this.width + margin.left + margin.right)
-      .attr('height', this.height + margin.top + margin.bottom)
+      .attr('width', this.width + this.config.margin.left + this.config.margin.right)
+      .attr('height', this.height + this.config.margin.top + this.config.margin.bottom)
       .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`)
+      .attr('transform', `translate(${this.config.margin.left},${this.config.margin.top})`)
 
     this.infoTooltip = new commonComponents.InfoTooltip(elementSelection)
     this.elementSelection = elementSelection
