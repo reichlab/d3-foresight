@@ -436,8 +436,6 @@ class StatsDrawer {
     let modelMeta = predictions.map(p => p.meta)
     let modelColors = predictions.map(p => p.color)
 
-    console.log(modelStats)
-
     // Assume if one model has no stats, no one has
     if (modelStats.length > 0) {
       // Formatted stuff
