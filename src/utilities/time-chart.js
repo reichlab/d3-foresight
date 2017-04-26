@@ -7,37 +7,6 @@ export const UnknownPointTypeException = message => {
 }
 
 /**
- * Get index to start the plot at
- */
-export const getFirstPlottingIndex = (data, isLiveSeason) => {
-  if (isLiveSeason) {
-    // Start at the latest prediction
-    return Math.max(...data.models.map(m => {
-      let index = m.predictions.length - 1
-      for (let i = index; i >= 0; i--) {
-        if (m.predictions[i] !== null) return i
-      }
-      return 0
-    }))
-  } else {
-    // Start at the first prediction
-    let modelPredictions = data.models.map(m => {
-      for (let i = 0; i < m.predictions.length; i++) {
-        if (m.predictions[i] !== null) return i
-      }
-      return 0
-    })
-
-    if (modelPredictions.length === 0) {
-      // Start at the most recent actual data
-      return data.actualIndices[data.actualIndices.length - 1]
-    } else {
-      return Math.min(...modelPredictions)
-    }
-  }
-}
-
-/**
  * Return points where the predictions were made
  * This is used as the first point in prediction marker
  */

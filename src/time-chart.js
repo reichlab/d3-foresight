@@ -109,13 +109,7 @@ export default class TimeChart extends Chart {
 
     // Check if it is live data
     let showNowLine = this.actualIndices.length < this.timePoints.length
-    this.currentIdx = utils.getFirstPlottingIndex(data, showNowLine)
     this.overlay.plot(this, showNowLine)
-
-    this.handleHook({
-      type: 'positionUpdate',
-      value: this.currentIdx
-    })
 
     // Update markers with data
     this.timerect.plot(this)
@@ -177,6 +171,7 @@ export default class TimeChart extends Chart {
     })
 
     // Hot start the chart
+    this.currentIdx = 0
     this.update(this.currentIdx)
   }
 
