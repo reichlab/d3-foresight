@@ -93,10 +93,17 @@ export class XAxis {
         window.open(axisConfig.url, '_blank')
       })
     this.svg = svg
+    this.width = width
   }
 
-  plot (xScale) {
+  plot (xScale, maxTicks) {
     let xAxis = d3.axisBottom(xScale)
+    let totalTicks = xScale.domain().length
+    if (maxTicks && (maxTicks < totalTicks / 2)) {
+      // Show upto maxTicks ticks
+      let showAt = parseInt(totalTicks / maxTicks)
+      xAxis.tickValues(xScale.domain().filter((d, i) => !(i % showAt)))
+    }
     this.svg.select('.axis-x')
       .transition().duration(200).call(xAxis)
   }

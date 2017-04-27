@@ -39,7 +39,7 @@ export default class DistributionChart extends Chart {
 
     // create 4 panels and assign new svgs to them
     let panelMargin = {
-      top: 5, right: 10, bottom: 50, left: 30
+      top: 5, right: 10, bottom: 50, left: 50
     }
     let panelHeight = this.height / 2
     let panelWidth = this.width / 2
@@ -123,7 +123,7 @@ export default class DistributionChart extends Chart {
 
     // Provide curve data to the panels
     this.panels.forEach((p, idx) => {
-      p.selectedTargetIdx = idx
+      p.selectedCurveIdx = idx
       p.plot(data)
     })
 

@@ -24,7 +24,9 @@ export default class DistributionPanel {
       svg,
       height,
       0,
-      {},
+      {
+        title: 'Probability'
+      },
       infoTooltip
     )
 
@@ -45,7 +47,7 @@ export default class DistributionPanel {
     this.xScale.domain(utils.getXDomain(data, this.selectedCurveIdx))
     this.yScale.domain(utils.getYDomain(data, this.selectedCurveIdx))
 
-    this.xAxis.plot(this.xScale)
+    this.xAxis.plot(this.xScale, 10)
     this.yAxis.plot(this.yScale)
 
     // Use actual from first model
