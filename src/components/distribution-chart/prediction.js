@@ -30,8 +30,8 @@ export default class Prediction {
     this.noData = true
   }
 
-  plot (parent, targetData) {
-    if (targetData.data.length === null) {
+  plot (parent, curveData) {
+    if (curveData.data === null) {
       // There is no data for current point, hide the markers without
       // setting exposed hidden flag
       this.noData = true
@@ -49,7 +49,7 @@ export default class Prediction {
           .y(d => parent.yScale(d[1]))
 
       this.predictionGroup.select('.line-prediction')
-        .datum(targetData.data)
+        .datum(curveData.data)
         .transition()
         .duration(200)
         .attr('d', line)
@@ -61,7 +61,7 @@ export default class Prediction {
           .y0(d => parent.yScale(d[1]))
 
       this.predictionGroup.select('.area-prediction')
-        .datum(targetData.data)
+        .datum(curveData.data)
         .transition()
         .duration(200)
         .attr('d', area)

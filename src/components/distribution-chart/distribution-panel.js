@@ -5,7 +5,7 @@ import Prediction from './prediction'
 import * as utils from '../../utilities/distribution-chart'
 
 /**
- * A panel displaying distributions for one target
+ * A panel displaying distributions for one curve
  */
 export default class DistributionPanel {
   constructor (svg, width, height, infoTooltip) {
@@ -33,23 +33,23 @@ export default class DistributionPanel {
     this.width = width
     this.actual = new Actual(this)
     this.predictions = []
-    // List of targets to display
-    this.targets = []
-    this.selectedTargetIdx = 0
+    // List of curves to display
+    this.curves = []
+    this.selectedCurveIdx = 0
   }
 
   plot (data) {
     // Populate list of targets using the first model
-    this.targets = data.models[0].targets.map(t => t.name)
+    this.curves = data.models[0].curves.map(t => t.name)
 
-    this.xScale.domain(utils.getXDomain(data, this.selectedTargetIdx))
-    this.yScale.domain(utils.getYDomain(data, this.selectedTargetIdx))
+    this.xScale.domain(utils.getXDomain(data, this.selectedCurveIdx))
+    this.yScale.domain(utils.getYDomain(data, this.selectedCurveIdx))
 
     this.xAxis.plot(this.xScale)
     this.yAxis.plot(this.yScale)
 
     // Use actual from first model
-    this.actual.plot(data.models[0].targets[this.selectedTargetIdx].actual, this.xScale)
+    this.actual.plot(data.models[0].curves[this.selectedCurveIdx].actual, this.xScale)
 
     // Setup colors
     if (data.models.length > 10) {
@@ -84,7 +84,7 @@ export default class DistributionPanel {
         this.predictions[markerIndex].stats = m.stats
         predMarker = this.predictions[markerIndex]
       }
-      predMarker.plot(this, m.targets[this.selectedTargetIdx])
+      predMarker.plot(this, m.curves[this.selectedCurveIdx])
     })
   }
 }
