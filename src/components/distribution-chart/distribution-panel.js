@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import * as commonComponents from '../common'
-import Actual from './actual'
+// import Actual from './actual'
 import Prediction from './prediction'
 import * as utils from '../../utilities/distribution-chart'
 
@@ -33,7 +33,7 @@ export default class DistributionPanel {
     this.svg = svg
     this.height = height
     this.width = width
-    this.actual = new Actual(this)
+    // this.actual = new Actual(this)
     this.predictions = []
     this.selectedCurveIdx = null
   }

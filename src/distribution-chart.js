@@ -69,12 +69,17 @@ export default class DistributionChart extends Chart {
 
     // Add dropdowns for curve selection
     this.dropdowns = panelPositions.map(pos => {
-      let wrapper = elementSelection.append('span')
+      let wrapperWrapper = elementSelection.append('div')
+      wrapperWrapper.style('text-align', 'center')
+
+      let wrapper = wrapperWrapper.append('span')
       wrapper.attr('class', 'select is-small')
       let dd = wrapper.append('select')
-      wrapper.style('position', 'absolute')
-      wrapper.style('left', (pos[0] + panelWidth / 2) + 'px')
-      wrapper.style('top', (pos[1] + panelHeight - panelMargin.bottom + 30) + 'px')
+
+      wrapperWrapper.style('position', 'absolute')
+      wrapperWrapper.style('left', (pos[0] + panelMargin.left / 2) + 'px')
+      wrapperWrapper.style('width', panelWidth + 'px')
+      wrapperWrapper.style('top', (pos[1] + panelHeight - panelMargin.bottom + 30) + 'px')
 
       return dd
     })
@@ -84,7 +89,7 @@ export default class DistributionChart extends Chart {
     this.eventHooks = []
     let showStats = this.config.statsMeta.length > 0
     let panelConfig = {
-      actual: true,
+      actual: false,
       observed: false,
       history: false,
       ci: false,
