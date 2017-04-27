@@ -35,15 +35,10 @@ export default class DistributionPanel {
     this.width = width
     this.actual = new Actual(this)
     this.predictions = []
-    // List of curves to display
-    this.curves = []
-    this.selectedCurveIdx = 0
+    this.selectedCurveIdx = null
   }
 
   plot (data) {
-    // Populate list of targets using the first model
-    this.curves = data.models[0].curves.map(t => t.name)
-
     this.xScale.domain(utils.getXDomain(data, this.selectedCurveIdx))
     this.yScale.domain(utils.getYDomain(data, this.selectedCurveIdx))
 
@@ -51,7 +46,7 @@ export default class DistributionPanel {
     this.yAxis.plot(this.yScale)
 
     // Use actual from first model
-    this.actual.plot(data.models[0].curves[this.selectedCurveIdx].actual, this.xScale)
+    // this.actual.plot(data.models[0].curves[this.selectedCurveIdx].actual, this.xScale)
 
     // Setup colors
     if (data.models.length > 10) {

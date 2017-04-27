@@ -39,7 +39,7 @@ export default class DistributionChart extends Chart {
 
     // create 4 panels and assign new svgs to them
     let panelMargin = {
-      top: 5, right: 10, bottom: 50, left: 50
+      top: 5, right: 10, bottom: 70, left: 50
     }
     let panelHeight = this.height / 2
     let panelWidth = this.width / 2
@@ -65,6 +65,18 @@ export default class DistributionChart extends Chart {
         panelHeight - panelMargin.top - panelMargin.bottom,
         this.infoTooltip
       )
+    })
+
+    // Add dropdowns for curve selection
+    this.dropdowns = panelPositions.map(pos => {
+      let wrapper = elementSelection.append('span')
+      wrapper.attr('class', 'select is-small')
+      let dd = wrapper.append('select')
+      wrapper.style('position', 'absolute')
+      wrapper.style('left', (pos[0] + panelWidth / 2) + 'px')
+      wrapper.style('top', (pos[1] + panelHeight - panelMargin.bottom + 30) + 'px')
+
+      return dd
     })
 
     this.pointer = new distributionChartComponents.Pointer(this)
@@ -107,6 +119,17 @@ export default class DistributionChart extends Chart {
     //     data -> series of (x, y) tuples about the distribution
     //     actual -> actual value // Not planned
 
+    let curveNames = data.models[0].curves.map(t => t.name)
+
+    this.dropdowns.forEach(dd => {
+      dd.selectAll('*').remove()
+      curveNames.forEach((cn, idx) => {
+        let option = dd.append('option')
+        option.text(cn)
+        option.attr('value', idx)
+      })
+    })
+
     this.timePoints = data.timePoints
     if (this.config.pointType.endsWith('-week')) {
       this.ticks = this.timePoints.map(tp => tp.week)
@@ -123,8 +146,23 @@ export default class DistributionChart extends Chart {
 
     // Provide curve data to the panels
     this.panels.forEach((p, idx) => {
-      p.selectedCurveIdx = idx
+      if (!p.selectedCurveIdx) {
+        p.selectedCurveIdx = idx
+        this.dropdowns[idx].property('value', idx)
+      } else {
+        this.dropdowns[idx].property('value', p.selectedCurveIdx)
+      }
       p.plot(data)
+    })
+
+    // Add event listeners to dropdown
+    this.dropdowns.forEach((dd, idx) => {
+      let currentPanel = this.panels[idx]
+      dd.on('change', function () {
+        let selectedIdx = parseInt(d3.select(this).property('value'))
+        currentPanel.selectedCurveIdx = selectedIdx
+        currentPanel.plot(data)
+      })
     })
 
     // Update models shown in control panel
