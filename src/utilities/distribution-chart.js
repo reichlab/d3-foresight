@@ -21,7 +21,7 @@ export const getYDomain = (data, curveIdx) => {
   let modelMaxes = data.models.map(m => {
     let curveData = m.curves[curveIdx].data
     if (!curveData) {
-      return 1
+      return 0
     } else {
       return Math.max(...curveData.map(d => d[1]))
     }
@@ -37,7 +37,7 @@ export const getXDomain = (data, curveIdx) => {
       // Return the x series directly
       return curveData.map(d => d[0])
     } else {
-      return [0, 1]
+      return [0, 0]
     }
   }
 }
