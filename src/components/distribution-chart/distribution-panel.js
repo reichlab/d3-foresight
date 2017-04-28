@@ -38,10 +38,6 @@ export default class DistributionPanel {
     this.selectedCurveIdx = null
   }
 
-  hideModel (modelId) {
-    this.predictions[modelId].hidden = true
-  }
-
   plot (data) {
     this.xScale.domain(utils.getXDomain(data, this.selectedCurveIdx))
     this.yScale.domain(utils.getYDomain(data, this.selectedCurveIdx))
