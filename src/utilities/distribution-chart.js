@@ -19,7 +19,12 @@ export const getXDateDomain = (timePoints, pointType) => {
 
 export const getYDomain = (data, curveIdx) => {
   let modelMaxes = data.models.map(m => {
-    return Math.max(...m.curves[curveIdx].data.map(d => d[1]))
+    let curveData = m.curves[curveIdx].data
+    if (!curveData) {
+      return 1
+    } else {
+      return Math.max(...curveData.map(d => d[1]))
+    }
   })
   return [0, Math.max(...modelMaxes)]
 }
@@ -27,10 +32,12 @@ export const getYDomain = (data, curveIdx) => {
 export const getXDomain = (data, curveIdx) => {
   // This assumes an ordinal scale
   for (let i = 0; i < data.models.length; i++) {
-    if (data.models[i].curves[curveIdx].data.length > 0) {
+    let curveData = data.models[i].curves[curveIdx].data
+    if (curveData) {
       // Return the x series directly
-      return data.models[i].curves[curveIdx].data.map(d => d[0])
+      return curveData.map(d => d[0])
+    } else {
+      return [0, 1]
     }
   }
-  return null
 }

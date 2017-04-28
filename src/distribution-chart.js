@@ -126,6 +126,14 @@ export default class DistributionChart extends Chart {
 
     let curveNames = data.models[0].curves.map(t => t.name)
 
+    // Check if we actually have data
+    // Assume no curves if we don't have first one
+    // data.models.forEach((m, idx) => {
+    //   if (!m.curves[0].data) {
+    //     this.panels.forEach(p => p.hideModel(idx))
+    //   }
+    // })
+
     this.dropdowns.forEach(dd => {
       dd.selectAll('*').remove()
       curveNames.forEach((cn, idx) => {
