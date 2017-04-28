@@ -12,7 +12,7 @@ export class YAxis {
 
     axis.append('text')
       .attr('class', 'title')
-      .attr('transform', `translate(-40 , ${height / 2}) rotate(-90)`)
+      .attr('transform', `translate(-45 , ${height / 2}) rotate(-90)`)
       .attr('dy', '.71em')
       .style('text-anchor', 'middle')
       .text(axisConfig.title)
@@ -37,7 +37,7 @@ export class YAxis {
   }
 
   plot (yScale) {
-    let yAxis = d3.axisLeft(yScale)
+    let yAxis = d3.axisLeft(yScale).tickFormat(d3.format('.2f'))
     this.svg.select('.axis-y')
       .transition().duration(200).call(yAxis)
   }

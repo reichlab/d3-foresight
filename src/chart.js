@@ -23,7 +23,7 @@ export default class Chart {
         top: 5,
         right: 50,
         bottom: 70 + onsetHeight,
-        left: 40
+        left: 55
       }
     }
     this.config = Object.assign({}, defaultConfig, options)
