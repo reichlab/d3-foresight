@@ -18,9 +18,8 @@ export default class HistoricalLines {
         .x(d => parent.xScale(d.x))
         .y(d => parent.yScale(d.y))
 
-    let plottingData
     historicalData.map(hd => {
-      plottingData = hd.actual.map((data, idx) => {
+      let plottingData = hd.actual.map((data, idx) => {
         return {
           x: idx,
           y: data
