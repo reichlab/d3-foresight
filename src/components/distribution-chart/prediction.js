@@ -44,6 +44,7 @@ export default class Prediction {
       }
 
       let line = d3.line()
+          .curve(d3.curveBasis)
           .x(d => parent.xScale(d[0]))
           .y(d => parent.yScale(d[1]))
 
@@ -54,6 +55,7 @@ export default class Prediction {
         .attr('d', line)
 
       let area = d3.area()
+          .curve(d3.curveBasis)
           .x(d => parent.xScale(d[0]))
           .y1(d => parent.yScale(0))
           .y0(d => parent.yScale(d[1]))
