@@ -149,6 +149,8 @@ export default class DistributionChart extends Chart {
     // Plot pointer position
     this.pointer.plot(data.currentIdx, this.xScale)
 
+    let yLimits = utils.getYLimits(data)
+
     // Provide curve data to the panels
     this.panels.forEach((p, idx) => {
       if (!p.selectedCurveIdx) {
@@ -157,7 +159,7 @@ export default class DistributionChart extends Chart {
       } else {
         this.dropdowns[idx].property('value', p.selectedCurveIdx)
       }
-      p.plot(data)
+      p.plot(data, yLimits)
     })
 
     // Add event listeners to dropdown
@@ -166,7 +168,7 @@ export default class DistributionChart extends Chart {
       dd.on('change', function () {
         let selectedIdx = parseInt(d3.select(this).property('value'))
         currentPanel.selectedCurveIdx = selectedIdx
-        currentPanel.plot(data)
+        currentPanel.plot(data, yLimits)
       })
     })
 

@@ -38,9 +38,10 @@ export default class DistributionPanel {
     this.selectedCurveIdx = null
   }
 
-  plot (data) {
+  plot (data, yLimits) {
     this.xScale.domain(utils.getXDomain(data, this.selectedCurveIdx))
-    this.yScale.domain(utils.getYDomain(data, this.selectedCurveIdx))
+    this.yScale.domain([0, yLimits[this.selectedCurveIdx]])
+    // this.yScale.domain(utils.getYDomain(data, this.selectedCurveIdx))
 
     this.xAxis.plot(this.xScale, 10)
     this.yAxis.plot(this.yScale)
