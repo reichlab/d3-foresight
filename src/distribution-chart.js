@@ -101,9 +101,13 @@ export default class DistributionChart extends Chart {
       this, panelConfig,
       (event, payload) => {
         if (event === 'btn:next') {
-          console.log('forward')
+          this.handleHook({
+            type: 'forward'
+          })
         } else if (event === 'btn:back') {
-          console.log('backward')
+          this.handleHook({
+            type: 'backward'
+          })
         }
       }
     )
@@ -179,5 +183,9 @@ export default class DistributionChart extends Chart {
         predMarker.hidden = hidePrediction
       })
     })
+  }
+
+  handleHook (data) {
+    this.eventHooks.forEach(hook => hook(data))
   }
 }
