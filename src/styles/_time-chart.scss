@@ -138,3 +138,15 @@
     text-transform: uppercase;
   }
 }
+
+// No prediction text
+.no-pred-text {
+  font-size: 10px;
+  left: 80px;
+  letter-spacing: 1px;
+  line-height: 25px;
+  margin-bottom: 5px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 30px;
+}
