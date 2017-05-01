@@ -72,6 +72,15 @@ export class TimeChartTooltip extends Tooltip {
     // Show upto maxNPreds predictions
     let maxNPreds = 10
     let visiblePreds = predObjs.filter(p => p.query(index))
+
+    if (visiblePreds.length > 0) {
+      // Add note regarding which prediction is getting displayed
+      let aheadIndex = visiblePreds[0].displayedIdx(index)
+      if (aheadIndex !== null) {
+        html = `<div class="text"><em>${aheadIndex + 1} week${aheadIndex ? 's' : ''} ahead</em></div>` + html
+      }
+    }
+
     visiblePreds.slice(0, maxNPreds).map(p => {
       let data = p.query(index)
       html += `<div class="prediction" style="background:${p.color}">

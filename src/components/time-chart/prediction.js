@@ -414,4 +414,14 @@ export default class Prediction {
     // Don't show anything if predictions are hidden
     return (!this.noData && !this.hidden && this.displayedData[idx])
   }
+
+  /**
+   * Return index of asked idx among displayedData items
+   */
+  displayedIdx (idx) {
+    for (let i = 0; i < this.displayedData.length; i++) {
+      if (this.displayedData[i]) return (idx - i)
+    }
+    return null
+  }
 }
