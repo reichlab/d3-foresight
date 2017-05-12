@@ -41,7 +41,7 @@ export default class DistributionPanel {
     this.yScale.domain([0, yLimits[this.selectedCurveIdx]])
 
     this.xAxis.plot(this.xScale, 10)
-    this.yAxis.plot(this.yScale)
+    this.yAxis.plot(this.yScale, 5)
 
     // Setup colors
     if (data.models.length > 10) {

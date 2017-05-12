@@ -36,8 +36,9 @@ export class YAxis {
     this.svg = svg
   }
 
-  plot (yScale) {
+  plot (yScale, maxTicks) {
     let yAxis = d3.axisLeft(yScale).tickFormat(d3.format('.2f'))
+    if (maxTicks) yAxis.ticks(maxTicks)
     this.svg.select('.axis-y')
       .transition().duration(200).call(yAxis)
   }
