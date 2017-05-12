@@ -1,6 +1,5 @@
 import * as d3 from 'd3'
 import * as commonComponents from '../common'
-// import Actual from './actual'
 import Prediction from './prediction'
 import * as utils from '../../utilities/distribution-chart'
 
@@ -33,7 +32,6 @@ export default class DistributionPanel {
     this.svg = svg
     this.height = height
     this.width = width
-    // this.actual = new Actual(this)
     this.predictions = []
     this.selectedCurveIdx = null
   }
@@ -41,13 +39,9 @@ export default class DistributionPanel {
   plot (data, yLimits) {
     this.xScale.domain(utils.getXDomain(data, this.selectedCurveIdx))
     this.yScale.domain([0, yLimits[this.selectedCurveIdx]])
-    // this.yScale.domain(utils.getYDomain(data, this.selectedCurveIdx))
 
     this.xAxis.plot(this.xScale, 10)
     this.yAxis.plot(this.yScale)
-
-    // Use actual from first model
-    // this.actual.plot(data.models[0].curves[this.selectedCurveIdx].actual, this.xScale)
 
     // Setup colors
     if (data.models.length > 10) {
