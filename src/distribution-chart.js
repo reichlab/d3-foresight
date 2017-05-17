@@ -37,6 +37,8 @@ export default class DistributionChart extends Chart {
       this.infoTooltip
     )
 
+    this.distributionTooltip = new commonComponents.DistributionTooltip(elementSelection)
+
     // create 4 panels and assign new svgs to them
     let panelMargin = {
       top: 5, right: 10, bottom: 70, left: 50
@@ -63,7 +65,8 @@ export default class DistributionChart extends Chart {
         svg,
         panelWidth - panelMargin.left - panelMargin.right,
         panelHeight - panelMargin.top - panelMargin.bottom,
-        this.infoTooltip
+        this.infoTooltip,
+        this.distributionTooltip
       )
     })
 

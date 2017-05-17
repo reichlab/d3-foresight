@@ -2,12 +2,13 @@ import * as d3 from 'd3'
 import * as commonComponents from '../common'
 import Prediction from './prediction'
 import * as utils from '../../utilities/distribution-chart'
+import Overlay from './overlay'
 
 /**
  * A panel displaying distributions for one curve
  */
 export default class DistributionPanel {
-  constructor (svg, width, height, infoTooltip) {
+  constructor (svg, width, height, infoTooltip, distributionTooltip) {
     this.xScale = d3.scalePoint().range([0, width])
     this.yScale = d3.scaleLinear().range([height, 0])
 
@@ -34,6 +35,8 @@ export default class DistributionPanel {
     this.width = width
     this.predictions = []
     this.selectedCurveIdx = null
+    this.distributionTooltip = distributionTooltip
+    this.overlay = new Overlay(this)
   }
 
   plot (data, yLimits) {

@@ -62,3 +62,25 @@
     }
   }
 }
+
+.d3-foresight-distribution-tooltip {
+  .bold {
+    float: right;
+    font-weight: bold;
+    margin-left: 5px;
+  }
+
+  .prediction {
+    @include cell-padding;
+    color: $white;
+  }
+
+  .text {
+    @include cell-padding;
+    color: $gray;
+
+    &.head {
+      color: $white;
+    }
+  }
+}

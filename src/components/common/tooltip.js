@@ -134,3 +134,43 @@ export class InfoTooltip extends Tooltip {
     this.render(html)
   }
 }
+
+/**
+ * Tooltip for probability distributions
+ */
+export class DistributionTooltip extends Tooltip {
+  constructor (rootSelector) {
+    super(rootSelector, 'd3-foresight-distribution-tooltip')
+  }
+
+  renderValues (predictions, index, xVal) {
+    let html = ''
+    let maxNPreds = 10
+    let visiblePreds = predictions.filter(p => p.query(index))
+
+    if (visiblePreds.length > 0) {
+      html += `<div class="text"><em>X value: ${xVal}</em></div>`
+    }
+
+    visiblePreds.slice(0, maxNPreds).map(p => {
+      let data = p.query(index)[1]
+      html += `<div class="prediction" style="background:${p.color}">
+                 ${p.id}
+                 <span class="bold">
+                   ${data.toFixed(2)}
+                 </span>
+               </div>`
+    })
+
+    // Notify regarding overflow
+    if (visiblePreds.length > maxNPreds) {
+      html += `<div class="actual">
+                 <em>Truncated list. Please <br>
+                 select fewer than <br>
+                 ${maxNPreds + 1} predictions</em>
+               </div>`
+    }
+
+    this.render(html)
+  }
+}

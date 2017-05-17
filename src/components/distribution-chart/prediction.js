@@ -64,6 +64,11 @@ export default class Prediction {
         .duration(200)
         .attr('d', area)
     }
+    this.displayedData = curveData.data
+  }
+
+  query (index) {
+    return (!this.noData && !this.hidden && this.displayedData[index])
   }
 
   /**

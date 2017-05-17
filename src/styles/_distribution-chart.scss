@@ -24,3 +24,14 @@
     fill: $gray;
   }
 }
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.hover-line {
+  fill: none;
+  stroke: $hover-line;
+  stroke-width: 1px;
+}
