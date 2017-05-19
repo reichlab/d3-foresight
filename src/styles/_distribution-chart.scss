@@ -37,6 +37,13 @@
   stroke-width: 1px;
 }
 
+.no-pred-text {
+  fill: $gray;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
 // Overrides for clickable x axis
 .axis-x .tick {
   cursor: pointer;

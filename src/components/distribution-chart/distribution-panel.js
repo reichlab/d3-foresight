@@ -3,6 +3,7 @@ import * as commonComponents from '../common'
 import Prediction from './prediction'
 import * as utils from '../../utilities/distribution-chart'
 import Overlay from './overlay'
+import NoPredText from './no-pred-text'
 
 /**
  * A panel displaying distributions for one curve
@@ -37,6 +38,7 @@ export default class DistributionPanel {
     this.selectedCurveIdx = null
     this.distributionTooltip = distributionTooltip
     this.overlay = new Overlay(this)
+    this.noPredText = new NoPredText(this)
   }
 
   plot (data, yLimits) {
@@ -81,5 +83,8 @@ export default class DistributionPanel {
       }
       predMarker.plot(this, m.curves[this.selectedCurveIdx])
     })
+
+    // Check if all markers have noData. That means we can show NA text.
+    this.noPredText.hidden = (this.predictions.filter(p => p.noData).length !== this.predictions.length)
   }
 }
