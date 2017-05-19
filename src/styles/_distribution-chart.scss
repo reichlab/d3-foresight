@@ -22,7 +22,12 @@
 .time-pointer-group {
   .pointer-triangle {
     fill: $gray;
-    pointer-events: none;
+  }
+
+  .pointer-overlay {
+    cursor: pointer;
+    fill: $gray;
+    fill-opacity: 0;
   }
 }
 
@@ -42,9 +47,4 @@
   font-size: 10px;
   letter-spacing: 1px;
   text-transform: uppercase;
-}
-
-// Overrides for clickable x axis
-.axis-x .tick {
-  cursor: pointer;
 }

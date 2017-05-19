@@ -1,3 +1,5 @@
+import * as d3 from 'd3'
+
 /**
  * Return triangle points for drawing polyline centered at origin
  */
@@ -25,13 +27,25 @@ export default class Pointer {
       .attr('class', 'pointer-triangle')
       .attr('points', generateTrianglePoints([0, this.yPos]))
 
+    // Add overlay over axis to allow clicks
+    group.append('rect')
+      .attr('class', 'pointer-overlay')
+      .attr('height', 80)
+      .attr('width', parent.width)
+      .attr('x', 0)
+      .attr('y', parent.height - 30)
+
     this.group = group
   }
 
-  plot (currentIdx, xScale) {
+  plot (currentIdx, xScale, clickCallback) {
     this.group.select('.pointer-triangle')
       .transition()
       .duration(300)
       .attr('points', generateTrianglePoints([xScale(currentIdx), this.yPos]))
+
+    this.group.select('.pointer-overlay').on('click', function () {
+      clickCallback(Math.round(xScale.invert(d3.mouse(this)[0])))
+    })
   }
 }

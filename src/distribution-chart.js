@@ -154,13 +154,10 @@ export default class DistributionChart extends Chart {
     this.xAxis.plot(this.xScalePoint, this.xScaleDate)
 
     // Plot pointer position
-    this.pointer.plot(data.currentIdx, this.xScale)
-
-    // Handle click events on x axis values only on the .tick elements
-    d3.selectAll('.axis-x .tick').on('click', tickValue => {
+    this.pointer.plot(data.currentIdx, this.xScale, clickIndex => {
       this.handleHook({
         type: 'positionUpdate',
-        value: this.ticks.indexOf(tickValue)
+        value: clickIndex
       })
     })
 
