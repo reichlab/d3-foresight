@@ -156,6 +156,14 @@ export default class DistributionChart extends Chart {
     // Plot pointer position
     this.pointer.plot(data.currentIdx, this.xScale)
 
+    // Handle click events on x axis values only on the .tick elements
+    d3.selectAll('.axis-x .tick').on('click', tickValue => {
+      this.handleHook({
+        type: 'positionUpdate',
+        value: this.ticks.indexOf(tickValue)
+      })
+    })
+
     let yLimits = utils.getYLimits(data)
 
     // Provide curve data to the panels

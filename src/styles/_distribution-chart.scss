@@ -22,6 +22,7 @@
 .time-pointer-group {
   .pointer-triangle {
     fill: $gray;
+    pointer-events: none;
   }
 }
 
@@ -34,4 +35,9 @@
   fill: none;
   stroke: $hover-line;
   stroke-width: 1px;
+}
+
+// Overrides for clickable x axis
+.axis-x .tick {
+  cursor: pointer;
 }
