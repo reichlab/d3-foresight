@@ -18,12 +18,12 @@
 }
 
 .d3-foresight-info-tooltip {
-  width: 150px;
+  max-width: 150px;
 
   .title {
     @include cell-padding;
     font-size: 13px;
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
     margin-top: 5px;
   }
 

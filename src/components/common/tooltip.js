@@ -6,11 +6,12 @@ class Tooltip {
     this.selection = rootSelector.append('div')
       .attr('class', `d3-foresight-tooltip ${tooltipClass}`)
       .style('display', 'none')
+    this.selection.text('undefined')
+    this.offset = 15
+  }
 
-    this.offset = {
-      right: { x: 15, y: 15 },
-      left: { x: -150 - 15, y: 15 }
-    }
+  get width () {
+    return this.selection.node().getBoundingClientRect().width
   }
 
   show () {
@@ -23,8 +24,8 @@ class Tooltip {
 
   move (position, direction = 'right') {
     this.selection
-      .style('top', (position.y + this.offset[direction].y) + 'px')
-      .style('left', (position.x + this.offset[direction].x) + 'px')
+      .style('top', (position.y + this.offset) + 'px')
+      .style('left', (position.x + (direction === 'right' ? this.offset : -this.width - this.offset)) + 'px')
   }
 
   render (html) {
