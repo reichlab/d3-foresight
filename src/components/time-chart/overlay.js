@@ -81,10 +81,7 @@ export default class Overlay {
         })
       })
       .on('click', function () {
-        parent.handleHook({
-          type: 'positionUpdate',
-          value: Math.round(xScale.invert(d3.mouse(this)[0]))
-        })
+        parent.dispatchHook('jump-to-index', Math.round(xScale.invert(d3.mouse(this)[0])))
       })
   }
 

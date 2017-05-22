@@ -52,7 +52,6 @@ export default class TimeChart extends Chart {
     this.actual = new timeChartComponents.Actual(this)
     this.observed = new timeChartComponents.Observed(this)
     this.predictions = []
-    this.eventHooks = []
     this.cid = this.config.confidenceIntervals.length - 1
 
     let showCi = this.cid !== -1
@@ -78,9 +77,11 @@ export default class TimeChart extends Chart {
             p.update(this.currentIdx)
           })
         } else if (event === 'btn:next') {
-          this.forward()
+          this.moveForward()
+          this.dispatchHook('forward-index')
         } else if (event === 'btn:back') {
-          this.backward()
+          this.moveBackward()
+          this.dispatchHook('backward-index')
         }
       }
     )
@@ -177,22 +178,6 @@ export default class TimeChart extends Chart {
   }
 
   /**
-   * Helper method to call all hooks
-   * @param data dictionary with event type key `type` and corresponding
-   * value `value`
-   */
-  handleHook (data) {
-    this.eventHooks.forEach(hook => hook(data))
-  }
-
-  /**
-   * Append hook function if the hookType is supported
-   */
-  addHook (hookType, hookFunction) {
-    //
-  }
-
-  /**
    * Update marker position
    */
   update (idx) {
@@ -209,14 +194,14 @@ export default class TimeChart extends Chart {
   /**
    * Move chart one step ahead
    */
-  forward () {
+  moveForward () {
     this.update(Math.min(this.currentIdx + 1, this.actualIndices[this.actualIndices.length - 1]))
   }
 
   /**
    * Move chart one step back
    */
-  backward () {
+  moveBackward () {
     this.update(Math.max(this.currentIdx - 1, this.actualIndices[0]))
   }
 }

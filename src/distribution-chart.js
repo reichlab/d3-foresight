@@ -90,7 +90,6 @@ export default class DistributionChart extends Chart {
 
     this.pointer = new distributionChartComponents.Pointer(this)
 
-    this.eventHooks = []
     let showStats = this.config.statsMeta.length > 0
     let panelConfig = {
       actual: false,
@@ -105,13 +104,9 @@ export default class DistributionChart extends Chart {
       this, panelConfig,
       (event, payload) => {
         if (event === 'btn:next') {
-          this.handleHook({
-            type: 'forward'
-          })
+          this.dispatchHook('forward-index')
         } else if (event === 'btn:back') {
-          this.handleHook({
-            type: 'backward'
-          })
+          this.dispatchHook('backward-index')
         }
       }
     )
@@ -155,10 +150,7 @@ export default class DistributionChart extends Chart {
 
     // Plot pointer position
     this.pointer.plot(data.currentIdx, this.xScale, clickIndex => {
-      this.handleHook({
-        type: 'positionUpdate',
-        value: clickIndex
-      })
+      this.dispatchHook('jump-to-index', clickIndex)
     })
 
     let yLimits = utils.getYLimits(data)
@@ -191,9 +183,5 @@ export default class DistributionChart extends Chart {
         predMarker.hidden = hidePrediction
       })
     })
-  }
-
-  handleHook (data) {
-    this.eventHooks.forEach(hook => hook(data))
   }
 }

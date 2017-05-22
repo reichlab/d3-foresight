@@ -1,4 +1,5 @@
 import * as commonComponents from './components/common'
+import * as errors from './utilities/errors'
 
 /**
  * Chart superclass
@@ -46,11 +47,35 @@ export default class Chart {
     this.infoTooltip = new commonComponents.InfoTooltip(elementSelection)
     this.elementSelection = elementSelection
     this.onsetHeight = onsetHeight
+
+    // Supported event hooks
+    this.hooks = {
+      'jump-to-index': [],
+      'forward-index': [],
+      'backward-index': []
+    }
   }
 
-  plot (data) {
+  plot (data) {}
+
+  update (idx) {}
+
+  /**
+   * Dispatch a hook
+   */
+  dispatchHook (hookName, data) {
+    this.hooks[hookName].forEach(hf => hf(data))
   }
 
-  update (idx) {
+  /**
+   * Append hook function if the hookName is supported
+   */
+  addHook (hookName, hookFunction) {
+    if (hookName in this.hooks) {
+      this.hooks[hookName].push(hookFunction)
+    } else {
+      throw new errors.HookNotUnderstoodException()
+    }
+    this.hooks[hookName] = this.hooks[hookName] || []
   }
 }

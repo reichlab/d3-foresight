@@ -16,7 +16,7 @@ UnknownPointTypeException.prototype.constructor = UnknownPointTypeException
  */
 export function HookNotUnderstoodException (message) {
   this.name = 'HookNotUnderstoodException'
-  this.message = message || 'Hook type not found'
+  this.message = message || 'Requested hook not found'
   this.stack = (new Error()).stack
 }
 
