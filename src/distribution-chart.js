@@ -130,7 +130,6 @@ export default class DistributionChart extends Chart {
     //   curves (or maybe use predictions) list of t items for t targets:
     //     name -> text naming the target
     //     data -> series of (x, y) tuples about the distribution
-    //     actual -> actual value // Not planned
 
     let curveNames = data.models[0].curves.map(t => t.name)
 
