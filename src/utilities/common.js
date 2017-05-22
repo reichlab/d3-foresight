@@ -15,3 +15,11 @@ export function getMousePosition (d3Selection) {
   let bb = d3Selection.node().getBoundingClientRect()
   return [x + bb.left, y + bb.top]
 }
+
+/**
+ * Custom exception for case when point type (the type of x axis) can't be
+ * handled
+ */
+export const UnknownPointTypeException = message => {
+  this.message = message
+}

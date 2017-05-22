@@ -1,9 +1,6 @@
 import * as d3 from 'd3'
 import * as mmwr from 'mmwr-week'
-
-export const UnknownPointTypeException = message => {
-  this.message = message
-}
+import * as cutils from './common'
 
 export const getXDateDomain = (timePoints, pointType) => {
   return d3.extent(timePoints.map(d => {
@@ -12,7 +9,7 @@ export const getXDateDomain = (timePoints, pointType) => {
     } else if (pointType === 'regular-week') {
       return d3.timeParse('%Y-%W')(d.year + '-' + d.week)
     } else {
-      throw UnknownPointTypeException()
+      throw cutils.UnknownPointTypeException()
     }
   }))
 }

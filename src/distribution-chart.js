@@ -2,6 +2,7 @@ import * as d3 from 'd3'
 import * as commonComponents from './components/common'
 import * as distributionChartComponents from './components/distribution-chart'
 import * as utils from './utilities/distribution-chart'
+import * as cutils from './utilities/common'
 import Chart from './chart'
 
 export default class DistributionChart extends Chart {
@@ -146,7 +147,7 @@ export default class DistributionChart extends Chart {
     if (this.config.pointType.endsWith('-week')) {
       this.ticks = this.timePoints.map(tp => tp.week)
     } else {
-      throw utils.UnknownPointTypeException()
+      throw cutils.UnknownPointTypeException()
     }
     this.xScaleDate.domain(utils.getXDateDomain(this.timePoints, this.config.pointType))
     this.xScalePoint.domain(this.ticks)

@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import * as utils from './utilities/time-chart'
+import * as cutils from './utilities/common'
 import * as commonComponents from './components/common'
 import * as timeChartComponents from './components/time-chart'
 import Chart from './chart'
@@ -91,7 +92,7 @@ export default class TimeChart extends Chart {
     if (this.config.pointType.endsWith('-week')) {
       this.ticks = this.timePoints.map(tp => tp.week)
     } else {
-      throw utils.UnknownPointTypeException()
+      throw cutils.UnknownPointTypeException()
     }
 
     this.actualIndices = data.actual.map((d, idx) => {

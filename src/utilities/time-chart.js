@@ -1,10 +1,7 @@
 import tinycolor from 'tinycolor2'
 import * as d3 from 'd3'
 import * as mmwr from 'mmwr-week'
-
-export const UnknownPointTypeException = message => {
-  this.message = message
-}
+import * as cutils from './common'
 
 /**
  * Return points where the predictions were made
@@ -28,7 +25,7 @@ export const getXDateDomain = (timePoints, pointType) => {
     } else if (pointType === 'regular-week') {
       return d3.timeParse('%Y-%W')(d.year + '-' + d.week)
     } else {
-      throw UnknownPointTypeException()
+      throw cutils.UnknownPointTypeException()
     }
   }))
 }
