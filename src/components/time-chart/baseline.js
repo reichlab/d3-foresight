@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+import * as cutils from '../../utilities/common'
 
 /**
  * Baseline
@@ -48,9 +49,11 @@ export default class Baseline {
           title: null,
           text: config.baseline.description
         })
+
+        let pos = cutils.getMousePosition(d3.select('.overlay'))
         infoTooltip.move({
-          x: d3.event.pageX,
-          y: d3.event.pageY
+          x: pos[0],
+          y: pos[1]
         }, 'left')
       })
       .on('click', () => {

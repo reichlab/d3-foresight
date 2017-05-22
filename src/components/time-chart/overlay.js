@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+import * as cutils from '../../utilities/common'
 
 export default class Overlay {
   constructor (parent) {
@@ -71,9 +72,12 @@ export default class Overlay {
 
         timeChartTooltip.renderValues(parent.observed, parent.actual,
                                       parent.predictions, index)
+
+        // Find position for tooltip
+        let pos = cutils.getMousePosition(d3.select(this))
         timeChartTooltip.move({
-          x: d3.event.pageX,
-          y: d3.event.pageY
+          x: pos[0],
+          y: pos[1]
         })
       })
       .on('click', function () {

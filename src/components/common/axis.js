@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import textures from 'textures'
+import * as cutils from '../../utilities/common'
 
 /**
  * Simple linear Y axis with informative label
@@ -19,14 +20,15 @@ export class YAxis {
       .style('cursor', 'pointer')
       .on('mouseover', () => infoTooltip.show())
       .on('mouseout', () => infoTooltip.hide())
-      .on('mousemove', () => {
+      .on('mousemove', function () {
         infoTooltip.renderText({
           title: null,
           text: axisConfig.description
         })
+        let pos = cutils.getMousePosition(d3.select('.overlay'))
         infoTooltip.move({
-          x: d3.event.pageX,
-          y: d3.event.pageY
+          x: pos[0],
+          y: pos[1]
         })
       })
       .on('click', () => {
@@ -85,9 +87,10 @@ export class XAxis {
           title: null,
           text: axisConfig.description
         })
+        let pos = cutils.getMousePosition(d3.select('.overlay'))
         infoTooltip.move({
-          x: d3.event.pageX,
-          y: d3.event.pageY
+          x: pos[0],
+          y: pos[1]
         }, 'left')
       })
       .on('click', () => {
@@ -158,9 +161,10 @@ export class XAxisDate {
           title: null,
           text: axisConfig.description
         })
+        let pos = cutils.getMousePosition(d3.select('.overlay'))
         infoTooltip.move({
-          x: d3.event.pageX,
-          y: d3.event.pageY
+          x: pos[0],
+          y: pos[1]
         }, 'left')
       })
       .on('click', () => {

@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+import * as cutils from '../../utilities/common'
 
 /**
  * Historical lines
@@ -45,11 +46,12 @@ export default class HistoricalLines {
           .datum([])
           .attr('d', line)
         timeChartTooltip.hide()
-      }).on('mousemove', () => {
+      }).on('mousemove', function (event) {
         timeChartTooltip.renderText(hd.id)
+        let pos = cutils.getMousePosition(d3.select('.overlay'))
         timeChartTooltip.move({
-          x: d3.event.pageX,
-          y: d3.event.pageY
+          x: pos[0],
+          y: pos[1]
         })
       })
     })

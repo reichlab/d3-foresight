@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import palette from '../../styles/palette.json'
+import * as cutils from '../../utilities/common'
 
 /**
  * Side buttons in control panel
@@ -51,14 +52,15 @@ class ControlButtons {
       btn
         .on('mouseover', () => infoTooltip.show())
         .on('mouseout', () => infoTooltip.hide())
-        .on('mousemove', () => {
+        .on('mousemove', function () {
           infoTooltip.renderText({
             title: null,
             text: data.tooltipText
           })
+          let pos = cutils.getMousePosition(d3.select(this))
           infoTooltip.move({
-            x: d3.event.pageX,
-            y: d3.event.pageY
+            x: pos[0],
+            y: pos[1]
           }, 'left')
         })
         .on('click', () => eventHook(data.event))
@@ -175,11 +177,12 @@ class LegendDrawer {
       item
         .on('mouseover', () => infoTooltip.show())
         .on('mouseout', () => infoTooltip.hide())
-        .on('mousemove', () => {
+        .on('mousemove', function () {
           infoTooltip.renderText(data.tooltipData)
+          let pos = cutils.getMousePosition(d3.select(this))
           infoTooltip.move({
-            x: d3.event.pageX,
-            y: d3.event.pageY
+            x: pos[0],
+            y: pos[1]
           }, 'left')
         })
       return item
@@ -215,14 +218,15 @@ class LegendDrawer {
           })
           .on('mouseover', () => infoTooltip.show())
           .on('mouseout', () => infoTooltip.hide())
-          .on('mousemove', () => {
+          .on('mousemove', function () {
             infoTooltip.renderText({
               title: 'Confidence Interval',
               text: 'Select confidence interval for prediction markers'
             })
+            let pos = cutils.getMousePosition(d3.select(this))
             infoTooltip.move({
-              x: d3.event.pageX,
-              y: d3.event.pageY
+              x: pos[0],
+              y: pos[1]
             }, 'left')
           })
         return confButton
@@ -250,14 +254,15 @@ class LegendDrawer {
         })
         .on('mouseover', () => infoTooltip.show())
         .on('mouseout', () => infoTooltip.hide())
-        .on('mousemove', () => {
+        .on('mousemove', function () {
           infoTooltip.renderText({
             title: 'Toggle visibility',
             text: 'Show / hide all predictions'
           })
+          let pos = cutils.getMousePosition(d3.select(this))
           infoTooltip.move({
-            x: d3.event.pageX,
-            y: d3.event.pageY
+            x: pos[0],
+            y: pos[1]
           }, 'left')
         })
       return showHideButton
@@ -381,14 +386,15 @@ class LegendDrawer {
       predItem
         .on('mouseover', () => infoTooltip.show())
         .on('mouseout', () => infoTooltip.hide())
-        .on('mousemove', () => {
+        .on('mousemove', function () {
           infoTooltip.renderText({
             title: p.meta.name,
             text: p.meta.description
           })
+          let pos = cutils.getMousePosition(d3.select(this))
           infoTooltip.move({
-            x: d3.event.pageX,
-            y: d3.event.pageY
+            x: pos[0],
+            y: pos[1]
           }, 'left')
         })
       return predItem
@@ -522,14 +528,15 @@ class StatsDrawer {
         tr.select('td')
           .on('mouseover', () => this.infoTooltip.show())
           .on('mouseout', () => this.infoTooltip.hide())
-          .on('mousemove', () => {
+          .on('mousemove', function () {
             this.infoTooltip.renderText({
               title: modelMeta[index].name,
               text: modelMeta[index].description
             })
+            let pos = cutils.getMousePosition(d3.select(this))
             this.infoTooltip.move({
-              x: d3.event.pageX,
-              y: d3.event.pageY
+              x: pos[0],
+              y: pos[1]
             }, 'left')
           })
         return tr

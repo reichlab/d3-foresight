@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import * as utils from '../../utilities/time-chart'
+import * as cutils from '../../utilities/common'
 
 /**
  * Prediction marker with following components
@@ -177,9 +178,10 @@ export default class Prediction {
           timeChartTooltip.hide()
         })
         .on('mousemove', function () {
+          let pos = cutils.getMousePosition(d3.select('.overlay'))
           timeChartTooltip.move({
-            x: d3.event.pageX,
-            y: d3.event.pageY
+            x: pos[0],
+            y: pos[1]
           })
         })
 
@@ -238,9 +240,10 @@ export default class Prediction {
           timeChartTooltip.hide()
         })
         .on('mousemove', function () {
+          let pos = cutils.getMousePosition(d3.select('.overlay'))
           timeChartTooltip.move({
-            x: d3.event.pageX,
-            y: d3.event.pageY
+            x: pos[0],
+            y: pos[1]
           })
         })
 
