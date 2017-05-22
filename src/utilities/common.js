@@ -3,6 +3,7 @@
  */
 
 import * as d3 from 'd3'
+import tinycolor from 'tinycolor2'
 
 /**
  * Return mouse position as absolute value for current view using the provided
@@ -23,3 +24,8 @@ export function getMousePosition (d3Selection) {
 export const UnknownPointTypeException = message => {
   this.message = message
 }
+
+/**
+ * Convert hex to rgba
+ */
+export const hexToRgba = (hex, alpha) => tinycolor(hex).setAlpha(alpha).toRgbString()

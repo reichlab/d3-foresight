@@ -11,8 +11,8 @@ import * as cutils from '../../utilities/common'
  */
 export default class Prediction {
   constructor (parent, id, meta, stats, color, onsetY) {
-    let colorPoint = utils.hexToRgba(color, 0.8)
-    let colorRange = utils.hexToRgba(color, 0.6)
+    let colorPoint = cutils.hexToRgba(color, 0.8)
+    let colorRange = cutils.hexToRgba(color, 0.6)
 
     // Prediction group
     let predictionGroup = parent.svg.append('g')
@@ -129,7 +129,7 @@ export default class Prediction {
 
   update (idx) {
     let color = this.color
-    let colorHover = utils.hexToRgba(color, 0.3)
+    let colorHover = cutils.hexToRgba(color, 0.3)
     let id = this.id
     let ticks = this.ticks
 

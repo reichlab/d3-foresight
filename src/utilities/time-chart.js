@@ -1,4 +1,3 @@
-import tinycolor from 'tinycolor2'
 import * as d3 from 'd3'
 import * as mmwr from 'mmwr-week'
 import * as cutils from './common'
@@ -54,8 +53,3 @@ export const getYDomain = data => {
 export const getXDomain = timePoints => {
   return [0, timePoints.length - 1]
 }
-
-/**
- * Return rgba for hex
- */
-export const hexToRgba = (hex, alpha) => tinycolor(hex).setAlpha(alpha).toRgbString()
