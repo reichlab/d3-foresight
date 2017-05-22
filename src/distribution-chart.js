@@ -147,7 +147,7 @@ export default class DistributionChart extends Chart {
     if (this.config.pointType.endsWith('-week')) {
       this.ticks = this.timePoints.map(tp => tp.week)
     } else {
-      throw cutils.UnknownPointTypeException()
+      throw new cutils.UnknownPointTypeException()
     }
     this.xScaleDate.domain(utils.getXDateDomain(this.timePoints, this.config.pointType))
     this.xScalePoint.domain(this.ticks)

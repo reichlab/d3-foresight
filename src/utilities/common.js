@@ -21,9 +21,14 @@ export function getMousePosition (d3Selection) {
  * Custom exception for case when point type (the type of x axis) can't be
  * handled
  */
-export const UnknownPointTypeException = message => {
-  this.message = message
+export function UnknownPointTypeException (message) {
+  this.name = 'UnknownPointTypeException'
+  this.message = message || 'Point type not understood'
+  this.stack = (new Error()).stack
 }
+
+UnknownPointTypeException.prototype = Object.create(Error.prototype)
+UnknownPointTypeException.prototype.constructor = UnknownPointTypeException
 
 /**
  * Convert hex to rgba

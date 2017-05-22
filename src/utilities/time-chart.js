@@ -24,7 +24,7 @@ export const getXDateDomain = (timePoints, pointType) => {
     } else if (pointType === 'regular-week') {
       return d3.timeParse('%Y-%W')(d.year + '-' + d.week)
     } else {
-      throw cutils.UnknownPointTypeException()
+      throw new cutils.UnknownPointTypeException()
     }
   }))
 }

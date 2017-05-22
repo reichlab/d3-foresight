@@ -92,7 +92,7 @@ export default class TimeChart extends Chart {
     if (this.config.pointType.endsWith('-week')) {
       this.ticks = this.timePoints.map(tp => tp.week)
     } else {
-      throw cutils.UnknownPointTypeException()
+      throw new cutils.UnknownPointTypeException()
     }
 
     this.actualIndices = data.actual.map((d, idx) => {
