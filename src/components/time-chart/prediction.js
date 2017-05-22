@@ -1,5 +1,4 @@
 import * as d3 from 'd3'
-import * as utils from '../../utilities/time-chart'
 import * as mutils from '../../utilities/misc'
 
 /**
