@@ -11,7 +11,7 @@ export default class TimeChart extends Chart {
       baseline: {
         text: 'Baseline',
         description: 'Baseline value',
-        utl: '#'
+        url: '#'
       },
       pointType: 'regular-week',
       confidenceIntervals: []
