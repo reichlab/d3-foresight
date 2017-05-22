@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import palette from '../../styles/palette.json'
-import * as cutils from '../../utilities/common'
+import * as mutils from '../../utilities/misc'
 
 /**
  * Side buttons in control panel
@@ -57,7 +57,7 @@ class ControlButtons {
             title: null,
             text: data.tooltipText
           })
-          let pos = cutils.getMousePosition(d3.select(this))
+          let pos = mutils.getMousePosition(d3.select(this))
           infoTooltip.move({
             x: pos[0],
             y: pos[1]
@@ -179,7 +179,7 @@ class LegendDrawer {
         .on('mouseout', () => infoTooltip.hide())
         .on('mousemove', function () {
           infoTooltip.renderText(data.tooltipData)
-          let pos = cutils.getMousePosition(d3.select(this))
+          let pos = mutils.getMousePosition(d3.select(this))
           infoTooltip.move({
             x: pos[0],
             y: pos[1]
@@ -223,7 +223,7 @@ class LegendDrawer {
               title: 'Confidence Interval',
               text: 'Select confidence interval for prediction markers'
             })
-            let pos = cutils.getMousePosition(d3.select(this))
+            let pos = mutils.getMousePosition(d3.select(this))
             infoTooltip.move({
               x: pos[0],
               y: pos[1]
@@ -259,7 +259,7 @@ class LegendDrawer {
             title: 'Toggle visibility',
             text: 'Show / hide all predictions'
           })
-          let pos = cutils.getMousePosition(d3.select(this))
+          let pos = mutils.getMousePosition(d3.select(this))
           infoTooltip.move({
             x: pos[0],
             y: pos[1]
@@ -391,7 +391,7 @@ class LegendDrawer {
             title: p.meta.name,
             text: p.meta.description
           })
-          let pos = cutils.getMousePosition(d3.select(this))
+          let pos = mutils.getMousePosition(d3.select(this))
           infoTooltip.move({
             x: pos[0],
             y: pos[1]
@@ -533,7 +533,7 @@ class StatsDrawer {
               title: modelMeta[index].name,
               text: modelMeta[index].description
             })
-            let pos = cutils.getMousePosition(d3.select(this))
+            let pos = mutils.getMousePosition(d3.select(this))
             this.infoTooltip.move({
               x: pos[0],
               y: pos[1]

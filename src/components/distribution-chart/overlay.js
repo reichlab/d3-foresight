@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import * as cutils from '../../utilities/common'
+import * as mutils from '../../utilities/misc'
 
 export default class Overlay {
   constructor (parent) {
@@ -46,7 +46,7 @@ export default class Overlay {
         distributionTooltip.renderValues(parent.predictions, index, xScale.domain()[index])
 
         // Tooltip position
-        let pos = cutils.getMousePosition(d3.select(this))
+        let pos = mutils.getMousePosition(d3.select(this))
         distributionTooltip.move({
           x: pos[0],
           y: pos[1]

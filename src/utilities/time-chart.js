@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import * as mmwr from 'mmwr-week'
-import * as cutils from './common'
+import * as errors from './errors'
 
 /**
  * Return points where the predictions were made
@@ -24,7 +24,7 @@ export const getXDateDomain = (timePoints, pointType) => {
     } else if (pointType === 'regular-week') {
       return d3.timeParse('%Y-%W')(d.year + '-' + d.week)
     } else {
-      throw new cutils.UnknownPointTypeException()
+      throw new errors.UnknownPointTypeException()
     }
   }))
 }

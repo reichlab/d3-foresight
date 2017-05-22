@@ -1,7 +1,3 @@
-/**
- * Some common utilities
- */
-
 import * as d3 from 'd3'
 import tinycolor from 'tinycolor2'
 
@@ -16,19 +12,6 @@ export function getMousePosition (d3Selection) {
   let bb = d3Selection.node().getBoundingClientRect()
   return [x + bb.left, y + bb.top]
 }
-
-/**
- * Custom exception for case when point type (the type of x axis) can't be
- * handled
- */
-export function UnknownPointTypeException (message) {
-  this.name = 'UnknownPointTypeException'
-  this.message = message || 'Point type not understood'
-  this.stack = (new Error()).stack
-}
-
-UnknownPointTypeException.prototype = Object.create(Error.prototype)
-UnknownPointTypeException.prototype.constructor = UnknownPointTypeException
 
 /**
  * Convert hex to rgba

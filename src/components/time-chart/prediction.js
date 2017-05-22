@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import * as utils from '../../utilities/time-chart'
-import * as cutils from '../../utilities/common'
+import * as mutils from '../../utilities/misc'
 
 /**
  * Prediction marker with following components
@@ -11,8 +11,8 @@ import * as cutils from '../../utilities/common'
  */
 export default class Prediction {
   constructor (parent, id, meta, stats, color, onsetY) {
-    let colorPoint = cutils.hexToRgba(color, 0.8)
-    let colorRange = cutils.hexToRgba(color, 0.6)
+    let colorPoint = mutils.hexToRgba(color, 0.8)
+    let colorRange = mutils.hexToRgba(color, 0.6)
 
     // Prediction group
     let predictionGroup = parent.svg.append('g')
@@ -129,7 +129,7 @@ export default class Prediction {
 
   update (idx) {
     let color = this.color
-    let colorHover = cutils.hexToRgba(color, 0.3)
+    let colorHover = mutils.hexToRgba(color, 0.3)
     let id = this.id
     let ticks = this.ticks
 
@@ -178,7 +178,7 @@ export default class Prediction {
           timeChartTooltip.hide()
         })
         .on('mousemove', function () {
-          let pos = cutils.getMousePosition(d3.select('.overlay'))
+          let pos = mutils.getMousePosition(d3.select('.overlay'))
           timeChartTooltip.move({
             x: pos[0],
             y: pos[1]
@@ -240,7 +240,7 @@ export default class Prediction {
           timeChartTooltip.hide()
         })
         .on('mousemove', function () {
-          let pos = cutils.getMousePosition(d3.select('.overlay'))
+          let pos = mutils.getMousePosition(d3.select('.overlay'))
           timeChartTooltip.move({
             x: pos[0],
             y: pos[1]
