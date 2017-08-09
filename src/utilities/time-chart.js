@@ -9,9 +9,14 @@ import * as errors from './errors'
 export const getPredictionStartingPoints = data => {
   return data.observed.map(d => {
     // Handle zero length values
-    if (d.length !== 0) {
-      return d.filter(ld => ld.lag === 0)[0].value
-    } else {
+    try {
+      if (d.length !== 0) {
+        return d.filter(ld => ld.lag === 0)[0].value
+      } else {
+        return null
+      }
+    }
+    catch (e) {
       return null
     }
   })

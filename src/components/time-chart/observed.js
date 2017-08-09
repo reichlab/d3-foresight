@@ -24,11 +24,15 @@ export default class Observed {
   update (idx) {
     let filteredData = []
 
-    for (let i = 0; i <= idx; i++) {
-      filteredData.push({
-        x: idx - i,
-        y: this.observedData[idx - i].filter(d => d.lag === i)[0].value
-      })
+    try {
+      for (let i = 0; i <= idx; i++) {
+        filteredData.push({
+          x: idx - i,
+          y: this.observedData[idx - i].filter(d => d.lag === i)[0].value
+        })
+      }
+    } catch (e) {
+      filteredData = []
     }
 
     let circles = this.group.selectAll('.point-observed')
