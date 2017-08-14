@@ -26,9 +26,10 @@ export default class Observed {
 
     try {
       for (let i = 0; i <= idx; i++) {
+        let yLags = this.observedData[idx - i].slice().filter(d => d.lag <= i)
         filteredData.push({
           x: idx - i,
-          y: this.observedData[idx - i].filter(d => d.lag === i)[0].value
+          y: yLags.sort((a, b) => (b.lag - a.lag))[0].value
         })
       }
     } catch (e) {
