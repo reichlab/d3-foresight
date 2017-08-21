@@ -42,11 +42,17 @@ export const getXDomain = (data, curveIdx) => {
  * Get shared y limits for type of data
  */
 export const getYLimits = data => {
-  let modelMaxes = data.models.map(m => {
-    return m.curves.map(c => {
-      return c.data ? [c.data.length, Math.max(...c.data.map(d => d[1]))] : [0, 0]
-    })
-  })
+  let modelMaxes = data.models
+      .filter(m => {
+        // NOTE: Filtering based on the assumption that one model will have
+        // /all/ the curves or none of them
+        return m.curves.filter(c => c.data).length === m.curves.length
+      })
+      .map(m => {
+        return m.curves.map(c => {
+          return [c.data.length, Math.max(...c.data.map(d => d[1]))]
+        })
+      })
 
   // HACK: Simplify this
   // Identify curve type using the length of values in them
