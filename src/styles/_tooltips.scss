@@ -75,6 +75,13 @@
     color: $white;
   }
 
+  .actual,
+  .observed {
+    @include cell-padding;
+    background-color: $white;
+    color: $gray;
+  }
+
   .text {
     @include cell-padding;
     color: $gray;
