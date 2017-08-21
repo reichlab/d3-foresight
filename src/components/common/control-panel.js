@@ -534,16 +534,18 @@ class StatsDrawer {
         ]
         tr.html(row.join(''))
 
+        let ttip = this.infoTooltip
+
         tr.select('td')
-          .on('mouseover', () => this.infoTooltip.show())
-          .on('mouseout', () => this.infoTooltip.hide())
+          .on('mouseover', () => ttip.show())
+          .on('mouseout', () => ttip.hide())
           .on('mousemove', function () {
-            this.infoTooltip.renderText({
+            ttip.renderText({
               title: modelMeta[index].name,
               text: modelMeta[index].description
             })
             let pos = mutils.getMousePosition(d3.select(this))
-            this.infoTooltip.move({
+            ttip.move({
               x: pos[0],
               y: pos[1]
             }, 'left')
