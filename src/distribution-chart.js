@@ -183,5 +183,8 @@ export default class DistributionChart extends Chart {
         predMarker.hidden = hidePrediction
       })
     })
+
+    // Fade out models with no predictions
+    this.controlPanel.update(this.panels[0].predictions)
   }
 }
