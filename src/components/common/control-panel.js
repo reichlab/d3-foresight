@@ -368,7 +368,17 @@ class LegendDrawer {
           .style('color', p.color)
 
       urlItem
-        .on('mousemove', infoTooltip.hide())
+        .on('mousemove', function () {
+          d3.event.stopPropagation()
+          infoTooltip.renderText({
+            text: 'Show details'
+          })
+          let pos = mutils.getMousePosition(d3.select(this))
+          infoTooltip.move({
+            x: pos[0],
+            y: pos[1]
+          }, 'left')
+        })
         .on('click', () => d3.event.stopPropagation())
 
       predItem
