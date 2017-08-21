@@ -365,7 +365,6 @@ class LegendDrawer {
           .attr('target', '_blank')
           .append('i')
           .attr('class', 'fa fa-external-link model-url')
-          .style('color', p.color)
 
       urlItem
         .on('mousemove', function () {
