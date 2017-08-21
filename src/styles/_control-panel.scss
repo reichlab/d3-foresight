@@ -32,6 +32,10 @@
       margin: 5px 0;
     }
 
+    .control-item > span:first-child {
+      margin-right: 5px;
+    }
+
     .toggle-button {
       background-color: $white;
       border-color: $shadow;
