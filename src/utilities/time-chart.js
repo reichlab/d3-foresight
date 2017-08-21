@@ -15,8 +15,7 @@ export const getPredictionStartingPoints = data => {
       } else {
         return null
       }
-    }
-    catch (e) {
+    } catch (e) {
       return null
     }
   })
