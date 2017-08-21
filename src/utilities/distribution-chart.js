@@ -33,10 +33,9 @@ export const getXDomain = (data, curveIdx) => {
     if (curveData) {
       // Return the x series directly
       return curveData.map(d => d[0])
-    } else {
-      return [0, 0]
     }
   }
+  return [0, 0]
 }
 
 /**
