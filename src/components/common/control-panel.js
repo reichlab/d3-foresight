@@ -465,7 +465,7 @@ class StatsDrawer {
       let statsData = selectedModelStats.map(ms => {
         return ms.map(value => {
           return {
-            value: value ? parseFloat(value.toFixed(2)) : 0,
+            value: value ? parseFloat(value.toFixed(2)) : 'NA',
             best: false
           }
         })
@@ -474,7 +474,7 @@ class StatsDrawer {
       // Get the best item from each column
       for (let colIdx = 0; colIdx < statsData[0].length; colIdx++) {
         let column = statsData.map(row => row[colIdx].value)
-        let bestIdx = column.indexOf(statsMeta.bestFunc(...column))
+        let bestIdx = column.indexOf(statsMeta.bestFunc(column))
         statsData[bestIdx][colIdx].best = true
       }
 
