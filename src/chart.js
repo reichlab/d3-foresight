@@ -19,7 +19,6 @@ export default class Chart {
           url: '#'
         }
       },
-      statsMeta: [],
       margin: {
         top: 5,
         right: 50,

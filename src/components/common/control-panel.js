@@ -18,12 +18,6 @@ class ControlButtons {
         event: 'btn:legend'
       },
       {
-        name: 'statsBtn',
-        icon: 'fa-percent',
-        tooltipText: 'Toggle Stats',
-        event: 'btn:stats'
-      },
-      {
         name: 'backBtn',
         icon: 'fa-arrow-left',
         tooltipText: 'Move backward',
@@ -36,10 +30,6 @@ class ControlButtons {
         event: 'btn:next'
       }
     ]
-
-    if (!panelConfig.stats) {
-      buttonData.splice(1, 1)
-    }
 
     // Save all the buttons for toggling state and stuff
     this.buttons = buttonData.map(data => {
@@ -71,10 +61,6 @@ class ControlButtons {
 
   toggleLegendBtn () {
     this.buttons[0].classed('is-outlined', !this.buttons[0].classed('is-outlined'))
-  }
-
-  toggleStatsBtn () {
-    this.buttons[1].classed('is-outlined', !this.buttons[1].classed('is-outlined'))
   }
 }
 
@@ -419,151 +405,6 @@ class LegendDrawer {
 }
 
 /**
- * Stats nav drawer
- */
-class StatsDrawer {
-  constructor (panelSelection, statsMeta, infoTooltip) {
-    this.drawerSelection = panelSelection.append('div')
-      .attr('class', 'stats nav-drawer')
-
-    this.infoTooltip = infoTooltip
-    this.statsMeta = statsMeta
-    // Use last stat as default
-    this.selectedStat = statsMeta.length - 1
-  }
-
-  toggleDrawer () {
-    if (this.drawerSelection.style('display') === 'none') {
-      this.drawerSelection.style('display', null)
-    } else {
-      this.drawerSelection.style('display', 'none')
-    }
-  }
-
-  plot (predictions) {
-    this.drawerSelection.selectAll('*').remove()
-
-    let heading = this.drawerSelection.append('div')
-        .attr('class', 'stat-heading')
-
-    let modelStats = predictions.map(p => p.stats)
-    let modelIds = predictions.map(p => p.id)
-    let modelMeta = predictions.map(p => p.meta)
-    let modelColors = predictions.map(p => p.color)
-
-    // Assume if one model has no stats, no one has
-    if (modelStats.length > 0) {
-      // Formatted stuff
-      let statsMeta = this.statsMeta[this.selectedStat]
-
-      if (modelStats[0] === null) {
-        heading.append('span').text('No data found')
-        return
-      }
-
-      let selectedModelStats = modelStats.map(s => s[statsMeta.id])
-      let statsData = selectedModelStats.map(ms => {
-        return ms.map(value => {
-          return {
-            value: value ? parseFloat(value.toFixed(2)) : 'NA',
-            best: false
-          }
-        })
-      })
-
-      // Get the best item from each column
-      for (let colIdx = 0; colIdx < statsData[0].length; colIdx++) {
-        let column = statsData.map(row => row[colIdx].value)
-        let bestIdx = column.indexOf(statsMeta.bestFunc(column))
-        statsData[bestIdx][colIdx].best = true
-      }
-
-      // Create header
-      let headerSpan = heading.append('span')
-      this.previousBtn = headerSpan.append('a')
-        .attr('class', 'stat-btn button is-small previous-stat-btn')
-        .on('click', () => {
-          this.selectedStat = Math.max(this.selectedStat - 1, 0)
-          this.plot(predictions)
-        })
-
-      this.previousBtn.append('span')
-        .attr('class', 'icon is-small')
-        .append('i')
-        .attr('class', 'fa fa-arrow-left')
-
-      headerSpan.append('a')
-        .attr('href', statsMeta.url)
-        .attr('target', '_blank')
-        .text(statsMeta.name)
-
-      this.nextBtn = headerSpan.append('a')
-        .attr('class', 'stat-btn button is-small next-stat-btn')
-        .on('click', () => {
-          this.selectedStat = Math.min(this.selectedStat + 1, this.statsMeta.length - 1)
-          this.plot(predictions)
-        })
-
-      this.nextBtn.append('span')
-        .attr('class', 'icon is-small')
-        .append('i')
-        .attr('class', 'fa fa-arrow-right')
-
-      if (this.selectedStat === 0) {
-        this.previousBtn.classed('is-disabled', true)
-      } else if (this.selectedStat === (this.statsMeta.length - 1)) {
-        this.nextBtn.classed('is-disabled', true)
-      }
-
-      let tableWrapper = this.drawerSelection.append('div')
-          .attr('class', 'table-wrapper')
-      let table = tableWrapper.append('table')
-          .attr('class', 'table is-striped is-bordered')
-      let thead = table.append('thead')
-      thead.append('tr')
-        .html(['<th>Model</th>', ...statsMeta.header.map(d => `<th>${d}</th>`)].join(''))
-      let tbody = table.append('tbody')
-
-      this.rows = modelIds.map((id, index) => {
-        let tr = tbody.append('tr')
-        let row = [
-          `<td style="color:${modelColors[index]}"> ${id} </td>`,
-          ...statsData[index].map(sd => {
-            return `<td class="${sd.best ? 'bold' : ''}">${sd.value}</td>`
-          })
-        ]
-        tr.html(row.join(''))
-
-        let ttip = this.infoTooltip
-
-        tr.select('td')
-          .on('mouseover', () => ttip.show())
-          .on('mouseout', () => ttip.hide())
-          .on('mousemove', function () {
-            ttip.renderText({
-              title: modelMeta[index].name,
-              text: modelMeta[index].description
-            })
-            let pos = mutils.getMousePosition(d3.select(this))
-            ttip.move({
-              x: pos[0],
-              y: pos[1]
-            }, 'left')
-          })
-        return tr
-      })
-
-      this.drawerSelection.append('div')
-        .attr('class', 'stat-disclaimer')
-        .html(`Calculated using the most recently updated data.<br>
-               Final values may differ`)
-    } else {
-      heading.append('span').text('No data found')
-    }
-  }
-}
-
-/**
  * Chart controls
  * nav-drawers and buttons
  */
@@ -588,14 +429,6 @@ export default class ControlPanel {
       this.legendDrawer.toggleConfidenceBtn(parent.cid)
     }
 
-    if (this.config.stats) {
-      // Model statistics drawer
-      this.statsDrawer = new StatsDrawer(
-        panelSelection, parent.config.statsMeta, parent.infoTooltip
-      )
-      this.statsDrawer.toggleDrawer()
-    }
-
     // Buttons on the side of panel
     this.controlButtons = new ControlButtons(
       panelSelection, parent.infoTooltip, this.config, event => {
@@ -606,9 +439,6 @@ export default class ControlPanel {
           if (event === 'btn:legend') {
             this.legendDrawer.toggleDrawer()
             this.controlButtons.toggleLegendBtn()
-          } else if (event === 'btn:stats') {
-            this.statsDrawer.toggleDrawer()
-            this.controlButtons.toggleStatsBtn()
           }
         }
       }
@@ -620,15 +450,9 @@ export default class ControlPanel {
 
   plot (predictions, panelHook) {
     this.legendDrawer.plot(predictions, panelHook)
-    if (this.config.stats) {
-      this.statsDrawer.plot(predictions)
-    }
   }
 
   update (predictions) {
     this.legendDrawer.update(predictions)
-    if (this.config.stats) {
-      this.statsDrawer.plot(predictions)
-    }
   }
 }

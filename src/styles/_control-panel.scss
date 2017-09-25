@@ -130,38 +130,6 @@
     }
   }
 
-  .stat-heading {
-    margin: 10px;
-    text-align: center;
-
-    a {
-      color: $gray-light;
-      font-size: 12px;
-      font-weight: bold;
-      margin-top: -2px;
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    .previous-stat-btn {
-      float: left;
-    }
-
-    .next-stat-btn {
-      float: right;
-    }
-
-    .stat-btn {
-      margin-bottom: 10px;
-    }
-  }
-
-  .stat-disclaimer {
-    font-style: italic;
-    margin: 10px;
-  }
-
   .center {
     text-align: center;
   }

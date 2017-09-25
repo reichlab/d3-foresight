@@ -74,11 +74,10 @@ export default class DistributionPanel {
       if (markerIndex === -1) {
         // The marker is not present from previous calls to plot
         predMarker = new Prediction(
-          this.svg, m.id, m.meta, m.stats, this.colors[idx]
+          this.svg, m.id, m.meta, this.colors[idx]
         )
         this.predictions.push(predMarker)
       } else {
-        this.predictions[markerIndex].stats = m.stats
         predMarker = this.predictions[markerIndex]
       }
       predMarker.plot(this, m.curves[this.selectedCurveIdx])

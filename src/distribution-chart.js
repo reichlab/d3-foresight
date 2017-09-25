@@ -90,13 +90,11 @@ export default class DistributionChart extends Chart {
 
     this.pointer = new distributionChartComponents.Pointer(this)
 
-    let showStats = this.config.statsMeta.length > 0
     let panelConfig = {
       actual: false,
       observed: false,
       history: false,
-      ci: false,
-      stats: showStats
+      ci: false
     }
 
     // Control panel
@@ -121,7 +119,6 @@ export default class DistributionChart extends Chart {
     // models -> list of n items for n models, each with:
     //   id
     //   meta
-    //   stats
     //   curves (or maybe use predictions) list of t items for t targets:
     //     name -> text naming the target
     //     data -> series of (x, y) tuples about the distribution

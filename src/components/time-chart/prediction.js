@@ -9,7 +9,7 @@ import * as mutils from '../../utilities/misc'
  * - Peak
  */
 export default class Prediction {
-  constructor (parent, id, meta, stats, color, onsetY) {
+  constructor (parent, id, meta, color, onsetY) {
     let colorPoint = mutils.hexToRgba(color, 0.8)
     let colorRange = mutils.hexToRgba(color, 0.6)
 
@@ -108,7 +108,6 @@ export default class Prediction {
     this.color = color
     this.id = id
     this.meta = meta
-    this.stats = stats
     this.cid = parent.cid
     // Tells if the prediction is hidden by some other component
     this._hidden = false

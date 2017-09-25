@@ -55,13 +55,11 @@ export default class TimeChart extends Chart {
     this.cid = this.config.confidenceIntervals.length - 1
 
     let showCi = this.cid !== -1
-    let showStats = this.config.statsMeta.length > 0
     let panelConfig = {
       actual: true,
       observed: true,
       history: true,
-      ci: showCi,
-      stats: showStats
+      ci: showCi
     }
 
     // Control panel
@@ -152,11 +150,10 @@ export default class TimeChart extends Chart {
         // The marker is not present from previous calls to plot
         let onsetYPos = (idx + 1) * onsetDiff + this.height + 1
         predMarker = new timeChartComponents.Prediction(
-          this, m.id, m.meta, m.stats, this.colors[idx], onsetYPos
+          this, m.id, m.meta, this.colors[idx], onsetYPos
         )
         this.predictions.push(predMarker)
       } else {
-        this.predictions[markerIndex].stats = m.stats
         predMarker = this.predictions[markerIndex]
       }
       predMarker.plot(

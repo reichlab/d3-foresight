@@ -4,7 +4,7 @@ import * as d3 from 'd3'
  * Prediction marker for distribution chart
  */
 export default class Prediction {
-  constructor (svg, id, meta, stats, color) {
+  constructor (svg, id, meta, color) {
     // Prediction group
     let predictionGroup = svg.append('g')
         .attr('class', 'prediction-group')
@@ -23,7 +23,6 @@ export default class Prediction {
     this.color = color
     this.id = id
     this.meta = meta
-    this.stats = stats
     // Tells if the prediction is hidden by some other component
     this._hidden = false
     // Tells if data is available to be shown for current time
