@@ -90,6 +90,7 @@
       color: $accent;
       margin-left: 10px;
       margin-right: 5px;
+      float: right;
     }
 
     &.na {
@@ -113,20 +114,6 @@
       i {
         color: $history;
       }
-    }
-  }
-
-  .table-wrapper {
-    max-height: 200px;
-    min-width: 300px;
-    overflow-y: auto;
-  }
-
-  table {
-    margin: 0;
-
-    td.bold {
-      font-weight: bold;
     }
   }
 
