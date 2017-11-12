@@ -4,6 +4,7 @@ import Prediction from './prediction'
 import * as utils from '../../utilities/distribution-chart'
 import Overlay from './overlay'
 import NoPredText from './no-pred-text'
+import * as misc from '../../utilities/misc'
 
 /**
  * A panel displaying distributions for one curve
@@ -49,7 +50,11 @@ export default class DistributionPanel {
     this.yAxis.plot(this.yScale, 5)
 
     // Setup colors
-    if (data.models.length > 10) {
+    if (data.models.length > 30) {
+      this.colors = misc.colors50
+    } else if (data.models.length > 20) {
+      this.colors = misc.colors30
+    } else if (data.models.length > 10) {
       this.colors = d3.schemeCategory20
     } else {
       this.colors = d3.schemeCategory10
