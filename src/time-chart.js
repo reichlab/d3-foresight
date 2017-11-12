@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import * as utils from './utilities/time-chart'
+import * as misc from './utilities/misc'
 import * as errors from './utilities/errors'
 import * as commonComponents from './components/common'
 import * as timeChartComponents from './components/time-chart'
@@ -124,7 +125,11 @@ export default class TimeChart extends Chart {
     let onsetDiff = (this.onsetHeight - 2) / (totalModels + 1)
 
     // Setup colors
-    if (totalModels > 10) {
+    if (data.models.length > 30) {
+      this.colors = misc.colors50
+    } else if (data.models.length > 20) {
+      this.colors = misc.colors30
+    } else if (data.models.length > 10) {
       this.colors = d3.schemeCategory20
     } else {
       this.colors = d3.schemeCategory10
