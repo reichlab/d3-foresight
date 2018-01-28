@@ -71,7 +71,7 @@ export default class TimeChart extends Chart {
         if (event === 'legend:history') {
           this.history.hidden = !this.history.hidden
         } else if (event === 'legend:ci') {
-          this.predictions.map(p => {
+          this.predictions.forEach(p => {
             this.cid = p.cid = payload
             p.update(this.currentIdx)
           })
