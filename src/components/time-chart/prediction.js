@@ -257,7 +257,6 @@ export default class Prediction {
           })
         })
 
-
       if (cid === null) {
         ['.range', '.stopper'].forEach(cls => {
           this.peakGroup.selectAll(cls)
