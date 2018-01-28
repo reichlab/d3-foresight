@@ -187,7 +187,7 @@ class LegendDrawer {
     }
 
     if (panelConfig.ci) {
-      this.confButtons = [...confidenceIntervals, 'hide'].map((c, idx) => {
+      this.confButtons = [...confidenceIntervals, 'none'].map((c, idx) => {
         let confButton = legendCIButtons.append('span')
             .attr('class', 'toggle-button')
             .style('cursor', 'pointer')
@@ -198,7 +198,7 @@ class LegendDrawer {
             legendCIButtons.selectAll('.toggle-button')
               .classed('selected', false)
             d3.select(this).classed('selected', true)
-            eventHook('legend:ci', c === 'hide' ? null : idx)
+            eventHook('legend:ci', c === 'none' ? null : idx)
           })
           .on('mouseover', () => infoTooltip.show())
           .on('mouseout', () => infoTooltip.hide())
