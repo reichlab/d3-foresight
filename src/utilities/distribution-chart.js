@@ -2,6 +2,31 @@ import * as d3 from 'd3'
 import * as mmwr from 'mmwr-week'
 import * as errors from './errors'
 
+/**
+ * Return a formatted string representing a bin at index from series
+ */
+export const formatBin = (series, index) => {
+  let start = series[index]
+  let end
+
+  // Figure out if we are working with integers
+  let diff = series[1] - series[0]
+
+  if (index === (series.length - 1)) {
+    // We are at the end, use the diff
+    end = start + diff
+  } else {
+    end = series[index + 1]
+  }
+
+  if (diff < 1) {
+    // These are floats
+    return `${start.toFixed(2)}-${end.toFixed(2)}`
+  } else {
+    return `${start}-${end}`
+  }
+}
+
 export const getXDateDomain = (timePoints, pointType) => {
   return d3.extent(timePoints.map(d => {
     if (pointType === 'mmwr-week') {

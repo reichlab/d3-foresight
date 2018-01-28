@@ -144,13 +144,13 @@ export class DistributionTooltip extends Tooltip {
     super(rootSelector, 'd3-foresight-distribution-tooltip')
   }
 
-  renderValues (predictions, index, xVal) {
+  renderValues (predictions, index, binVal) {
     let html = ''
     let maxNPreds = 10
     let visiblePreds = predictions.filter(p => p.query(index))
 
     if (visiblePreds.length > 0) {
-      html += `<div class="text"><em>X value: ${xVal}</em></div>`
+      html += `<div class="text"><em>Bin: ${binVal}</em></div>`
     }
 
     visiblePreds.slice(0, maxNPreds).map(p => {

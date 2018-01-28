@@ -27,7 +27,8 @@ export default class DistributionPanel {
       height,
       0,
       {
-        title: 'Probability'
+        title: 'Probability',
+        description: 'Probabilities assigned to x-axis bins'
       },
       infoTooltip
     )

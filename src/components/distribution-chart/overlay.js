@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import * as mutils from '../../utilities/misc'
+import * as utils from '../../utilities/distribution-chart'
 
 export default class Overlay {
   constructor (parent) {
@@ -43,7 +44,9 @@ export default class Overlay {
           .attr('x1', snappedX)
           .attr('x2', snappedX)
 
-        distributionTooltip.renderValues(parent.predictions, index, xScale.domain()[index])
+        // Format bin value to display
+        let binVal = utils.formatBin(xScale.domain(), index)
+        distributionTooltip.renderValues(parent.predictions, index, binVal)
 
         // Tooltip position
         let pos = mutils.getMousePosition(d3.select(this))
