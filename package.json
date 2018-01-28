@@ -2,6 +2,7 @@
   "name": "d3-foresight",
   "version": "0.5.2",
   "description": "Time series forecasts visualizations using d3",
+  "author": "Abhinav Tushar <lepisma@fastmail.com>",
   "main": "./dist/d3-foresight.js",
   "repository": "git@github.com:reichlab/d3-foresight",
   "license": "MIT",
