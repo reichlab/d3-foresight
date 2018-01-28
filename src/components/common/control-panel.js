@@ -104,7 +104,7 @@ class LegendDrawer {
     this.searchBox = this.legendSearchItem.append('input')
       .attr('class', 'input is-small search-input')
       .attr('type', 'text')
-      .attr('placeholder', 'Search models')
+      .attr('placeholder', 'Filter models')
 
     // Prediction items
     legendGroup.append('div')
