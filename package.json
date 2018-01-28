@@ -12,7 +12,6 @@
     "prepublish": "npm run compile",
     "test": "standard",
     "watch": "webpack --watch",
-    "autotest": "nodemon node_modules/.bin/standard",
     "dev-server": "webpack-dev-server --watch --inline --hot"
   },
   "devDependencies": {
@@ -22,7 +21,6 @@
     "css-loader": "^0.26.1",
     "node-sass": "^4.5.0",
     "node-sass-json-importer": "^3.0.0",
-    "nodemon": "^1.11.0",
     "sass-loader": "^5.0.1",
     "standard": "^8.6.0",
     "style-loader": "^0.13.1",
