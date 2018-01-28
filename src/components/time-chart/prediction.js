@@ -183,23 +183,35 @@ export default class Prediction {
           })
         })
 
-      this.onsetGroup.select('.onset-range')
-        .transition()
-        .duration(200)
-        .attr('x1', this.xScale(onset.low[cid]))
-        .attr('x2', this.xScale(onset.high[cid]))
+      if (cid === null) {
+        ['.range', '.stopper'].forEach(cls => {
+          this.onsetGroup.selectAll(cls)
+            .attr('visibility', 'hidden')
+        })
+      } else {
+        ['.range', '.stopper'].forEach(cls => {
+          this.onsetGroup.selectAll(cls)
+            .attr('visibility', null)
+        })
 
-      this.onsetGroup.select('.onset-low')
-        .transition()
-        .duration(200)
-        .attr('x1', this.xScale(onset.low[cid]))
-        .attr('x2', this.xScale(onset.low[cid]))
+        this.onsetGroup.select('.onset-range')
+          .transition()
+          .duration(200)
+          .attr('x1', this.xScale(onset.low[cid]))
+          .attr('x2', this.xScale(onset.high[cid]))
 
-      this.onsetGroup.select('.onset-high')
-        .transition()
-        .duration(200)
-        .attr('x1', this.xScale(onset.high[cid]))
-        .attr('x2', this.xScale(onset.high[cid]))
+        this.onsetGroup.select('.onset-low')
+          .transition()
+          .duration(200)
+          .attr('x1', this.xScale(onset.low[cid]))
+          .attr('x2', this.xScale(onset.low[cid]))
+
+        this.onsetGroup.select('.onset-high')
+          .transition()
+          .duration(200)
+          .attr('x1', this.xScale(onset.high[cid]))
+          .attr('x2', this.xScale(onset.high[cid]))
+      }
 
       let pw = this.modelData[idx].peakTime
       let pp = this.modelData[idx].peakValue
@@ -245,54 +257,66 @@ export default class Prediction {
           })
         })
 
-      this.peakGroup.select('.peak-range-x')
-        .transition()
-        .duration(200)
-        .attr('x1', this.xScale(pw.low[cid]))
-        .attr('x2', this.xScale(pw.high[cid]))
-        .attr('y1', this.yScale(pp.point))
-        .attr('y2', this.yScale(pp.point))
 
-      this.peakGroup.select('.peak-range-y')
-        .transition()
-        .duration(200)
-        .attr('x1', this.xScale(pw.point))
-        .attr('x2', this.xScale(pw.point))
-        .attr('y1', this.yScale(pp.low[cid]))
-        .attr('y2', this.yScale(pp.high[cid]))
+      if (cid === null) {
+        ['.range', '.stopper'].forEach(cls => {
+          this.peakGroup.selectAll(cls)
+            .attr('visibility', 'hidden')
+        })
+      } else {
+        ['.range', '.stopper'].forEach(cls => {
+          this.peakGroup.selectAll(cls)
+            .attr('visibility', null)
+        })
+        this.peakGroup.select('.peak-range-x')
+          .transition()
+          .duration(200)
+          .attr('x1', this.xScale(pw.low[cid]))
+          .attr('x2', this.xScale(pw.high[cid]))
+          .attr('y1', this.yScale(pp.point))
+          .attr('y2', this.yScale(pp.point))
 
-      this.peakGroup.select('.peak-low-x')
-        .transition()
-        .duration(200)
-        .attr('x1', this.xScale(pw.low[cid]))
-        .attr('x2', this.xScale(pw.low[cid]))
-        .attr('y1', this.yScale(pp.point) - 5)
-        .attr('y2', this.yScale(pp.point) + 5)
+        this.peakGroup.select('.peak-range-y')
+          .transition()
+          .duration(200)
+          .attr('x1', this.xScale(pw.point))
+          .attr('x2', this.xScale(pw.point))
+          .attr('y1', this.yScale(pp.low[cid]))
+          .attr('y2', this.yScale(pp.high[cid]))
 
-      this.peakGroup.select('.peak-high-x')
-        .transition()
-        .duration(200)
-        .attr('x1', this.xScale(pw.high[cid]))
-        .attr('x2', this.xScale(pw.high[cid]))
-        .attr('y1', this.yScale(pp.point) - 5)
-        .attr('y2', this.yScale(pp.point) + 5)
+        this.peakGroup.select('.peak-low-x')
+          .transition()
+          .duration(200)
+          .attr('x1', this.xScale(pw.low[cid]))
+          .attr('x2', this.xScale(pw.low[cid]))
+          .attr('y1', this.yScale(pp.point) - 5)
+          .attr('y2', this.yScale(pp.point) + 5)
 
-      leftW = this.xScale(pw.point)
-      this.peakGroup.select('.peak-low-y')
-        .transition()
-        .duration(200)
-        .attr('x1', (!leftW ? 0 : leftW) - 5)
-        .attr('x2', (!leftW ? 0 : leftW) + 5)
-        .attr('y1', this.yScale(pp.low[cid]))
-        .attr('y2', this.yScale(pp.low[cid]))
+        this.peakGroup.select('.peak-high-x')
+          .transition()
+          .duration(200)
+          .attr('x1', this.xScale(pw.high[cid]))
+          .attr('x2', this.xScale(pw.high[cid]))
+          .attr('y1', this.yScale(pp.point) - 5)
+          .attr('y2', this.yScale(pp.point) + 5)
 
-      this.peakGroup.select('.peak-high-y')
-        .transition()
-        .duration(200)
-        .attr('x1', (!leftW ? 0 : leftW) - 5)
-        .attr('x2', (!leftW ? 0 : leftW) + 5)
-        .attr('y1', this.yScale(pp.high[cid]))
-        .attr('y2', this.yScale(pp.high[cid]))
+        leftW = this.xScale(pw.point)
+        this.peakGroup.select('.peak-low-y')
+          .transition()
+          .duration(200)
+          .attr('x1', (!leftW ? 0 : leftW) - 5)
+          .attr('x2', (!leftW ? 0 : leftW) + 5)
+          .attr('y1', this.yScale(pp.low[cid]))
+          .attr('y2', this.yScale(pp.low[cid]))
+
+        this.peakGroup.select('.peak-high-y')
+          .transition()
+          .duration(200)
+          .attr('x1', (!leftW ? 0 : leftW) - 5)
+          .attr('x2', (!leftW ? 0 : leftW) + 5)
+          .attr('y1', this.yScale(pp.high[cid]))
+          .attr('y2', this.yScale(pp.high[cid]))
+      }
 
       // Move main pointers
       let predData = this.modelData[idx]
@@ -310,12 +334,21 @@ export default class Prediction {
       let displayLimit = predData.series.length - idxOverflow
 
       for (let i = 0; i < displayLimit; i++) {
-        nextTimeData.push({
-          index: i + idx + 1,
-          point: predData.series[i].point,
-          low: predData.series[i].low[cid],
-          high: predData.series[i].high[cid]
-        })
+        if (cid === null) {
+          nextTimeData.push({
+            index: i + idx + 1,
+            point: predData.series[i].point,
+            low: predData.series[i].point,
+            high: predData.series[i].point
+          })
+        } else {
+          nextTimeData.push({
+            index: i + idx + 1,
+            point: predData.series[i].point,
+            low: predData.series[i].low[cid],
+            high: predData.series[i].high[cid]
+          })
+        }
       }
 
       // Save indexed data for query
