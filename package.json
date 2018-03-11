@@ -11,24 +11,27 @@
     "build": "PROD_ENV=1 webpack",
     "prepublish": "npm run compile",
     "test": "standard",
-    "watch": "webpack --watch",
-    "dev-server": "webpack-dev-server --watch --inline --hot"
+    "watch": "webpack --watch"
   },
   "standard": {
-    "ignore": [ "/docs/" ]
+    "ignore": [
+      "/docs/"
+    ]
   },
   "devDependencies": {
-    "babel-core": "^6.22.1",
-    "babel-loader": "^6.2.10",
-    "babel-preset-latest": "^6.22.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
     "css-loader": "^0.26.1",
-    "node-sass": "^4.5.0",
+    "node-sass": "^4.7.2",
     "node-sass-json-importer": "^3.0.0",
     "sass-loader": "^5.0.1",
     "standard": "^8.6.0",
     "style-loader": "^0.13.1",
-    "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.3.0"
+    "ts-loader": "^4.0.1",
+    "typescript": "^2.7.2",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.11"
   },
   "dependencies": {
     "colormap": "^2.2.0",

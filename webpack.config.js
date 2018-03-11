@@ -3,21 +3,10 @@ const path = require('path')
 
 const PROD = JSON.parse(process.env.PROD_ENV || '0')
 
-let plugins = []
-
-if (PROD) {
-  plugins.push(new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false
-    },
-    output: {
-      comments: false
-    }
-  }))
-}
-
-const config = {
+module.exports = {
   entry: path.resolve(__dirname, 'src/index.js'),
+
+  mode: PROD ? 'production' : 'development',
 
   output: {
     filename: PROD ? 'd3-foresight.min.js' : 'd3-foresight.js',
@@ -32,14 +21,22 @@ const config = {
     'moment': 'moment'
   },
 
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js']
+  },
+
   module: {
     rules: [
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader'
+      },
       {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
         options: {
-          presets: ['latest']
+          presets: ['env']
         }
       },
       {
@@ -53,9 +50,5 @@ const config = {
         }]
       }
     ]
-  },
-
-  plugins: plugins
+  }
 }
-
-module.exports = config
