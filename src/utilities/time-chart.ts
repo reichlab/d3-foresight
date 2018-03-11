@@ -1,12 +1,13 @@
 import * as d3 from 'd3'
 import * as mmwr from 'mmwr-week'
 import * as errors from './errors'
+import { Timepoint, Range, Point } from '../interfaces'
 
 /**
  * Return points where the predictions were made
  * This is used as the first point in prediction marker
  */
-export const getPredictionStartingPoints = data => {
+export function getPredictionStartingPoints (data) {
   return data.observed.map(d => {
     // Handle zero length values
     try {
@@ -21,7 +22,7 @@ export const getPredictionStartingPoints = data => {
   })
 }
 
-export const getXDateDomain = (timePoints, pointType) => {
+export function getXDateDomain (timePoints: Timepoint[], pointType: Point) {
   return d3.extent(timePoints.map(d => {
     if (pointType === 'mmwr-week') {
       return (new mmwr.MMWRDate(d.year, d.week)).toMomentDate()
@@ -33,7 +34,7 @@ export const getXDateDomain = (timePoints, pointType) => {
   }))
 }
 
-export const getYDomain = data => {
+export function getYDomain (data): Range {
   // Max from actual data
   let maxValues = [Math.max(...data.actual.filter(d => d))]
   // Max from observed data
@@ -54,6 +55,6 @@ export const getYDomain = data => {
   return [0, Math.min(13, 1.1 * Math.max(...maxValues))]
 }
 
-export const getXDomain = timePoints => {
+export function getXDomain (timePoints: Timepoint[]): Range {
   return [0, timePoints.length - 1]
 }

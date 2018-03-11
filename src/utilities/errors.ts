@@ -2,7 +2,7 @@
  * Custom exception for case when point type (the type of x axis) can't be
  * handled
  */
-export function UnknownPointTypeException (message) {
+export function UnknownPointTypeException (message?: string): void {
   this.name = 'UnknownPointTypeException'
   this.message = message || 'Point type not understood'
   this.stack = (new Error()).stack
@@ -14,7 +14,7 @@ UnknownPointTypeException.prototype.constructor = UnknownPointTypeException
 /**
  * Exception for hook
  */
-export function HookNotUnderstoodException (message) {
+export function HookNotUnderstoodException (message?: string): void {
   this.name = 'HookNotUnderstoodException'
   this.message = message || 'Requested hook not found'
   this.stack = (new Error()).stack

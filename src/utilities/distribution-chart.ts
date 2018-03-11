@@ -1,11 +1,12 @@
 import * as d3 from 'd3'
 import * as mmwr from 'mmwr-week'
 import * as errors from './errors'
+import { Timepoint, Point, Range } from '../interfaces'
 
 /**
  * Return a formatted string representing a bin at index from series
  */
-export const formatBin = (series, index) => {
+export function formatBin (series: number[], index: number): string {
   let start = series[index]
   let end
 
@@ -27,7 +28,7 @@ export const formatBin = (series, index) => {
   }
 }
 
-export const getXDateDomain = (timePoints, pointType) => {
+export function getXDateDomain (timePoints: Timepoint[], pointType: Point) {
   return d3.extent(timePoints.map(d => {
     if (pointType === 'mmwr-week') {
       return (new mmwr.MMWRDate(d.year, d.week)).toMomentDate()
@@ -39,7 +40,7 @@ export const getXDateDomain = (timePoints, pointType) => {
   }))
 }
 
-export const getYDomain = (data, curveIdx) => {
+export function getYDomain (data, curveIdx: number): Range {
   let modelMaxes = data.models.map(m => {
     let curveData = m.curves[curveIdx].data
     if (!curveData) {
@@ -51,7 +52,7 @@ export const getYDomain = (data, curveIdx) => {
   return [0, Math.max(...modelMaxes)]
 }
 
-export const getXDomain = (data, curveIdx) => {
+export function getXDomain (data, curveIdx: number): Range {
   // This assumes an ordinal scale
   for (let i = 0; i < data.models.length; i++) {
     let curveData = data.models[i].curves[curveIdx].data
@@ -66,7 +67,7 @@ export const getXDomain = (data, curveIdx) => {
 /**
  * Get shared y limits for type of data
  */
-export const getYLimits = data => {
+export function getYLimits (data) {
   let modelMaxes = data.models
       .filter(m => {
         // NOTE: Filtering based on the assumption that one model will have

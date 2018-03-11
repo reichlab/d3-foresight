@@ -6,6 +6,7 @@
  * Doc guard
  */
 import * as d3 from 'd3'
+import { Position } from '../interfaces'
 
 /**
  * Return mouse position as absolute value for current view using the provided
@@ -13,7 +14,7 @@ import * as d3 from 'd3'
  * mouse events are translated with respect to original svg. Most of the calls
  * to this function use .overlay as reference
  */
-export function getMousePosition (d3Selection): [number, number] {
+export function getMousePosition (d3Selection): Position {
   let [x, y] = d3.mouse(d3Selection.node())
   let bb = d3Selection.node().getBoundingClientRect()
   return [x + bb.left, y + bb.top]
