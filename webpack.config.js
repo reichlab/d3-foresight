@@ -1,4 +1,3 @@
-const webpack = require('webpack')
 const path = require('path')
 
 const PROD = JSON.parse(process.env.PROD_ENV || '0')

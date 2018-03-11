@@ -10,8 +10,7 @@
     "compile": "webpack",
     "build": "PROD_ENV=1 webpack",
     "prepublish": "npm run compile",
-    "test": "standard",
-    "watch": "webpack --watch"
+    "test": "standard"
   },
   "standard": {
     "ignore": [
@@ -22,22 +21,21 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1",
-    "css-loader": "^0.26.1",
+    "css-loader": "^0.28.10",
     "node-sass": "^4.7.2",
-    "node-sass-json-importer": "^3.0.0",
-    "sass-loader": "^5.0.1",
-    "standard": "^8.6.0",
-    "style-loader": "^0.13.1",
+    "node-sass-json-importer": "^3.1.5",
+    "sass-loader": "^6.0.7",
+    "standard": "^11.0.0",
+    "style-loader": "^0.20.3",
     "ts-loader": "^4.0.1",
     "typescript": "^2.7.2",
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.11"
   },
   "dependencies": {
-    "colormap": "^2.2.0",
-    "d3": "^4.5.0",
+    "colormap": "^2.3.0",
     "mmwr-week": "^1.3.1",
-    "textures": "^1.0.4",
+    "textures": "^1.2.0",
     "tinycolor2": "^1.4.1"
   }
 }
