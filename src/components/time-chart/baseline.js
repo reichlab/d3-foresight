@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import * as mutils from '../../utilities/misc'
+import { getMousePosition } from '../../utilities/mouse'
 
 /**
  * Baseline
@@ -50,7 +50,7 @@ export default class Baseline {
           text: config.baseline.description
         })
 
-        let pos = mutils.getMousePosition(d3.select('.overlay'))
+        let pos = getMousePosition(d3.select('.overlay'))
         infoTooltip.move({
           x: pos[0],
           y: pos[1]

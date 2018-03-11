@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import * as mutils from '../../utilities/misc'
+import { getMousePosition } from '../../utilities/mouse'
 
 export default class Overlay {
   constructor (parent) {
@@ -74,7 +74,7 @@ export default class Overlay {
                                       parent.predictions, index)
 
         // Find position for tooltip
-        let pos = mutils.getMousePosition(d3.select(this))
+        let pos = getMousePosition(d3.select(this))
         timeChartTooltip.move({
           x: pos[0],
           y: pos[1]

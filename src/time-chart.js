@@ -1,6 +1,5 @@
 import * as d3 from 'd3'
 import * as utils from './utilities/time-chart'
-import * as misc from './utilities/misc'
 import * as colors from './utilities/colors'
 import * as errors from './utilities/errors'
 import * as commonComponents from './components/common'

@@ -1,3 +1,10 @@
+/**
+ * Module for handling mouse information
+ */
+
+/**
+ * Doc guard
+ */
 import * as d3 from 'd3'
 
 /**
@@ -6,7 +13,7 @@ import * as d3 from 'd3'
  * mouse events are translated with respect to original svg. Most of the calls
  * to this function use .overlay as reference
  */
-export function getMousePosition (d3Selection) {
+export function getMousePosition (d3Selection): [number, number] {
   let [x, y] = d3.mouse(d3Selection.node())
   let bb = d3Selection.node().getBoundingClientRect()
   return [x + bb.left, y + bb.top]

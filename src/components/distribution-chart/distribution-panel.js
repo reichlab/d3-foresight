@@ -4,7 +4,6 @@ import Prediction from './prediction'
 import * as utils from '../../utilities/distribution-chart'
 import Overlay from './overlay'
 import NoPredText from './no-pred-text'
-import * as misc from '../../utilities/misc'
 import * as colors from '../../utilities/colors'
 
 /**
