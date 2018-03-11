@@ -6,7 +6,7 @@
  * Doc guard
  */
 import * as d3 from 'd3'
-import tinycolor from 'tinycolor2'
+import * as tinycolor from 'tinycolor2'
 
 /**
  * Some pre generated palettes from http://tools.medialab.sciences-po.fr/iwanthue/

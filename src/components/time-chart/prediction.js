@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import * as mutils from '../../utilities/misc'
+import * as colors from '../../utilities/colors'
 
 /**
  * Prediction marker with following components
@@ -10,8 +11,8 @@ import * as mutils from '../../utilities/misc'
  */
 export default class Prediction {
   constructor (parent, id, meta, color, onsetY) {
-    let colorPoint = mutils.hexToRgba(color, 0.8)
-    let colorRange = mutils.hexToRgba(color, 0.6)
+    let colorPoint = colors.hexToRgba(color, 0.8)
+    let colorRange = colors.hexToRgba(color, 0.6)
 
     // Prediction group
     let predictionGroup = parent.svg.append('g')
@@ -127,7 +128,7 @@ export default class Prediction {
 
   update (idx) {
     let color = this.color
-    let colorHover = mutils.hexToRgba(color, 0.3)
+    let colorHover = colors.hexToRgba(color, 0.3)
     let id = this.id
     let ticks = this.ticks
 
