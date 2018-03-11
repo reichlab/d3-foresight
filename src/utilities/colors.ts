@@ -113,8 +113,10 @@ export function getColorMap (size: number): string[] {
   } else if (size > 20) {
     return colors30
   } else if (size > 10) {
-    return d3.schemeCategory20
+    // @ts-ignore
+    return d3.schemeCategory20 as string[]
   } else {
-    return d3.schemeCategory10
+    // @ts-ignore
+    return d3.schemeCategory10 as string[]
   }
 }
