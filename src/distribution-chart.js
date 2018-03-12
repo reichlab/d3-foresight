@@ -4,6 +4,8 @@ import * as distributionChartComponents from './components/distribution-chart'
 import * as utils from './utilities/distribution-chart'
 import * as errors from './utilities/errors'
 import Chart from './chart'
+import * as PubSub from 'pubsub-js'
+import * as ev from './events'
 
 export default class DistributionChart extends Chart {
   constructor (element, options = {}) {
@@ -98,16 +100,15 @@ export default class DistributionChart extends Chart {
     }
 
     // Control panel
-    this.controlPanel = new commonComponents.ControlPanel(
-      this, panelConfig,
-      (event, payload) => {
-        if (event === 'btn:next') {
-          this.dispatchHook('forward-index')
-        } else if (event === 'btn:back') {
-          this.dispatchHook('backward-index')
-        }
-      }
-    )
+    this.controlPanel = new commonComponents.ControlPanel(this, panelConfig)
+
+    PubSub.subscribe(ev.MOVE_NEXT, (msg, data) => {
+      this.dispatchHook('forward-index')
+    })
+
+    PubSub.subscribe(ev.MOVE_PREV, (msg, data) => {
+      this.dispatchHook('backward-index')
+    })
   }
 
   // plot data

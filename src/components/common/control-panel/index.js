@@ -1,33 +1,35 @@
 import * as d3 from 'd3'
-import palette from '../../styles/palette.json'
-import { getMousePosition } from '../../utilities/mouse'
+import palette from '../../../styles/palette.json'
+import { getMousePosition } from '../../../utilities/mouse'
+import * as ev from '../../../events'
+import * as PubSub from 'pubsub-js'
 
 /**
  * Side buttons in control panel
  */
 class ControlButtons {
-  constructor (panelSelection, infoTooltip, panelConfig, eventHook) {
+  constructor (panelSelection, infoTooltip, panelConfig) {
     let navControls = panelSelection.append('div')
         .attr('class', 'nav-controls')
 
     let buttonData = [
       {
         name: 'legendBtn',
-        icon: 'fa-map-o',
+        iconText: '☰',
         tooltipText: 'Toggle Legend',
-        event: 'btn:legend'
+        event: ev.TOGGLE_LEGEND
       },
       {
         name: 'backBtn',
-        icon: 'fa-arrow-left',
+        iconText: '🡸',
         tooltipText: 'Move backward',
-        event: 'btn:back'
+        event: ev.MOVE_PREV
       },
       {
         name: 'nextBtn',
-        icon: 'fa-arrow-right',
+        iconText: '🡺',
         tooltipText: 'Move forward',
-        event: 'btn:next'
+        event: ev.MOVE_NEXT
       }
     ]
 
@@ -37,8 +39,7 @@ class ControlButtons {
           .attr('class', 'button is-small is-info is-outlined')
       btn.append('span')
         .attr('class', 'icon is-small')
-        .append('i')
-        .attr('class', `fa ${data.icon}`)
+        .text(data.iconText)
       btn
         .on('mouseover', () => infoTooltip.show())
         .on('mouseout', () => infoTooltip.hide())
@@ -53,7 +54,7 @@ class ControlButtons {
             y: pos[1]
           }, 'left')
         })
-        .on('click', () => eventHook(data.event))
+        .on('click', () => PubSub.publish(data.event, {}))
       navControls.append('br')
       return btn
     })
@@ -69,10 +70,9 @@ class ControlButtons {
  * @param panelSelection - D3 selection from controlpanel
  * @param infoTooltip
  * @param confidenceIntervals - List of confidence intervals
- * @param eventHook - Event hook callback to be used by controlpanel
  */
 class LegendDrawer {
-  constructor (panelSelection, confidenceIntervals, panelConfig, infoTooltip, eventHook) {
+  constructor (panelSelection, confidenceIntervals, panelConfig, infoTooltip) {
     let legendGroup = panelSelection.append('div')
         .attr('class', 'legend nav-drawer')
 
@@ -153,8 +153,8 @@ class LegendDrawer {
           .attr('class', `item ${data.id}`)
 
       item.append('i')
-        .attr('class', 'fa fa-circle')
         .style('color', data.color)
+        .text('●')
 
       item.append('span')
         .attr('class', 'item-title')
@@ -182,7 +182,7 @@ class LegendDrawer {
       historyItem
         .on('click', () => {
           this.toggleHistoryIcon()
-          eventHook('legend:history')
+          PubSub.publish(ev.LEGEND_ITEM, { itemName: 'history' })
         })
     }
 
@@ -198,7 +198,7 @@ class LegendDrawer {
             legendCIButtons.selectAll('.toggle-button')
               .classed('selected', false)
             d3.select(this).classed('selected', true)
-            eventHook('legend:ci', c === 'none' ? null : idx)
+            PubSub.publish(ev.LEGEND_CI, { ci: c === 'none' ? null : idx })
           })
           .on('mouseover', () => infoTooltip.show())
           .on('mouseout', () => infoTooltip.hide())
@@ -257,10 +257,11 @@ class LegendDrawer {
   }
 
   toggleHistoryIcon () {
-    let isActive = this.historyIcon.classed('fa-circle')
-
-    this.historyIcon.classed('fa-circle', !isActive)
-    this.historyIcon.classed('fa-circle-o', isActive)
+    if (this.historyIcon.text() === '●') {
+      this.historyIcon.text('○')
+    } else {
+      this.historyIcon.text('●')
+    }
   }
 
   toggleConfidenceBtn (idx) {
@@ -300,7 +301,7 @@ class LegendDrawer {
     })
   }
 
-  plot (predictions, eventHook) {
+  plot (predictions) {
     // Clear entries
     let predictionContainer = this.drawerSelection.select('.legend-prediction-container')
     predictionContainer.selectAll('*').remove()
@@ -333,12 +334,9 @@ class LegendDrawer {
           .style('cursor', 'pointer')
 
       let predIcon = predItem.append('i')
-          .attr('class', 'fa')
           .style('color', p.color)
 
-      let showThis = !p.hidden
-      predIcon.classed('fa-circle', showThis)
-      predIcon.classed('fa-circle-o', !showThis)
+      predIcon.text(p.hidden ? '○' : '●')
 
       predItem.append('span')
         .attr('class', 'item-title')
@@ -347,8 +345,8 @@ class LegendDrawer {
       let urlItem = predItem.append('a')
           .attr('href', p.meta.url)
           .attr('target', '_blank')
-          .append('i')
-          .attr('class', 'fa fa-external-link model-url')
+          .attr('class', 'model-url')
+          .text('🔗')
 
       urlItem
         .on('mousemove', function () {
@@ -366,14 +364,13 @@ class LegendDrawer {
 
       predItem
         .on('click', () => {
-          let isActive = predIcon.classed('fa-circle')
+          let isActive = predIcon.text() === '●'
 
-          predIcon.classed('fa-circle', !isActive)
-          predIcon.classed('fa-circle-o', isActive)
+          predIcon.text(isActive ? '○' : '●')
 
           // Reset show all/none buttons on any of these clicks
           this.resetShowHideButtons()
-          eventHook(p.id, isActive)
+          PubSub.publish(ev.LEGEND_ITEM, { itemName: p.id, state: isActive })
         })
 
       predItem
@@ -407,7 +404,7 @@ class LegendDrawer {
  * nav-drawers and buttons
  */
 export default class ControlPanel {
-  constructor (parent, panelConfig, panelHook) {
+  constructor (parent, panelConfig) {
     // Main panel selection
     let panelSelection = parent.elementSelection.append('div')
         .attr('class', 'd3-foresight-controls')
@@ -419,8 +416,7 @@ export default class ControlPanel {
       panelSelection,
       parent.config.confidenceIntervals,
       this.config,
-      parent.infoTooltip,
-      panelHook
+      parent.infoTooltip
     )
 
     if (this.config.ci) {
@@ -428,26 +424,19 @@ export default class ControlPanel {
     }
 
     // Buttons on the side of panel
-    this.controlButtons = new ControlButtons(
-      panelSelection, parent.infoTooltip, this.config, event => {
-        if (['btn:next', 'btn:back'].includes(event)) {
-          // Simple triggers, pass directly
-          panelHook(event)
-        } else {
-          if (event === 'btn:legend') {
-            this.legendDrawer.toggleDrawer()
-            this.controlButtons.toggleLegendBtn()
-          }
-        }
-      }
-    )
+    this.controlButtons = new ControlButtons(panelSelection, parent.infoTooltip, this.config)
+
+    PubSub.subscribe(ev.TOGGLE_LEGEND, (msg, data) => {
+      this.legendDrawer.toggleDrawer()
+      this.controlButtons.toggleLegendBtn()
+    })
 
     // Turn on legend by default
     this.controlButtons.toggleLegendBtn()
   }
 
-  plot (predictions, panelHook) {
-    this.legendDrawer.plot(predictions, panelHook)
+  plot (predictions) {
+    this.legendDrawer.plot(predictions)
   }
 
   update (predictions) {
