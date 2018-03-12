@@ -42,7 +42,7 @@ export class TimeChartTooltip extends Tooltip {
   }
 
   renderText (data) {
-    this.render(`<div class="text">${data}</div>`)
+    this.render(`<div class="tooltip-text">${data}</div>`)
   }
 
   renderValues (observedObj, actualObj, predObjs, index) {
@@ -78,7 +78,7 @@ export class TimeChartTooltip extends Tooltip {
       // Add note regarding which prediction is getting displayed
       let aheadIndex = visiblePreds[0].displayedIdx(index)
       if (aheadIndex !== null) {
-        html = `<div class="text"><em>${aheadIndex + 1} week${aheadIndex ? 's' : ''} ahead</em></div>` + html
+        html = `<div class="tooltip-text"><em>${aheadIndex + 1} week${aheadIndex ? 's' : ''} ahead</em></div>` + html
       }
     }
 
@@ -127,10 +127,10 @@ export class InfoTooltip extends Tooltip {
   renderText (data) {
     let html = ''
     if (data.title) {
-      html += `<div class="title">${data.title}</div>`
+      html += `<div class="tooltip-title">${data.title}</div>`
     }
     if (data.text) {
-      html += `<div class="text">${data.text}</div>`
+      html += `<div class="tooltip-text">${data.text}</div>`
     }
     this.render(html)
   }
@@ -150,7 +150,7 @@ export class DistributionTooltip extends Tooltip {
     let visiblePreds = predictions.filter(p => p.query(index))
 
     if (visiblePreds.length > 0) {
-      html += `<div class="text"><em>Bin: ${binVal}</em></div>`
+      html += `<div class="tooltip-text"><em>Bin: ${binVal}</em></div>`
     }
 
     visiblePreds.slice(0, maxNPreds).map(p => {

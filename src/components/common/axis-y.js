@@ -11,7 +11,6 @@ export class YAxis {
         .attr('transform', `translate(${xOffset}, 0)`)
 
     axis.append('text')
-      .attr('class', 'title')
       .attr('transform', `translate(-45 , ${height / 2}) rotate(-90)`)
       .attr('dy', '.71em')
       .style('text-anchor', 'middle')

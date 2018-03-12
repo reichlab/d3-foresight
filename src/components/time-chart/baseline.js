@@ -20,7 +20,6 @@ export default class Baseline {
       .attr('class', 'baseline')
 
     let text = group.append('text')
-        .attr('class', 'title')
         .attr('transform', `translate(${parent.width + 10}, 0)`)
 
     // Setup multiline text
@@ -76,7 +75,7 @@ export default class Baseline {
       .attr('y1', parent.yScale(baselineData))
       .attr('y2', parent.yScale(baselineData))
 
-    this.group.select('.title')
+    this.group.select('text')
       .transition()
       .duration(300)
       .attr('dy', parent.yScale(baselineData))

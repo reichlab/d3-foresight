@@ -13,7 +13,6 @@ export class XAxis {
 
     let xText = axisGroup
         .append('text')
-        .attr('class', 'title')
         .attr('text-anchor', 'start')
         .attr('transform', `translate(${width + 10}, -15)`)
 
@@ -87,7 +86,6 @@ export class XAxisDate {
 
     let xText = axisXDate
         .append('text')
-        .attr('class', 'title')
         .attr('text-anchor', 'start')
         .attr('transform', `translate(${width + 10},-15)`)
 

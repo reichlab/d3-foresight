@@ -20,14 +20,14 @@
 .d3-foresight-info-tooltip {
   max-width: 150px;
 
-  .title {
+  .tooltip-title {
     @include cell-padding;
     font-size: 13px;
     margin-bottom: 0 !important;
     margin-top: 5px;
   }
 
-  .text {
+  .tooltip-text {
     @include cell-padding;
     margin-top: 0;
   }
@@ -53,7 +53,7 @@
   }
 
   .point,
-  .text {
+  .tooltip-text {
     @include cell-padding;
     color: $gray;
 
@@ -82,7 +82,7 @@
     color: $gray;
   }
 
-  .text {
+  .tooltip-text {
     @include cell-padding;
     color: $gray;
 

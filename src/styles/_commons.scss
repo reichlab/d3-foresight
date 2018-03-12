@@ -7,8 +7,13 @@
     stroke: $axis-ticks;
   }
 
-  .title {
+  text {
     fill: $gray;
     font-size: 10px;
   }
+}
+
+// Override for icons
+i {
+  font-style: normal;
 }
