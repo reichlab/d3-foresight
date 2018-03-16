@@ -2,7 +2,6 @@ import * as d3 from 'd3'
 import palette from '../../../styles/palette.json'
 import { getMousePosition } from '../../../utilities/mouse'
 import * as ev from '../../../events'
-import * as PubSub from 'pubsub-js'
 
 /**
  * Side buttons in control panel
@@ -54,7 +53,7 @@ class ControlButtons {
             y: pos[1]
           }, 'left')
         })
-        .on('click', () => PubSub.publish(data.event, {}))
+        .on('click', () => ev.publish(data.event, {}))
       navControls.append('br')
       return btn
     })
@@ -182,7 +181,7 @@ class LegendDrawer {
       historyItem
         .on('click', () => {
           this.toggleHistoryIcon()
-          PubSub.publish(ev.LEGEND_ITEM, { itemName: 'history' })
+          ev.publish(ev.LEGEND_ITEM, { itemName: 'history' })
         })
     }
 
@@ -198,7 +197,7 @@ class LegendDrawer {
             legendCIButtons.selectAll('.toggle-button')
               .classed('selected', false)
             d3.select(this).classed('selected', true)
-            PubSub.publish(ev.LEGEND_CI, { ci: c === 'none' ? null : idx })
+            ev.publish(ev.LEGEND_CI, { ci: c === 'none' ? null : idx })
           })
           .on('mouseover', () => infoTooltip.show())
           .on('mouseout', () => infoTooltip.hide())
@@ -370,7 +369,7 @@ class LegendDrawer {
 
           // Reset show all/none buttons on any of these clicks
           this.resetShowHideButtons()
-          PubSub.publish(ev.LEGEND_ITEM, { itemName: p.id, state: isActive })
+          ev.publish(ev.LEGEND_ITEM, { itemName: p.id, state: isActive })
         })
 
       predItem
@@ -426,7 +425,8 @@ export default class ControlPanel {
     // Buttons on the side of panel
     this.controlButtons = new ControlButtons(panelSelection, parent.infoTooltip, this.config)
 
-    PubSub.subscribe(ev.TOGGLE_LEGEND, (msg, data) => {
+
+    ev.subscribe(this, ev.TOGGLE_LEGEND, (msg, data) => {
       this.legendDrawer.toggleDrawer()
       this.controlButtons.toggleLegendBtn()
     })

@@ -4,7 +4,6 @@ import * as distributionChartComponents from './components/distribution-chart'
 import * as utils from './utilities/distribution-chart'
 import * as errors from './utilities/errors'
 import Chart from './chart'
-import * as PubSub from 'pubsub-js'
 import * as ev from './events'
 
 export default class DistributionChart extends Chart {
@@ -102,11 +101,11 @@ export default class DistributionChart extends Chart {
     // Control panel
     this.controlPanel = new commonComponents.ControlPanel(this, panelConfig)
 
-    PubSub.subscribe(ev.MOVE_NEXT, (msg, data) => {
+    ev.subscribe(this, ev.MOVE_NEXT, (msg, data) => {
       this.dispatchHook('forward-index')
     })
 
-    PubSub.subscribe(ev.MOVE_PREV, (msg, data) => {
+    ev.subscribe(this, ev.MOVE_PREV, (msg, data) => {
       this.dispatchHook('backward-index')
     })
   }
@@ -177,7 +176,7 @@ export default class DistributionChart extends Chart {
     // Update models shown in control panel
     this.controlPanel.plot(this.panels[0].predictions)
 
-    PubSub.subscribe(ev.LEGEND_ITEM, (msg, { itemName, state }) => {
+    ev.subscribe(this, ev.LEGEND_ITEM, (msg, { itemName, state }) => {
       this.panels.forEach(p => {
         let predMarker = p.predictions.find(p => p.id === itemName)
         predMarker.hidden = state

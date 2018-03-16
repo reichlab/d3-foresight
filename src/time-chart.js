@@ -5,7 +5,6 @@ import * as errors from './utilities/errors'
 import * as commonComponents from './components/common'
 import * as timeChartComponents from './components/time-chart'
 import Chart from './chart'
-import * as PubSub from 'pubsub-js'
 import * as ev from './events'
 
 export default class TimeChart extends Chart {
@@ -69,23 +68,23 @@ export default class TimeChart extends Chart {
     this.controlPanel = new commonComponents.ControlPanel(this, panelConfig)
 
     // Event subscriptions for control panel
-    PubSub.subscribe(ev.MOVE_NEXT, (msg, data) => {
+    ev.subscribe(this, ev.MOVE_NEXT, (msg, data) => {
       this.moveForward()
       this.dispatchHook('forward-index')
     })
 
-    PubSub.subscribe(ev.MOVE_PREV, (msg, data) => {
+    ev.subscribe(this, ev.MOVE_PREV, (msg, data) => {
       this.moveBackward()
       this.dispatchHook('backward-index')
     })
 
-    PubSub.subscribe(ev.LEGEND_ITEM, (msg, { itemName }) => {
+    ev.subscribe(this, ev.LEGEND_ITEM, (msg, { itemName }) => {
       if (itemName === 'history') {
         this.history.hidden = !this.history.hidden
       }
     })
 
-    PubSub.subscribe(ev.LEGEND_CI, (msg, { ci }) => {
+    ev.subscribe(this, ev.LEGEND_CI, (msg, { ci }) => {
       this.predictions.forEach(p => {
         this.cid = p.cid = ci
         p.update(this.currentIdx)
@@ -170,7 +169,7 @@ export default class TimeChart extends Chart {
     // Update models shown in control panel
     this.controlPanel.plot(this.predictions)
 
-    PubSub.subscribe(ev.LEGEND_ITEM, (msg, { itemName, state }) => {
+    ev.subscribe(this, ev.LEGEND_ITEM, (msg, { itemName, state }) => {
       let predMarker = this.predictions.find(p => p.id === itemName)
       predMarker.hidden = state
     })

@@ -31,3 +31,8 @@ export type Range = [number, number]
  * X, Y position as tuple
  */
 export type Position = [number, number]
+
+/**
+ * Event
+ */
+export type Event = string
