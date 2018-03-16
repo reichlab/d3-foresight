@@ -15,17 +15,32 @@ export const LEGEND_ITEM : Event = 'LEGEND_ITEM'
 export const LEGEND_CI : Event = 'LEGEND_CI'
 export const LEGEND_ALL : Event = 'LEGEND_ALL'
 
+// Exposed hooks
+export const JUMP_TO_INDEX : Event = 'JUMP_TO_INDEX'
+export const FORWARD_INDEX : Event = 'FORWARD_INDEX'
+export const BACKWARD_INDEX : Event = 'BACKWARD_INDEX'
+
+function initTokens (subscriber, event: Event) {
+  subscriber.tokens = subscriber.tokens || {}
+  if (!subscriber.tokens[event]) {
+    subscriber.tokens[event] = []
+  }
+}
+
+/**
+ * Reset all subscriptions
+ */
+export function resetSub (subscriber, event: Event) {
+  initTokens(subscriber, event)
+  subscriber.tokens[event].forEach(tk => PubSub.unsubscribe(tk))
+}
+
 /**
  * Function to subscribe an object with an event
  */
 export function subscribe (subscriber, event: Event, fn) {
-  subscriber.tokens = subscriber.tokens || {}
-
-  if (subscriber.tokens[event]) {
-    PubSub.unsubscribe(subscriber.tokens[event])
-  }
-
-  subscriber.tokens[event] = PubSub.subscribe(event, fn)
+  initTokens(subscriber, event)
+  subscriber.tokens[event].push(PubSub.subscribe(event, fn))
 }
 
 /**

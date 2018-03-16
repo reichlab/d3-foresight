@@ -169,6 +169,7 @@ export default class TimeChart extends Chart {
     // Update models shown in control panel
     this.controlPanel.plot(this.predictions)
 
+    ev.resetSub(this, ev.LEGEND_ITEM)
     ev.subscribe(this, ev.LEGEND_ITEM, (msg, { itemName, state }) => {
       let predMarker = this.predictions.find(p => p.id === itemName)
       predMarker.hidden = state

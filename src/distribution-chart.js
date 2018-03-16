@@ -176,6 +176,7 @@ export default class DistributionChart extends Chart {
     // Update models shown in control panel
     this.controlPanel.plot(this.panels[0].predictions)
 
+    ev.resetSub(this, ev.LEGEND_ITEM)
     ev.subscribe(this, ev.LEGEND_ITEM, (msg, { itemName, state }) => {
       this.panels.forEach(p => {
         let predMarker = p.predictions.find(p => p.id === itemName)
