@@ -15,7 +15,7 @@ export default class DrawerRow {
   constructor (name, color) {
     this.id = name
 
-    this.div = d3.select(document.createElement("div"))
+    this.div = d3.select(document.createElement('div'))
       .attr('class', `item legend-item-${this.id}`)
 
     this.icon = this.div.append('i')

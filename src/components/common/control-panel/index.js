@@ -29,7 +29,6 @@ export default class ControlPanel {
     // Buttons on the side of panel
     this.controlButtons = new ControlButtons(panelSelection, parent.infoTooltip, this.config)
 
-
     ev.addSub(this, ev.TOGGLE_LEGEND, (msg, data) => {
       this.legendDrawer.toggleDrawer()
       this.controlButtons.toggleLegendBtn()
