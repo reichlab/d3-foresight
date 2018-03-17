@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { getMousePosition } from '../../utilities/mouse'
+import { moveTooltipTo } from '../../utilities/mouse'
 
 /**
  * Baseline
@@ -49,11 +49,7 @@ export default class Baseline {
           text: config.baseline.description
         })
 
-        let pos = getMousePosition(d3.select('.overlay'))
-        infoTooltip.move({
-          x: pos[0],
-          y: pos[1]
-        }, 'left')
+        moveTooltipTo(infoTooltip, d3.select('.overlay'), 'left')
       })
       .on('click', () => {
         window.open(config.baseline.url, '_blank')

@@ -6,7 +6,7 @@
  * Doc guard
  */
 import * as d3 from 'd3'
-import { getMousePosition } from '../../../utilities/mouse'
+import { moveTooltipTo } from '../../../utilities/mouse'
 
 /**
  * An item in the legend drawer.
@@ -57,8 +57,7 @@ export default class DrawerRow {
       .on('mouseout', () => tooltip.hide())
       .on('mousemove', function () {
         tooltip.renderText(data)
-        let [x, y] = getMousePosition(d3.select(this))
-        tooltip.move({ x, y }, 'left')
+        moveTooltipTo(tooltip, d3.select(this), 'left')
       })
   }
 
@@ -73,8 +72,7 @@ export default class DrawerRow {
       .on('mousemove', function () {
         d3.event.stopPropagation()
         tooltip.renderText({ text: 'Show details' })
-        let [x, y] = getMousePosition(d3.select(this))
-        tooltip.move({ x, y }, 'left')
+        moveTooltipTo(tooltip, d3.select(this), 'left')
       })
       .on('click', () => d3.event.stopPropagation())
   }

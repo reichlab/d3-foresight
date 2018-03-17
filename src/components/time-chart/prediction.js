@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { getMousePosition } from '../../utilities/mouse'
+import { moveTooltipTo } from '../../utilities/mouse'
 import * as colors from '../../utilities/colors'
 
 /**
@@ -177,11 +177,7 @@ export default class Prediction {
           timeChartTooltip.hide()
         })
         .on('mousemove', function () {
-          let pos = getMousePosition(d3.select('.overlay'))
-          timeChartTooltip.move({
-            x: pos[0],
-            y: pos[1]
-          })
+          moveTooltipTo(timeChartTooltip, d3.select('.overlay'))
         })
 
       if (cid === null) {
@@ -251,11 +247,7 @@ export default class Prediction {
           timeChartTooltip.hide()
         })
         .on('mousemove', function () {
-          let pos = getMousePosition(d3.select('.overlay'))
-          timeChartTooltip.move({
-            x: pos[0],
-            y: pos[1]
-          })
+          moveTooltipTo(timeChartTooltip, d3.select('.overlay'))
         })
 
       if (cid === null) {

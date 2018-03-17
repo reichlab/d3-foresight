@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import * as ev from '../../../events'
-import { getMousePosition } from '../../../utilities/mouse'
+import { moveTooltipTo } from '../../../utilities/mouse'
 
 /**
  * Side buttons in control panel
@@ -46,11 +46,7 @@ export default class ControlButtons {
             title: null,
             text: data.tooltipText
           })
-          let pos = getMousePosition(d3.select(this))
-          infoTooltip.move({
-            x: pos[0],
-            y: pos[1]
-          }, 'left')
+          moveTooltipTo(infoTooltip, d3.select(this), 'left')
         })
         .on('click', () => ev.publish(data.event, {}))
       navControls.append('br')

@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import textures from 'textures'
-import { getMousePosition } from '../../utilities/mouse'
+import { moveTooltipTo } from '../../utilities/mouse'
 
 /**
  * Simple linear X axis with informative label
@@ -42,11 +42,7 @@ export class XAxis {
           title: null,
           text: axisConfig.description
         })
-        let pos = getMousePosition(d3.select('.overlay'))
-        infoTooltip.move({
-          x: pos[0],
-          y: pos[1]
-        }, 'left')
+        moveTooltipTo(infoTooltip, d3.select('.overlay'), 'left')
       })
       .on('click', () => {
         window.open(axisConfig.url, '_blank')
@@ -115,11 +111,7 @@ export class XAxisDate {
           title: null,
           text: axisConfig.description
         })
-        let pos = getMousePosition(d3.select('.overlay'))
-        infoTooltip.move({
-          x: pos[0],
-          y: pos[1]
-        }, 'left')
+        moveTooltipTo(infoTooltip, d3.select('.overlay'), 'left')
       })
       .on('click', () => {
         window.open(axisConfig.url, '_blank')

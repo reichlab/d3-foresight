@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { getMousePosition } from '../../utilities/mouse'
+import { moveTooltipTo } from '../../utilities/mouse'
 import * as ev from '../../events'
 
 export default class Overlay {
@@ -75,11 +75,7 @@ export default class Overlay {
                                       parent.predictions, index)
 
         // Find position for tooltip
-        let pos = getMousePosition(d3.select(this))
-        timeChartTooltip.move({
-          x: pos[0],
-          y: pos[1]
-        })
+        moveTooltipTo(timeChartTooltip, d3.select(this))
       })
       .on('click', function () {
         ev.publish(ev.JUMP_TO_INDEX, Math.round(xScale.invert(d3.mouse(this)[0])))

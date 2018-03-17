@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 import * as ev from '../../../events'
 import palette from '../../../styles/palette.json'
-import { getMousePosition } from '../../../utilities/mouse'
+import { moveTooltipTo } from '../../../utilities/mouse'
 import DrawerRow from './drawer-row'
 
 /**
@@ -85,18 +85,13 @@ export default class LegendDrawer {
     let rowsToShow = actualItems.filter((item, idx) => flags[idx])
 
     // Add rows for actual lines
-    this.actualItems = rowsToShow.map(data => {
+    rowsToShow.forEach(data => {
       let drawerRow = new DrawerRow(data.text, data.color)
-
       drawerRow.addToggle(({ id, state }) => {
         ev.publish(ev.LEGEND_ITEM, { id, state })
       })
-
       drawerRow.addTooltip(data.tooltipData, infoTooltip)
-
-      // Actually append
       legendActualContainer.append(() => drawerRow.node)
-      return drawerRow.selection
     })
 
     if (panelConfig.ci) {
@@ -120,11 +115,7 @@ export default class LegendDrawer {
               title: 'Confidence Interval',
               text: 'Select confidence interval for prediction markers'
             })
-            let pos = getMousePosition(d3.select(this))
-            infoTooltip.move({
-              x: pos[0],
-              y: pos[1]
-            }, 'left')
+            moveTooltipTo(infoTooltip, d3.select(this), 'left')
           })
         return confButton
       })
@@ -156,8 +147,7 @@ export default class LegendDrawer {
             title: 'Toggle visibility',
             text: 'Show / hide all predictions'
           })
-          let [x, y] = getMousePosition(d3.select(this))
-          infoTooltip.move({ x, y }, 'left')
+          moveTooltipTo(infoTooltip, d3.select(this), 'left')
         })
       return showHideButton
     })
@@ -241,7 +231,6 @@ export default class LegendDrawer {
         text: p.meta.description
       }, infoTooltip)
 
-      // Actually append
       predictionContainer.append(() => drawerRow.node)
       return drawerRow
     })

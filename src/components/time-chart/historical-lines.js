@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { getMousePosition } from '../../utilities/mouse'
+import { moveTooltipTo } from '../../utilities/mouse'
 
 /**
  * Historical lines
@@ -48,11 +48,7 @@ export default class HistoricalLines {
         timeChartTooltip.hide()
       }).on('mousemove', function (event) {
         timeChartTooltip.renderText(hd.id)
-        let pos = getMousePosition(d3.select('.overlay'))
-        timeChartTooltip.move({
-          x: pos[0],
-          y: pos[1]
-        })
+        moveTooltipTo(timeChartTooltip, d3.select('.overlay'))
       })
     })
 

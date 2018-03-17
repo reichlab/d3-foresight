@@ -14,8 +14,16 @@ import { Position } from '../interfaces'
  * mouse events are translated with respect to original svg. Most of the calls
  * to this function use .overlay as reference
  */
-export function getMousePosition (d3Selection): Position {
+function getMousePosition (d3Selection): Position {
   let [x, y] = d3.mouse(d3Selection.node())
   let bb = d3Selection.node().getBoundingClientRect()
   return [x + bb.left, y + bb.top]
+}
+
+/**
+ * Move tooltip to the position of the selection
+ */
+export function moveTooltipTo (tooltip, selection, direction = 'right') {
+  let [x, y] = getMousePosition(selection)
+  tooltip.move({ x, y }, direction)
 }

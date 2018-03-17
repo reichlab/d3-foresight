@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { getMousePosition } from '../../utilities/mouse'
+import { moveTooltipTo } from '../../utilities/mouse'
 
 /**
  * Simple linear Y axis with informative label
@@ -23,11 +23,7 @@ export class YAxis {
           title: null,
           text: axisConfig.description
         })
-        let pos = getMousePosition(d3.select('.overlay'))
-        infoTooltip.move({
-          x: pos[0],
-          y: pos[1]
-        })
+        moveTooltipTo(infoTooltip, d3.select('.overlay'))
       })
       .on('click', () => {
         window.open(axisConfig.url, '_blank')
