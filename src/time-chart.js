@@ -19,9 +19,9 @@ export default class TimeChart extends Chart {
       confidenceIntervals: []
     }
 
-    let elementSelection = d3.select(element)
+    let selection = d3.select(element)
         .attr('class', 'd3-foresight-chart d3-foresight-time-chart')
-    super(elementSelection, 30, Object.assign({}, defaultConfig, options))
+    super(selection, 30, Object.assign({}, defaultConfig, options))
 
     // Initialize scales
     this.xScale = d3.scaleLinear().range([0, this.width])
@@ -46,7 +46,7 @@ export default class TimeChart extends Chart {
       this.infoTooltip
     )
 
-    this.timeChartTooltip = new commonComponents.TimeChartTooltip(elementSelection)
+    this.timeChartTooltip = new commonComponents.TimeChartTooltip(this.selection)
     this.timerect = new timeChartComponents.TimeRect(this)
     this.overlay = new timeChartComponents.Overlay(this)
     this.history = new timeChartComponents.HistoricalLines(this)
@@ -69,7 +69,7 @@ export default class TimeChart extends Chart {
 
     // Control panel
     this.controlPanel = new commonComponents.ControlPanel(panelConfig)
-    this.elementSelection.append(() => this.controlPanel.node)
+    this.selection.append(() => this.controlPanel.node)
 
     // Event subscriptions for control panel
     ev.addSub(this, ev.MOVE_NEXT, (msg, data) => {

@@ -19,9 +19,9 @@ export default class DistributionChart extends Chart {
       }
     }
 
-    let elementSelection = d3.select(element)
+    let selection = d3.select(element)
         .attr('class', 'd3-foresight-chart d3-foresight-distribution-chart')
-    super(elementSelection, 0, Object.assign({}, defaultConfig, options))
+    super(selection, 0, Object.assign({}, defaultConfig, options))
 
     // Initialize scales
     this.xScale = d3.scaleLinear().range([0, this.width])
@@ -39,7 +39,7 @@ export default class DistributionChart extends Chart {
       this.infoTooltip
     )
 
-    this.distributionTooltip = new commonComponents.DistributionTooltip(elementSelection)
+    this.distributionTooltip = new commonComponents.DistributionTooltip(this.selection)
 
     // create 4 panels and assign new svgs to them
     let panelMargin = {
@@ -74,7 +74,7 @@ export default class DistributionChart extends Chart {
 
     // Add dropdowns for curve selection
     this.dropdowns = panelPositions.map(pos => {
-      let wrapperWrapper = elementSelection.append('div')
+      let wrapperWrapper = this.selection.append('div')
       wrapperWrapper.style('text-align', 'center')
 
       let wrapper = wrapperWrapper.append('span')
@@ -101,7 +101,7 @@ export default class DistributionChart extends Chart {
 
     // Control panel
     this.controlPanel = new commonComponents.ControlPanel(panelConfig)
-    this.elementSelection.append(() => this.controlPanel.node)
+    this.selection.append(() => this.controlPanel.node)
 
     ev.addSub(this, ev.MOVE_NEXT, (msg, data) => {
       ev.publish(ev.FORWARD_INDEX)
