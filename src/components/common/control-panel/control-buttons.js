@@ -51,7 +51,6 @@ export default class ControlButtons {
     })
 
     this.legendBtn = buttons[0]
-    // this.legendBtn.classed('active', true)
   }
 
   toggleLegendBtn () {
