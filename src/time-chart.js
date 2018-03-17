@@ -84,9 +84,9 @@ export default class TimeChart extends Chart {
       }
     })
 
-    ev.addSub(this, ev.LEGEND_CI, (msg, { ci }) => {
+    ev.addSub(this, ev.LEGEND_CI, (msg, { idx }) => {
       this.predictions.forEach(p => {
-        this.cid = p.cid = ci
+        this.cid = p.cid = idx
         p.update(this.currentIdx)
       })
     })

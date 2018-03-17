@@ -1,14 +1,16 @@
 import * as d3 from 'd3'
 import * as ev from '../../../events'
 import { moveTooltipTo } from '../../../utilities/mouse'
+import Component from '../../component'
 
 /**
  * Side buttons in control panel
  */
-export default class ControlButtons {
-  constructor (panelSelection, infoTooltip, panelConfig) {
-    let navControls = panelSelection.append('div')
-        .attr('class', 'nav-controls')
+export default class ControlButtons extends Component {
+  constructor (tooltip) {
+    super()
+
+    this.selection.classed('nav-controls', true)
 
     let buttonData = [
       {
@@ -33,27 +35,29 @@ export default class ControlButtons {
 
     // Save all the buttons for toggling state and stuff
     let buttons = buttonData.map(data => {
-      let btn = navControls.append('div')
-          .classed('btn', true)
-          .text(data.iconText)
-      btn
-        .on('mouseover', () => infoTooltip.show())
-        .on('mouseout', () => infoTooltip.hide())
+      return this.selection.append('div')
+        .classed('btn', true)
+        .text(data.iconText)
+        .on('mouseover', () => tooltip.show())
+        .on('mouseout', () => tooltip.hide())
         .on('mousemove', function () {
-          infoTooltip.renderText({
+          tooltip.renderText({
             title: null,
             text: data.tooltipText
           })
-          moveTooltipTo(infoTooltip, d3.select(this), 'left')
+          moveTooltipTo(tooltip, d3.select(this), 'left')
         })
         .on('click', () => ev.publish(data.event, {}))
-      return btn
     })
 
     this.legendBtn = buttons[0]
   }
 
-  toggleLegendBtn () {
-    this.legendBtn.classed('active', !this.legendBtn.classed('active'))
+  get legendBtnState () {
+    return this.legendBtn.classed('active')
+  }
+
+  set legendBtnState (state) {
+    this.legendBtn.classed('active', state)
   }
 }

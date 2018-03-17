@@ -7,40 +7,35 @@
  */
 import * as d3 from 'd3'
 import { moveTooltipTo } from '../../../utilities/mouse'
+import Component from '../../component'
 
 /**
  * An item in the legend drawer.
  */
-export default class DrawerRow {
+export default class DrawerRow extends Component {
   constructor (name, color) {
+    super()
+
     this.id = name
+    this.selection.attr('class', `item legend-item-${this.id}`)
 
-    this.div = d3.select(document.createElement('div'))
-      .attr('class', `item legend-item-${this.id}`)
-
-    this.icon = this.div.append('i')
+    this.icon = this.selection.append('i')
       .style('color', color)
       .style('margin-right', '3px')
 
-    this.active = true
-
-    this.div.append('span')
+    this.selection.append('span')
       .attr('class', 'item-title')
       .text(name)
-  }
-
-  get node () {
-    return this.div.node()
-  }
-
-  get selection () {
-    return this.div
   }
 
   get active () {
     return this.icon.classed('icon-circle')
   }
 
+  /**
+   * Activate the row. Expected outcome is that the corresponding item
+   * will be visible now.
+   */
   set active (state) {
     this.icon.classed('icon-circle', state)
     this.icon.classed('icon-circle-empty', !state)
@@ -50,18 +45,22 @@ export default class DrawerRow {
     return this.selection.style('display') === 'none'
   }
 
+  /**
+   * Hide the row
+   */
   set hidden (state) {
     this.selection.style('display', state ? 'none' : null)
   }
 
-  addTooltip (data, tooltip) {
-    this.selection
-      .on('mouseover', () => tooltip.show())
-      .on('mouseout', () => tooltip.hide())
-      .on('mousemove', function () {
-        tooltip.renderText(data)
-        moveTooltipTo(tooltip, d3.select(this), 'left')
-      })
+  get na () {
+    this.selection.classed('na')
+  }
+
+  /**
+   * Not applicable, there is no data to show. The row is grayed out.
+   */
+  set na (state) {
+    this.selection.classed('na', state)
   }
 
   addLink (url, tooltip) {
@@ -80,16 +79,15 @@ export default class DrawerRow {
       .on('click', () => d3.event.stopPropagation())
   }
 
-  addToggle (fn) {
-    this.selection.style('cursor', 'pointer')
-
+  addOnClick (fn) {
+    super.addOnClick()
     this.selection.on('click', () => {
       this.active = !this.active
       fn({ id: this.id, state: this.active })
     })
   }
 
-  toggle () {
+  click () {
     this.selection.on('click')()
   }
 }

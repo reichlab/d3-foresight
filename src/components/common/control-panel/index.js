@@ -1,14 +1,16 @@
 import * as ev from '../../../events'
 import ControlButtons from './control-buttons'
 import LegendDrawer from './legend-drawer'
+import Component from '../../component'
 
 /**
  * Chart controls
  * nav-drawers and buttons
  */
-export default class ControlPanel {
+export default class ControlPanel extends Component {
   constructor (parent, panelConfig) {
-    // Main panel selection
+    super()
+
     let panelSelection = parent.elementSelection.append('div')
         .attr('class', 'd3-foresight-controls')
 
@@ -23,19 +25,20 @@ export default class ControlPanel {
     )
 
     if (this.config.ci) {
-      this.legendDrawer.toggleConfidenceBtn(parent.cid)
+      this.legendDrawer.setCiBtn(parent.cid)
     }
 
     // Buttons on the side of panel
-    this.controlButtons = new ControlButtons(panelSelection, parent.infoTooltip, this.config)
+    let sideButtons = new ControlButtons(parent.infoTooltip)
+    panelSelection.append(() => sideButtons.node)
 
     ev.addSub(this, ev.TOGGLE_LEGEND, (msg, data) => {
       this.legendDrawer.toggleDrawer()
-      this.controlButtons.toggleLegendBtn()
+      sideButtons.legendBtnState = !sideButtons.legendBtnState
     })
 
     // Turn on legend by default
-    this.controlButtons.toggleLegendBtn()
+    sideButtons.legendBtnState = true
   }
 
   plot (predictions) {

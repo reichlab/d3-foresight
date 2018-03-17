@@ -3,6 +3,7 @@ import * as ev from '../../../events'
 import palette from '../../../styles/palette.json'
 import { moveTooltipTo } from '../../../utilities/mouse'
 import DrawerRow from './drawer-row'
+import ToggleButtons from './toggle-buttons'
 
 /**
  * Legend nav drawer
@@ -23,18 +24,16 @@ export default class LegendDrawer {
     let legendControlContainer = legendGroup.append('div')
         .attr('class', 'legend-control-container')
 
-    let legendCIItem, legendCIButtons
+    let legendCIItem
     if (panelConfig.ci) {
       legendCIItem = legendControlContainer.append('div')
         .attr('class', 'item control-item')
       legendCIItem.append('span').text('CI')
-      legendCIButtons = legendCIItem.append('span')
     }
 
     let legendShowHideItem = legendControlContainer.append('div')
         .attr('class', 'item control-item')
     legendShowHideItem.append('span').text('Show')
-    let legendShowHideButtons = legendShowHideItem.append('span')
 
     // Add filter box
     this.legendSearchItem = legendControlContainer.append('div')
@@ -87,78 +86,45 @@ export default class LegendDrawer {
     // Add rows for actual lines
     rowsToShow.forEach(data => {
       let drawerRow = new DrawerRow(data.text, data.color)
-      drawerRow.addToggle(({ id, state }) => {
+      drawerRow.addOnClick(({ id, state }) => {
         ev.publish(ev.LEGEND_ITEM, { id, state })
       })
-      drawerRow.addTooltip(data.tooltipData, infoTooltip)
+      drawerRow.addTooltip(data.tooltipData, infoTooltip, 'left')
+      drawerRow.active = true
       legendActualContainer.append(() => drawerRow.node)
     })
 
     if (panelConfig.ci) {
-      this.confButtons = [...confidenceIntervals, 'none'].map((c, idx) => {
-        let confButton = legendCIButtons.append('span')
-            .attr('class', 'toggle-button')
-            .style('cursor', 'pointer')
-            .text(c)
+      let ciValues = [...confidenceIntervals, 'none']
+      this.ciButtons = new ToggleButtons(ciValues)
+      this.ciButtons.addTooltip({
+        title: 'Confidence Interval',
+        text: 'Select confidence interval for prediction markers'
+      }, infoTooltip, 'left')
 
-        confButton
-          .on('click', function () {
-            legendCIButtons.selectAll('.toggle-button')
-              .classed('selected', false)
-            d3.select(this).classed('selected', true)
-            ev.publish(ev.LEGEND_CI, { ci: c === 'none' ? null : idx })
-          })
-          .on('mouseover', () => infoTooltip.show())
-          .on('mouseout', () => infoTooltip.hide())
-          .on('mousemove', function () {
-            infoTooltip.renderText({
-              title: 'Confidence Interval',
-              text: 'Select confidence interval for prediction markers'
-            })
-            moveTooltipTo(infoTooltip, d3.select(this), 'left')
-          })
-        return confButton
+      this.ciButtons.addOnClick(({ idx }) => {
+        ev.publish(ev.LEGEND_CI, { idx: (ciValues.length - 1) === idx ? null : idx })
       })
+      legendCIItem.append(() => this.ciButtons.node)
     }
 
-    let that = this
-
     // Show / hide all
-    this.showHideButtons = ['all', 'none'].map((c, idx) => {
-      let showHideButton = legendShowHideButtons.append('span')
-          .attr('class', 'toggle-button')
-          .style('cursor', 'pointer')
-          .text(c)
-
-      showHideButton
-        .on('click', function () {
-          // Toggle prediction entries
-          that.showHidePredItem(d3.select(this).text() === 'all')
-
-          // Set button active colors
-          legendShowHideButtons.selectAll('.toggle-button')
-            .classed('selected', false)
-          d3.select(this).classed('selected', true)
-        })
-        .on('mouseover', () => infoTooltip.show())
-        .on('mouseout', () => infoTooltip.hide())
-        .on('mousemove', function () {
-          infoTooltip.renderText({
-            title: 'Toggle visibility',
-            text: 'Show / hide all predictions'
-          })
-          moveTooltipTo(infoTooltip, d3.select(this), 'left')
-        })
-      return showHideButton
+    this.showHideButtons = new ToggleButtons(['all', 'none'])
+    this.showHideButtons.addTooltip({
+      title: 'Toggle visibility',
+      text: 'Show / hide all predictions'
+    }, infoTooltip, 'left')
+    this.showHideButtons.addOnClick(({ idx }) => {
+      this.showHideAllItems(idx === 0)
     })
+    legendShowHideItem.append(() => this.showHideButtons.node)
 
     this.infoTooltip = infoTooltip
     this.drawerSelection = legendGroup
   }
 
-  toggleConfidenceBtn (idx) {
-    let btn = this.confButtons[idx]
-    btn.classed('selected', !btn.classed('selected'))
+  setCiBtn (idx) {
+    this.ciButtons.set(idx)
   }
 
   toggleDrawer () {
@@ -176,15 +142,11 @@ export default class LegendDrawer {
     })
   }
 
-  resetShowHideButtons () {
-    this.showHideButtons.forEach(button => button.classed('selected', false))
-  }
-
   // Show / hide all the items markers
-  showHidePredItem (show) {
+  showHideAllItems (show) {
     this.rows.forEach(row => {
       if (row.active !== show) {
-        row.toggle()
+        row.click()
       }
     })
   }
@@ -218,19 +180,19 @@ export default class LegendDrawer {
     // Add prediction items
     this.rows = predictions.map(p => {
       let drawerRow = new DrawerRow(p.id, p.color)
-      drawerRow.active = !p.hidden
       drawerRow.addLink(p.meta.url, infoTooltip)
 
-      drawerRow.addToggle(({ id, state }) => {
-        this.resetShowHideButtons()
+      drawerRow.addOnClick(({ id, state }) => {
+        this.showHideButtons.reset()
         ev.publish(ev.LEGEND_ITEM, { id, state })
       })
 
       drawerRow.addTooltip({
         title: p.meta.name,
         text: p.meta.description
-      }, infoTooltip)
+      }, infoTooltip, 'left')
 
+      drawerRow.active = !p.hidden
       predictionContainer.append(() => drawerRow.node)
       return drawerRow
     })
@@ -238,8 +200,10 @@ export default class LegendDrawer {
 
   update (predictions) {
     predictions.forEach(p => {
-      let pDiv = this.drawerSelection.select('.legend-item-' + p.id)
-      pDiv.classed('na', p.noData)
+      let row = this.rows.find(r => r.id === p.id)
+      if (row) {
+        row.na = p.noData
+      }
     })
   }
 }
