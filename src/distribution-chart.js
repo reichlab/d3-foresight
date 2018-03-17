@@ -178,7 +178,7 @@ export default class DistributionChart extends Chart {
 
     ev.addSub(this, ev.LEGEND_ITEM, (msg, { id, state }) => {
       this.panels.forEach(p => {
-        let predMarker = p.predictions.find(p => p.id.toLowerCase() === id)
+        let predMarker = p.predictions.find(p => p.id === id)
         if (predMarker) {
           predMarker.hidden = !state
         }

@@ -1,8 +1,4 @@
-import * as d3 from 'd3'
-import palette from '../../../styles/palette.json'
-import { getMousePosition } from '../../../utilities/mouse'
 import * as ev from '../../../events'
-import DrawerRow from './drawer-row'
 import ControlButtons from './control-buttons'
 import LegendDrawer from './legend-drawer'
 

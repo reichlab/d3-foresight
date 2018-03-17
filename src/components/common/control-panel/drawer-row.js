@@ -13,8 +13,7 @@ import { getMousePosition } from '../../../utilities/mouse'
  */
 export default class DrawerRow {
   constructor (name, color) {
-    this.name = name
-    this.id = name.toLowerCase()
+    this.id = name
 
     this.div = d3.select(document.createElement("div"))
       .attr('class', `item legend-item-${this.id}`)

@@ -1,5 +1,8 @@
 import * as d3 from 'd3'
+import * as ev from '../../../events'
+import palette from '../../../styles/palette.json'
 import { getMousePosition } from '../../../utilities/mouse'
+import DrawerRow from './drawer-row'
 
 /**
  * Legend nav drawer

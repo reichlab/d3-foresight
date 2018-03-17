@@ -79,7 +79,7 @@ export default class TimeChart extends Chart {
     })
 
     ev.addSub(this, ev.LEGEND_ITEM, (msg, { id }) => {
-      if (id.toLowerCase() === 'history') {
+      if (id === 'History') {
         this.history.hidden = !this.history.hidden
       }
     })
@@ -170,7 +170,7 @@ export default class TimeChart extends Chart {
     this.controlPanel.plot(this.predictions)
 
     ev.addSub(this, ev.LEGEND_ITEM, (msg, { id, state }) => {
-      let predMarker = this.predictions.find(p => p.id.toLowerCase() === id)
+      let predMarker = this.predictions.find(p => p.id === id)
       if (predMarker) {
         predMarker.hidden = !state
       }
