@@ -156,11 +156,8 @@ export default class LegendDrawer {
             title: 'Toggle visibility',
             text: 'Show / hide all predictions'
           })
-          let pos = getMousePosition(d3.select(this))
-          infoTooltip.move({
-            x: pos[0],
-            y: pos[1]
-          }, 'left')
+          let [x, y] = getMousePosition(d3.select(this))
+          infoTooltip.move({ x, y }, 'left')
         })
       return showHideButton
     })
@@ -185,11 +182,7 @@ export default class LegendDrawer {
   // Show / hide the "row items divs" while filtering with the search box
   showRows (visibilityStates) {
     this.rows.forEach((row, idx) => {
-      if (visibilityStates[idx]) {
-        row.style('display', null)
-      } else {
-        row.style('display', 'none')
-      }
+      row.hidden = visibilityStates[idx]
     })
   }
 
@@ -197,11 +190,11 @@ export default class LegendDrawer {
     this.showHideButtons.forEach(button => button.classed('selected', false))
   }
 
-  // Show / hide all the items markers (not the legend div)
+  // Show / hide all the items markers
   showHidePredItem (show) {
-    this.rows.forEach(predItem => {
-      if (predItem.select('i').classed('fa-circle') !== show) {
-        predItem.on('click')()
+    this.rows.forEach(row => {
+      if (row.active !== show) {
+        row.toggle()
       }
     })
   }
@@ -250,7 +243,7 @@ export default class LegendDrawer {
 
       // Actually append
       predictionContainer.append(() => drawerRow.node)
-      return drawerRow.selection
+      return drawerRow
     })
   }
 

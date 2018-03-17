@@ -43,8 +43,16 @@ export default class DrawerRow {
     this.icon.text(state ? '●' : '○')
   }
 
+  get hidden () {
+    return this.selection.style('display') === 'none'
+  }
+
+  set hidden (state) {
+    this.selection.style('display', state ? 'none' : null)
+  }
+
   addTooltip (data, tooltip) {
-    this.div
+    this.selection
       .on('mouseover', () => tooltip.show())
       .on('mouseout', () => tooltip.hide())
       .on('mousemove', function () {
@@ -55,7 +63,7 @@ export default class DrawerRow {
   }
 
   addLink (url, tooltip) {
-    this.urlIcon = this.div.append('a')
+    this.urlIcon = this.selection.append('a')
       .attr('href', url)
       .attr('target', '_blank')
       .attr('class', 'item-url')
@@ -72,11 +80,15 @@ export default class DrawerRow {
   }
 
   addToggle (fn) {
-    this.div.style('cursor', 'pointer')
+    this.selection.style('cursor', 'pointer')
 
-    this.div.on('click', () => {
+    this.selection.on('click', () => {
       this.active = !this.active
       fn({ id: this.id, state: this.active })
     })
+  }
+
+  toggle () {
+    this.selection.on('click')()
   }
 }
