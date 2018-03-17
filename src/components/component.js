@@ -5,7 +5,7 @@ import { moveTooltipTo } from '../utilities/mouse'
  * Generic class for a component
  */
 export default class Component {
-  constructor() {
+  constructor () {
     this.div = d3.select(document.createElement('div'))
   }
 
