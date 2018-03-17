@@ -56,16 +56,20 @@ export default class TimeChart extends Chart {
     this.predictions = []
     this.cid = this.config.confidenceIntervals.length - 1
 
-    let showCi = this.cid !== -1
     let panelConfig = {
       actual: true,
       observed: true,
       history: true,
-      ci: showCi
+      ci: this.cid === -1 ? false : {
+        idx: this.cid,
+        values: this.config.confidenceIntervals
+      },
+      tooltip: this.infoTooltip
     }
 
     // Control panel
-    this.controlPanel = new commonComponents.ControlPanel(this, panelConfig)
+    this.controlPanel = new commonComponents.ControlPanel(panelConfig)
+    this.elementSelection.append(() => this.controlPanel.node)
 
     // Event subscriptions for control panel
     ev.addSub(this, ev.MOVE_NEXT, (msg, data) => {

@@ -95,11 +95,13 @@ export default class DistributionChart extends Chart {
       actual: false,
       observed: false,
       history: false,
-      ci: false
+      ci: false,
+      tooltip: this.infoTooltip
     }
 
     // Control panel
-    this.controlPanel = new commonComponents.ControlPanel(this, panelConfig)
+    this.controlPanel = new commonComponents.ControlPanel(panelConfig)
+    this.elementSelection.append(() => this.controlPanel.node)
 
     ev.addSub(this, ev.MOVE_NEXT, (msg, data) => {
       ev.publish(ev.FORWARD_INDEX)

@@ -8,29 +8,18 @@ import Component from '../../component'
  * nav-drawers and buttons
  */
 export default class ControlPanel extends Component {
-  constructor (parent, panelConfig) {
+  constructor (config) {
     super()
-
-    let panelSelection = parent.elementSelection.append('div')
-        .attr('class', 'd3-foresight-controls')
-
-    this.config = panelConfig
+    this.selection.attr('class', 'd3-foresight-controls')
+    this.config = config
 
     // Add legend drawer
-    this.legendDrawer = new LegendDrawer(
-      this.config,
-      parent.config.confidenceIntervals,
-      parent.infoTooltip
-    )
-    panelSelection.append(() => this.legendDrawer.node)
-
-    if (this.config.ci) {
-      this.legendDrawer.setCiBtn(parent.cid)
-    }
+    this.legendDrawer = new LegendDrawer(config)
+    this.selection.append(() => this.legendDrawer.node)
 
     // Buttons on the side of panel
-    let sideButtons = new ControlButtons(parent.infoTooltip)
-    panelSelection.append(() => sideButtons.node)
+    let sideButtons = new ControlButtons(config.tooltip)
+    this.selection.append(() => sideButtons.node)
 
     ev.addSub(this, ev.TOGGLE_LEGEND, (msg, data) => {
       this.legendDrawer.hidden = !this.legendDrawer.hidden

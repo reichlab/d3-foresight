@@ -9,7 +9,7 @@ import SearchBox from './search-box'
  * Legend nav drawer
  */
 export default class LegendDrawer extends Component {
-  constructor (config, confidenceIntervals, tooltip) {
+  constructor (config) {
     super()
 
     this.selection.classed('legend nav-drawer', true)
@@ -20,6 +20,7 @@ export default class LegendDrawer extends Component {
 
     let actualItems = [
       {
+        show: config.actual,
         color: palette.actual,
         text: 'Actual',
         tooltipData: {
@@ -28,6 +29,7 @@ export default class LegendDrawer extends Component {
         }
       },
       {
+        show: config.observed,
         color: palette.observed,
         text: 'Observed',
         tooltipData: {
@@ -36,6 +38,7 @@ export default class LegendDrawer extends Component {
         }
       },
       {
+        show: config.history,
         color: palette['history-highlight'],
         text: 'History',
         tooltipData: {
@@ -45,21 +48,13 @@ export default class LegendDrawer extends Component {
       }
     ]
 
-    let flags = [
-      config.actual,
-      config.observed,
-      config.history
-    ]
-
-    let rowsToShow = actualItems.filter((item, idx) => flags[idx])
-
     // Add rows for actual lines
-    rowsToShow.forEach(data => {
+    actualItems.filter(item => item.show).forEach(data => {
       let drawerRow = new DrawerRow(data.text, data.color)
       drawerRow.addOnClick(({ id, state }) => {
         ev.publish(ev.LEGEND_ITEM, { id, state })
       })
-      drawerRow.addTooltip(data.tooltipData, tooltip, 'left')
+      drawerRow.addTooltip(data.tooltipData, config.tooltip, 'left')
       drawerRow.active = true
       actualContainer.append(() => drawerRow.node)
     })
@@ -73,16 +68,17 @@ export default class LegendDrawer extends Component {
           .attr('class', 'item control-item')
       ciItem.append('span').text('CI')
 
-      let ciValues = [...confidenceIntervals, 'none']
+      let ciValues = [...config.ci.values, 'none']
       this.ciButtons = new ToggleButtons(ciValues)
       this.ciButtons.addTooltip({
         title: 'Confidence Interval',
         text: 'Select confidence interval for prediction markers'
-      }, tooltip, 'left')
+      }, config.tooltip, 'left')
 
       this.ciButtons.addOnClick(({ idx }) => {
         ev.publish(ev.LEGEND_CI, { idx: (ciValues.length - 1) === idx ? null : idx })
       })
+      this.ciButtons.set(config.ci.idx)
       ciItem.append(() => this.ciButtons.node)
     }
 
@@ -95,7 +91,7 @@ export default class LegendDrawer extends Component {
     this.showHideButtons.addTooltip({
       title: 'Toggle visibility',
       text: 'Show / hide all predictions'
-    }, tooltip, 'left')
+    }, config.tooltip, 'left')
     this.showHideButtons.addOnClick(({ idx }) => {
       this.showHideAllItems(idx === 0)
     })
@@ -109,11 +105,7 @@ export default class LegendDrawer extends Component {
     this.predictionContainer = this.selection.append('div')
       .attr('class', 'legend-prediction-container')
 
-    this.tooltip = tooltip
-  }
-
-  setCiBtn (idx) {
-    this.ciButtons.set(idx)
+    this.tooltip = config.tooltip
   }
 
   // Show / hide the "row items divs" while filtering with the search box
