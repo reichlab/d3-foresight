@@ -1,5 +1,3 @@
-import * as d3 from 'd3'
-import { moveTooltipTo } from '../../../utilities/mouse'
 import Component from '../../component'
 
 /**

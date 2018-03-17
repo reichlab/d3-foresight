@@ -1,7 +1,7 @@
 import Component from '../../component'
 
 export default class SearchBox extends Component {
-  constructor() {
+  constructor () {
     super()
     this.selection.classed('item', true)
 

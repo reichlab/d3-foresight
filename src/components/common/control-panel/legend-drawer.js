@@ -1,7 +1,5 @@
-import * as d3 from 'd3'
 import * as ev from '../../../events'
 import palette from '../../../styles/palette.json'
-import { moveTooltipTo } from '../../../utilities/mouse'
 import DrawerRow from './drawer-row'
 import ToggleButtons from './toggle-buttons'
 import Component from '../../component'
