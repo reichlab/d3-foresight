@@ -78,8 +78,8 @@ export default class TimeChart extends Chart {
       ev.publish(ev.BACKWARD_INDEX)
     })
 
-    ev.addSub(this, ev.LEGEND_ITEM, (msg, { itemName }) => {
-      if (itemName === 'history') {
+    ev.addSub(this, ev.LEGEND_ITEM, (msg, { id }) => {
+      if (id.toLowerCase() === 'history') {
         this.history.hidden = !this.history.hidden
       }
     })
@@ -169,10 +169,11 @@ export default class TimeChart extends Chart {
     // Update models shown in control panel
     this.controlPanel.plot(this.predictions)
 
-    ev.resetSub(this, ev.LEGEND_ITEM)
-    ev.addSub(this, ev.LEGEND_ITEM, (msg, { itemName, state }) => {
-      let predMarker = this.predictions.find(p => p.id === itemName)
-      predMarker.hidden = state
+    ev.addSub(this, ev.LEGEND_ITEM, (msg, { id, state }) => {
+      let predMarker = this.predictions.find(p => p.id.toLowerCase() === id)
+      if (predMarker) {
+        predMarker.hidden = !state
+      }
     })
 
     // Hot start the chart

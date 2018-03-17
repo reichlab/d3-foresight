@@ -2,6 +2,7 @@ import * as d3 from 'd3'
 import palette from '../../../styles/palette.json'
 import { getMousePosition } from '../../../utilities/mouse'
 import * as ev from '../../../events'
+import DrawerRow from './drawer-row'
 
 /**
  * Side buttons in control panel
@@ -111,7 +112,6 @@ class LegendDrawer {
 
     let actualItems = [
       {
-        class: 'legend-item-actual',
         color: palette.actual,
         text: 'Actual',
         tooltipData: {
@@ -120,7 +120,6 @@ class LegendDrawer {
         }
       },
       {
-        class: 'legend-item-observed',
         color: palette.observed,
         text: 'Observed',
         tooltipData: {
@@ -129,7 +128,6 @@ class LegendDrawer {
         }
       },
       {
-        class: 'legend-item-history',
         color: palette['history-highlight'],
         text: 'History',
         tooltipData: {
@@ -144,46 +142,23 @@ class LegendDrawer {
       panelConfig.observed,
       panelConfig.history
     ]
+
     let rowsToShow = actualItems.filter((item, idx) => flags[idx])
 
     // Add rows for actual lines
     this.actualItems = rowsToShow.map(data => {
-      let item = legendActualContainer.append('div')
-          .attr('class', `item ${data.id}`)
+      let drawerRow = new DrawerRow(data.text, data.color)
 
-      item.append('i')
-        .style('color', data.color)
-        .text('●')
+      drawerRow.addToggle(({ id, state }) => {
+        ev.publish(ev.LEGEND_ITEM, { id, state })
+      })
 
-      item.append('span')
-        .attr('class', 'item-title')
-        .text(data.text)
+      drawerRow.addTooltip(data.tooltipData, infoTooltip)
 
-      item
-        .on('mouseover', () => infoTooltip.show())
-        .on('mouseout', () => infoTooltip.hide())
-        .on('mousemove', function () {
-          infoTooltip.renderText(data.tooltipData)
-          let pos = getMousePosition(d3.select(this))
-          infoTooltip.move({
-            x: pos[0],
-            y: pos[1]
-          }, 'left')
-        })
-      return item
+      // Actually append
+      legendActualContainer.append(() => drawerRow.node)
+      return drawerRow.selection
     })
-
-    if (panelConfig.history) {
-      // Add extra props to history item
-      let historyItem = this.actualItems[2]
-      historyItem.style('cursor', 'pointer')
-      this.historyIcon = historyItem.select('i')
-      historyItem
-        .on('click', () => {
-          this.toggleHistoryIcon()
-          ev.publish(ev.LEGEND_ITEM, { itemName: 'history' })
-        })
-    }
 
     if (panelConfig.ci) {
       this.confButtons = [...confidenceIntervals, 'none'].map((c, idx) => {
@@ -255,14 +230,6 @@ class LegendDrawer {
     this.drawerSelection = legendGroup
   }
 
-  toggleHistoryIcon () {
-    if (this.historyIcon.text() === '●') {
-      this.historyIcon.text('○')
-    } else {
-      this.historyIcon.text('●')
-    }
-  }
-
   toggleConfidenceBtn (idx) {
     let btn = this.confButtons[idx]
     btn.classed('selected', !btn.classed('selected'))
@@ -328,65 +295,23 @@ class LegendDrawer {
 
     // Add prediction items
     this.rows = predictions.map(p => {
-      let predItem = predictionContainer.append('div')
-          .attr('class', `item legend-item-${p.id}`)
-          .style('cursor', 'pointer')
+      let drawerRow = new DrawerRow(p.id, p.color)
+      drawerRow.active = !p.hidden
+      drawerRow.addLink(p.meta.url, infoTooltip)
 
-      let predIcon = predItem.append('i')
-          .style('color', p.color)
+      drawerRow.addToggle(({ id, state }) => {
+        this.resetShowHideButtons()
+        ev.publish(ev.LEGEND_ITEM, { id, state })
+      })
 
-      predIcon.text(p.hidden ? '○' : '●')
+      drawerRow.addTooltip({
+        title: p.meta.name,
+        text: p.meta.description
+      }, infoTooltip)
 
-      predItem.append('span')
-        .attr('class', 'item-title')
-        .html(p.id)
-
-      let urlItem = predItem.append('a')
-          .attr('href', p.meta.url)
-          .attr('target', '_blank')
-          .attr('class', 'model-url')
-          .text('🔗')
-
-      urlItem
-        .on('mousemove', function () {
-          d3.event.stopPropagation()
-          infoTooltip.renderText({
-            text: 'Show details'
-          })
-          let pos = getMousePosition(d3.select(this))
-          infoTooltip.move({
-            x: pos[0],
-            y: pos[1]
-          }, 'left')
-        })
-        .on('click', () => d3.event.stopPropagation())
-
-      predItem
-        .on('click', () => {
-          let isActive = predIcon.text() === '●'
-
-          predIcon.text(isActive ? '○' : '●')
-
-          // Reset show all/none buttons on any of these clicks
-          this.resetShowHideButtons()
-          ev.publish(ev.LEGEND_ITEM, { itemName: p.id, state: isActive })
-        })
-
-      predItem
-        .on('mouseover', () => infoTooltip.show())
-        .on('mouseout', () => infoTooltip.hide())
-        .on('mousemove', function () {
-          infoTooltip.renderText({
-            title: p.meta.name,
-            text: p.meta.description
-          })
-          let pos = getMousePosition(d3.select(this))
-          infoTooltip.move({
-            x: pos[0],
-            y: pos[1]
-          }, 'left')
-        })
-      return predItem
+      // Actually append
+      predictionContainer.append(() => drawerRow.node)
+      return drawerRow.selection
     })
   }
 
