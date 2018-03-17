@@ -32,12 +32,10 @@ export default class ControlButtons {
     ]
 
     // Save all the buttons for toggling state and stuff
-    this.buttons = buttonData.map(data => {
-      let btn = navControls.append('a')
-          .attr('class', 'button is-small is-info is-outlined')
-      btn.append('span')
-        .attr('class', 'icon is-small')
-        .text(data.iconText)
+    let buttons = buttonData.map(data => {
+      let btn = navControls.append('div')
+          .classed('btn', true)
+          .text(data.iconText)
       btn
         .on('mouseover', () => infoTooltip.show())
         .on('mouseout', () => infoTooltip.hide())
@@ -49,12 +47,14 @@ export default class ControlButtons {
           moveTooltipTo(infoTooltip, d3.select(this), 'left')
         })
         .on('click', () => ev.publish(data.event, {}))
-      navControls.append('br')
       return btn
     })
+
+    this.legendBtn = buttons[0]
+    // this.legendBtn.classed('active', true)
   }
 
   toggleLegendBtn () {
-    this.buttons[0].classed('is-outlined', !this.buttons[0].classed('is-outlined'))
+    this.legendBtn.classed('active', !this.legendBtn.classed('active'))
   }
 }

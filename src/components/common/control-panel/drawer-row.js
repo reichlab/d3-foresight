@@ -20,7 +20,9 @@ export default class DrawerRow {
 
     this.icon = this.div.append('i')
       .style('color', color)
-      .text('●')
+      .style('margin-right', '3px')
+
+    this.active = true
 
     this.div.append('span')
       .attr('class', 'item-title')
@@ -36,11 +38,12 @@ export default class DrawerRow {
   }
 
   get active () {
-    return this.icon.text() === '●'
+    return this.icon.classed('icon-circle')
   }
 
   set active (state) {
-    this.icon.text(state ? '●' : '○')
+    this.icon.classed('icon-circle', state)
+    this.icon.classed('icon-circle-empty', !state)
   }
 
   get hidden () {
@@ -65,8 +68,8 @@ export default class DrawerRow {
     this.urlIcon = this.selection.append('a')
       .attr('href', url)
       .attr('target', '_blank')
-      .attr('class', 'item-url')
-      .text('🔗')
+      .classed('item-url', true)
+      .classed('icon-link-ext', true)
 
     this.urlIcon
       .on('mousemove', function () {
