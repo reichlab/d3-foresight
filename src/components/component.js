@@ -24,6 +24,17 @@ export default class Component {
   }
 
   /**
+   * General css display based hidden prop
+   */
+  get hidden () {
+    return this.selection.style('display') === 'none'
+  }
+
+  set hidden (state) {
+    this.selection.style('display', state ? 'none' : null)
+  }
+
+  /**
    * Add an on hover tooltip
    */
   addTooltip (data, tooltip, direction = 'right') {

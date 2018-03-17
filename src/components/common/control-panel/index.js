@@ -18,11 +18,11 @@ export default class ControlPanel extends Component {
 
     // Add legend drawer
     this.legendDrawer = new LegendDrawer(
-      panelSelection,
-      parent.config.confidenceIntervals,
       this.config,
+      parent.config.confidenceIntervals,
       parent.infoTooltip
     )
+    panelSelection.append(() => this.legendDrawer.node)
 
     if (this.config.ci) {
       this.legendDrawer.setCiBtn(parent.cid)
@@ -33,7 +33,7 @@ export default class ControlPanel extends Component {
     panelSelection.append(() => sideButtons.node)
 
     ev.addSub(this, ev.TOGGLE_LEGEND, (msg, data) => {
-      this.legendDrawer.toggleDrawer()
+      this.legendDrawer.hidden = !this.legendDrawer.hidden
       sideButtons.legendBtnState = !sideButtons.legendBtnState
     })
 

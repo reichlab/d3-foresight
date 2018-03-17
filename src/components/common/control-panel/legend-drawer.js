@@ -4,49 +4,21 @@ import palette from '../../../styles/palette.json'
 import { moveTooltipTo } from '../../../utilities/mouse'
 import DrawerRow from './drawer-row'
 import ToggleButtons from './toggle-buttons'
+import Component from '../../component'
+import SearchBox from './search-box'
 
 /**
  * Legend nav drawer
- * @param panelSelection - D3 selection from controlpanel
- * @param infoTooltip
- * @param confidenceIntervals - List of confidence intervals
  */
-export default class LegendDrawer {
-  constructor (panelSelection, confidenceIntervals, panelConfig, infoTooltip) {
-    let legendGroup = panelSelection.append('div')
-        .attr('class', 'legend nav-drawer')
+export default class LegendDrawer extends Component {
+  constructor (config, confidenceIntervals, tooltip) {
+    super()
+
+    this.selection.classed('legend nav-drawer', true)
 
     // Items above the controls (actual, observed, history)
-    let legendActualContainer = legendGroup.append('div')
+    let actualContainer = this.selection.append('div')
         .attr('class', 'legend-actual-container')
-
-    // Control buttons (CI, show/hide, search)
-    let legendControlContainer = legendGroup.append('div')
-        .attr('class', 'legend-control-container')
-
-    let legendCIItem
-    if (panelConfig.ci) {
-      legendCIItem = legendControlContainer.append('div')
-        .attr('class', 'item control-item')
-      legendCIItem.append('span').text('CI')
-    }
-
-    let legendShowHideItem = legendControlContainer.append('div')
-        .attr('class', 'item control-item')
-    legendShowHideItem.append('span').text('Show')
-
-    // Add filter box
-    this.legendSearchItem = legendControlContainer.append('div')
-      .attr('class', 'item')
-      .style('display', 'none')
-    this.searchBox = this.legendSearchItem.append('input')
-      .attr('class', 'input is-small search-input')
-      .attr('type', 'text')
-      .attr('placeholder', 'Filter models')
-
-    // Prediction items
-    legendGroup.append('div')
-      .attr('class', 'legend-prediction-container')
 
     let actualItems = [
       {
@@ -76,9 +48,9 @@ export default class LegendDrawer {
     ]
 
     let flags = [
-      panelConfig.actual,
-      panelConfig.observed,
-      panelConfig.history
+      config.actual,
+      config.observed,
+      config.history
     ]
 
     let rowsToShow = actualItems.filter((item, idx) => flags[idx])
@@ -89,56 +61,67 @@ export default class LegendDrawer {
       drawerRow.addOnClick(({ id, state }) => {
         ev.publish(ev.LEGEND_ITEM, { id, state })
       })
-      drawerRow.addTooltip(data.tooltipData, infoTooltip, 'left')
+      drawerRow.addTooltip(data.tooltipData, tooltip, 'left')
       drawerRow.active = true
-      legendActualContainer.append(() => drawerRow.node)
+      actualContainer.append(() => drawerRow.node)
     })
 
-    if (panelConfig.ci) {
+    // Control buttons (CI, show/hide, search)
+    let controlContainer = this.selection.append('div')
+        .attr('class', 'legend-control-container')
+
+    if (config.ci) {
+      let ciItem = controlContainer.append('div')
+          .attr('class', 'item control-item')
+      ciItem.append('span').text('CI')
+
       let ciValues = [...confidenceIntervals, 'none']
       this.ciButtons = new ToggleButtons(ciValues)
       this.ciButtons.addTooltip({
         title: 'Confidence Interval',
         text: 'Select confidence interval for prediction markers'
-      }, infoTooltip, 'left')
+      }, tooltip, 'left')
 
       this.ciButtons.addOnClick(({ idx }) => {
         ev.publish(ev.LEGEND_CI, { idx: (ciValues.length - 1) === idx ? null : idx })
       })
-      legendCIItem.append(() => this.ciButtons.node)
+      ciItem.append(() => this.ciButtons.node)
     }
 
     // Show / hide all
+    let showHideItem = controlContainer.append('div')
+        .attr('class', 'item control-item')
+    showHideItem.append('span').text('Show')
+
     this.showHideButtons = new ToggleButtons(['all', 'none'])
     this.showHideButtons.addTooltip({
       title: 'Toggle visibility',
       text: 'Show / hide all predictions'
-    }, infoTooltip, 'left')
+    }, tooltip, 'left')
     this.showHideButtons.addOnClick(({ idx }) => {
       this.showHideAllItems(idx === 0)
     })
-    legendShowHideItem.append(() => this.showHideButtons.node)
+    showHideItem.append(() => this.showHideButtons.node)
 
-    this.infoTooltip = infoTooltip
-    this.drawerSelection = legendGroup
+    // Add search box
+    this.searchBox = new SearchBox()
+    controlContainer.append(() => this.searchBox.node)
+
+    // Prediction items
+    this.predictionContainer = this.selection.append('div')
+      .attr('class', 'legend-prediction-container')
+
+    this.tooltip = tooltip
   }
 
   setCiBtn (idx) {
     this.ciButtons.set(idx)
   }
 
-  toggleDrawer () {
-    if (this.drawerSelection.style('display') === 'none') {
-      this.drawerSelection.style('display', null)
-    } else {
-      this.drawerSelection.style('display', 'none')
-    }
-  }
-
   // Show / hide the "row items divs" while filtering with the search box
-  showRows (visibilityStates) {
+  showRows (states) {
     this.rows.forEach((row, idx) => {
-      row.hidden = visibilityStates[idx]
+      row.hidden = !states[idx]
     })
   }
 
@@ -152,35 +135,27 @@ export default class LegendDrawer {
   }
 
   plot (predictions) {
-    // Clear entries
-    let predictionContainer = this.drawerSelection.select('.legend-prediction-container')
-    predictionContainer.selectAll('*').remove()
-
-    // Meta data info tooltip
-    let infoTooltip = this.infoTooltip
-    let that = this
-
     // Don't show search bar if predictions are less than or equal to maxNPreds
     let maxNPreds = 10
     if (predictions.length > maxNPreds) {
-      this.legendSearchItem.style('display', null)
+      this.searchBox.hidden = false
+
       // Bind search event
-      this.searchBox.keyup = null
-      this.searchBox.on('keyup', function () {
-        // Do a full text search on key event
+      this.searchBox.addKeyup(({ text }) => {
         let searchBase = predictions.map(p => {
-          return `${p.id} ${p.meta.name} + ${p.meta.description}`.toLowerCase()
+          return `${p.id} ${p.meta.name} ${p.meta.description}`.toLowerCase()
         })
-        that.showRows(searchBase.map(sb => sb.includes(this.value.toLowerCase())))
+        this.showRows(searchBase.map(sb => sb.includes(text)))
       })
     } else {
-      this.legendSearchItem.style('display', 'none')
+      this.searchBox.hidden = true
     }
 
     // Add prediction items
+    this.predictionContainer.selectAll('*').remove()
     this.rows = predictions.map(p => {
       let drawerRow = new DrawerRow(p.id, p.color)
-      drawerRow.addLink(p.meta.url, infoTooltip)
+      drawerRow.addLink(p.meta.url, this.tooltip)
 
       drawerRow.addOnClick(({ id, state }) => {
         this.showHideButtons.reset()
@@ -190,10 +165,10 @@ export default class LegendDrawer {
       drawerRow.addTooltip({
         title: p.meta.name,
         text: p.meta.description
-      }, infoTooltip, 'left')
+      }, this.tooltip, 'left')
 
       drawerRow.active = !p.hidden
-      predictionContainer.append(() => drawerRow.node)
+      this.predictionContainer.append(() => drawerRow.node)
       return drawerRow
     })
   }

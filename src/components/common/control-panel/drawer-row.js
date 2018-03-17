@@ -41,17 +41,6 @@ export default class DrawerRow extends Component {
     this.icon.classed('icon-circle-empty', !state)
   }
 
-  get hidden () {
-    return this.selection.style('display') === 'none'
-  }
-
-  /**
-   * Hide the row
-   */
-  set hidden (state) {
-    this.selection.style('display', state ? 'none' : null)
-  }
-
   get na () {
     this.selection.classed('na')
   }
