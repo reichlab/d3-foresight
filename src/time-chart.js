@@ -68,23 +68,23 @@ export default class TimeChart extends Chart {
     this.controlPanel = new commonComponents.ControlPanel(this, panelConfig)
 
     // Event subscriptions for control panel
-    ev.subscribe(this, ev.MOVE_NEXT, (msg, data) => {
+    ev.addSub(this, ev.MOVE_NEXT, (msg, data) => {
       this.moveForward()
-      this.dispatchHook('forward-index')
+      ev.publish(ev.FORWARD_INDEX)
     })
 
-    ev.subscribe(this, ev.MOVE_PREV, (msg, data) => {
+    ev.addSub(this, ev.MOVE_PREV, (msg, data) => {
       this.moveBackward()
-      this.dispatchHook('backward-index')
+      ev.publish(ev.BACKWARD_INDEX)
     })
 
-    ev.subscribe(this, ev.LEGEND_ITEM, (msg, { itemName }) => {
+    ev.addSub(this, ev.LEGEND_ITEM, (msg, { itemName }) => {
       if (itemName === 'history') {
         this.history.hidden = !this.history.hidden
       }
     })
 
-    ev.subscribe(this, ev.LEGEND_CI, (msg, { ci }) => {
+    ev.addSub(this, ev.LEGEND_CI, (msg, { ci }) => {
       this.predictions.forEach(p => {
         this.cid = p.cid = ci
         p.update(this.currentIdx)
@@ -170,7 +170,7 @@ export default class TimeChart extends Chart {
     this.controlPanel.plot(this.predictions)
 
     ev.resetSub(this, ev.LEGEND_ITEM)
-    ev.subscribe(this, ev.LEGEND_ITEM, (msg, { itemName, state }) => {
+    ev.addSub(this, ev.LEGEND_ITEM, (msg, { itemName, state }) => {
       let predMarker = this.predictions.find(p => p.id === itemName)
       predMarker.hidden = state
     })

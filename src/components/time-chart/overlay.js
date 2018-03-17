@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import { getMousePosition } from '../../utilities/mouse'
+import * as ev from '../../events'
 
 export default class Overlay {
   constructor (parent) {
@@ -81,7 +82,7 @@ export default class Overlay {
         })
       })
       .on('click', function () {
-        parent.dispatchHook('jump-to-index', Math.round(xScale.invert(d3.mouse(this)[0])))
+        ev.publish(ev.JUMP_TO_INDEX, Math.round(xScale.invert(d3.mouse(this)[0])))
       })
   }
 

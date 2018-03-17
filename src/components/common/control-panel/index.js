@@ -426,7 +426,7 @@ export default class ControlPanel {
     this.controlButtons = new ControlButtons(panelSelection, parent.infoTooltip, this.config)
 
 
-    ev.subscribe(this, ev.TOGGLE_LEGEND, (msg, data) => {
+    ev.addSub(this, ev.TOGGLE_LEGEND, (msg, data) => {
       this.legendDrawer.toggleDrawer()
       this.controlButtons.toggleLegendBtn()
     })

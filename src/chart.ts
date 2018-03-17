@@ -1,10 +1,21 @@
-import * as commonComponents from './components/common'
 import * as errors from './utilities/errors'
+import { InfoTooltip } from './components/common'
+import { Event } from './interfaces'
+import * as ev from './events'
 
 /**
  * Chart superclass
  */
 export default class Chart {
+  config: any
+  width: number
+  height: number
+  svg: any
+  infoTooltip: InfoTooltip
+  elementSelection: any
+  onsetHeight: number
+  hooks: { [name: string]: any[] }
+
   constructor (elementSelection, onsetHeight, options = {}) {
     let defaultConfig = {
       axes: {
@@ -26,7 +37,7 @@ export default class Chart {
         left: 55
       }
     }
-    this.config = Object.assign({}, defaultConfig, options)
+    this.config = (<any>Object).assign({}, defaultConfig, options)
 
     let chartBB = elementSelection.node().getBoundingClientRect()
     let divWidth = chartBB.width
@@ -43,16 +54,9 @@ export default class Chart {
       .append('g')
       .attr('transform', `translate(${this.config.margin.left},${this.config.margin.top})`)
 
-    this.infoTooltip = new commonComponents.InfoTooltip(elementSelection)
+    this.infoTooltip = new InfoTooltip(elementSelection)
     this.elementSelection = elementSelection
     this.onsetHeight = onsetHeight
-
-    // Supported event hooks
-    this.hooks = {
-      'jump-to-index': [],
-      'forward-index': [],
-      'backward-index': []
-    }
   }
 
   plot (data) {}
@@ -60,21 +64,16 @@ export default class Chart {
   update (idx) {}
 
   /**
-   * Dispatch a hook
+   * Append hook function if the hookName is supported and return subId
    */
-  dispatchHook (hookName, data) {
-    this.hooks[hookName].forEach(hf => hf(data))
+  addHook (hookName: Event, fn): number {
+    return ev.addSub(this, hookName, (msg, data) => fn(data))
   }
 
   /**
-   * Append hook function if the hookName is supported
+   * Remove specified subscription
    */
-  addHook (hookName, hookFunction) {
-    if (hookName in this.hooks) {
-      this.hooks[hookName].push(hookFunction)
-    } else {
-      throw new errors.HookNotUnderstoodException()
-    }
-    this.hooks[hookName] = this.hooks[hookName] || []
+  removeHook (hookName: Event, subId: number) {
+    ev.removeSub(this, hookName, subId)
   }
 }

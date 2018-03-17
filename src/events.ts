@@ -20,9 +20,12 @@ export const JUMP_TO_INDEX : Event = 'JUMP_TO_INDEX'
 export const FORWARD_INDEX : Event = 'FORWARD_INDEX'
 export const BACKWARD_INDEX : Event = 'BACKWARD_INDEX'
 
-function initTokens (subscriber, event: Event) {
+/**
+ * Initialize structure for keeping tokens in subscriber
+ */
+function initTokens (subscriber, event?: Event) {
   subscriber.tokens = subscriber.tokens || {}
-  if (!subscriber.tokens[event]) {
+  if (event && !subscriber.tokens[event]) {
     subscriber.tokens[event] = []
   }
 }
@@ -33,14 +36,26 @@ function initTokens (subscriber, event: Event) {
 export function resetSub (subscriber, event: Event) {
   initTokens(subscriber, event)
   subscriber.tokens[event].forEach(tk => PubSub.unsubscribe(tk))
+  subscriber.tokens[event] = []
+}
+
+/**
+ * Remove subscription for a token
+ */
+export function removeSub (subscriber, event: Event, subId: number) {
+  initTokens(subscriber, event)
+  let token = subscriber.tokens[event][subId]
+  PubSub.unsubscribe(token)
+  subscriber.tokens[event].splice(subId, 1)
 }
 
 /**
  * Function to subscribe an object with an event
  */
-export function subscribe (subscriber, event: Event, fn) {
+export function addSub (subscriber, event: Event, fn): number {
   initTokens(subscriber, event)
   subscriber.tokens[event].push(PubSub.subscribe(event, fn))
+  return subscriber.tokens[event].length
 }
 
 /**

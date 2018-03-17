@@ -3,7 +3,7 @@ const path = require('path')
 const PROD = JSON.parse(process.env.PROD_ENV || '0')
 
 module.exports = {
-  entry: path.resolve(__dirname, 'src/index.js'),
+  entry: path.resolve(__dirname, 'src/index.ts'),
 
   mode: PROD ? 'production' : 'development',
 

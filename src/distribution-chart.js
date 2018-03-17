@@ -101,12 +101,12 @@ export default class DistributionChart extends Chart {
     // Control panel
     this.controlPanel = new commonComponents.ControlPanel(this, panelConfig)
 
-    ev.subscribe(this, ev.MOVE_NEXT, (msg, data) => {
-      this.dispatchHook('forward-index')
+    ev.addSub(this, ev.MOVE_NEXT, (msg, data) => {
+      ev.publish(ev.FORWARD_INDEX)
     })
 
-    ev.subscribe(this, ev.MOVE_PREV, (msg, data) => {
-      this.dispatchHook('backward-index')
+    ev.addSub(this, ev.MOVE_PREV, (msg, data) => {
+      ev.publish(ev.BACKWARD_INDEX)
     })
   }
 
@@ -147,7 +147,7 @@ export default class DistributionChart extends Chart {
 
     // Plot pointer position
     this.pointer.plot(data.currentIdx, this.xScale, clickIndex => {
-      this.dispatchHook('jump-to-index', clickIndex)
+      ev.publish(ev.JUMP_TO_INDEX, clickIndex)
     })
 
     let yLimits = utils.getYLimits(data)
@@ -177,7 +177,7 @@ export default class DistributionChart extends Chart {
     this.controlPanel.plot(this.panels[0].predictions)
 
     ev.resetSub(this, ev.LEGEND_ITEM)
-    ev.subscribe(this, ev.LEGEND_ITEM, (msg, { itemName, state }) => {
+    ev.addSub(this, ev.LEGEND_ITEM, (msg, { itemName, state }) => {
       this.panels.forEach(p => {
         let predMarker = p.predictions.find(p => p.id === itemName)
         predMarker.hidden = state
