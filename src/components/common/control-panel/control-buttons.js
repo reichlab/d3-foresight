@@ -38,8 +38,8 @@ export default class ControlButtons extends Component {
       return this.selection.append('div')
         .classed('btn', true)
         .text(data.iconText)
-        .on('mouseover', () => tooltip.show())
-        .on('mouseout', () => tooltip.hide())
+        .on('mouseover', () => tooltip.hidden = false)
+        .on('mouseout', () => tooltip.hidden = true)
         .on('mousemove', function () {
           tooltip.renderText({
             title: null,

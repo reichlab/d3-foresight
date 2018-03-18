@@ -39,8 +39,8 @@ export default class Component {
    */
   addTooltip (data, tooltip, direction = 'right') {
     this.selection
-      .on('mouseover', () => tooltip.show())
-      .on('mouseout', () => tooltip.hide())
+      .on('mouseover', () => tooltip.hidden = false)
+      .on('mouseout', () => tooltip.hidden = true)
       .on('mousemove', function () {
         tooltip.renderText(data)
         moveTooltipTo(tooltip, d3.select(this), direction)
@@ -52,5 +52,13 @@ export default class Component {
    */
   addOnClick () {
     this.selection.style('cursor', 'pointer')
+  }
+
+  /**
+   * Append another component to this
+   */
+  append (component) {
+    this.selection.append(() => component.node)
+    return component
   }
 }

@@ -40,12 +40,12 @@ export default class HistoricalLines {
         d3.select('.line-history.highlight')
           .datum(plottingData)
           .attr('d', line)
-        timeChartTooltip.show()
+        timeChartTooltip.hidden = false
       }).on('mouseout', function () {
         d3.select('.line-history.highlight')
           .datum([])
           .attr('d', line)
-        timeChartTooltip.hide()
+        timeChartTooltip.hidden = true
       }).on('mousemove', function (event) {
         timeChartTooltip.renderText(hd.id)
         moveTooltipTo(timeChartTooltip, d3.select('.overlay'))

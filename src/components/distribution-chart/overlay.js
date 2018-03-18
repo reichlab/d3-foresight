@@ -25,11 +25,11 @@ export default class Overlay {
       .attr('width', width)
       .on('mouseover', () => {
         line.style('display', null)
-        distributionTooltip.show()
+        distributionTooltip.hidden = false
       })
       .on('mouseout', () => {
         line.style('display', 'none')
-        distributionTooltip.hide()
+        distributionTooltip.hidden = true
       })
       .on('mousemove', function () {
         let mouse = d3.mouse(this)

@@ -13,7 +13,7 @@ export default class Overlay {
     let chartHeight = height + onsetHeight
 
     // Add text for no prediction
-    this.noPredText = parent.elementSelection.append('div')
+    this.noPredText = parent.selection.append('div')
       .attr('class', 'no-pred-text')
       .html('Predictions not available <br> for selected time')
 
@@ -49,11 +49,11 @@ export default class Overlay {
       .attr('width', width)
       .on('mouseover', () => {
         line.style('display', null)
-        timeChartTooltip.show()
+        timeChartTooltip.hidden = false
       })
       .on('mouseout', () => {
         line.style('display', 'none')
-        timeChartTooltip.hide()
+        timeChartTooltip.hidden = true
       })
 
     // Add mouse move and click events

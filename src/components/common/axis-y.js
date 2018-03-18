@@ -16,8 +16,8 @@ export class YAxis {
       .style('text-anchor', 'middle')
       .text(axisConfig.title)
       .style('cursor', 'pointer')
-      .on('mouseover', () => infoTooltip.show())
-      .on('mouseout', () => infoTooltip.hide())
+      .on('mouseover', () => infoTooltip.hidden = false)
+      .on('mouseout', () => infoTooltip.hidden = true)
       .on('mousemove', function () {
         infoTooltip.renderText({
           title: null,

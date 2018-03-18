@@ -39,7 +39,8 @@ export default class DistributionChart extends Chart {
       this.infoTooltip
     )
 
-    this.distributionTooltip = new commonComponents.DistributionTooltip(this.selection)
+    this.distributionTooltip = new commonComponents.DistributionTooltip()
+    this.selection.append(() => this.distributionTooltip.node)
 
     // create 4 panels and assign new svgs to them
     let panelMargin = {
@@ -114,17 +115,6 @@ export default class DistributionChart extends Chart {
 
   // plot data
   plot (data) {
-    // NOTE
-    // Data has the following props
-    // timePoints -> to plot the time axis
-    // currentIdx -> to plot the pointer in onsetOffset
-    // models -> list of n items for n models, each with:
-    //   id
-    //   meta
-    //   curves (or maybe use predictions) list of t items for t targets:
-    //     name -> text naming the target
-    //     data -> series of (x, y) tuples about the distribution
-
     let curveNames = data.models[0].curves.map(t => t.name)
 
     this.dropdowns.forEach(dd => {

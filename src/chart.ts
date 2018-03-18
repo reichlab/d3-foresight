@@ -54,7 +54,9 @@ export default class Chart {
       .append('g')
       .attr('transform', `translate(${this.config.margin.left},${this.config.margin.top})`)
 
-    this.infoTooltip = new InfoTooltip(selection)
+    this.infoTooltip = new InfoTooltip()
+    selection.append(() => this.infoTooltip.node)
+
     this.selection = selection
     this.onsetHeight = onsetHeight
   }

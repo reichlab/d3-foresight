@@ -41,8 +41,8 @@ export default class Baseline {
     }
 
     text.style('cursor', 'pointer')
-      .on('mouseover', () => infoTooltip.show())
-      .on('mouseout', () => infoTooltip.hide())
+      .on('mouseover', () => infoTooltip.hidden = false)
+      .on('mouseout', () => infoTooltip.hidden = true)
       .on('mousemove', () => {
         infoTooltip.renderText({
           title: null,

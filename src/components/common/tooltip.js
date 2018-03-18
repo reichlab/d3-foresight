@@ -1,9 +1,13 @@
+import Component from '../component'
+
 /**
  * Tooltip super
  */
-class Tooltip {
-  constructor (rootSelector, tooltipClass) {
-    this.selection = rootSelector.append('div')
+class Tooltip extends Component {
+  constructor (tooltipClass) {
+    super()
+
+    this.selection
       .attr('class', `d3-foresight-tooltip ${tooltipClass}`)
       .style('display', 'none')
     this.selection.text('undefined')
@@ -11,15 +15,7 @@ class Tooltip {
   }
 
   get width () {
-    return this.selection.node().getBoundingClientRect().width
-  }
-
-  show () {
-    this.selection.style('display', null)
-  }
-
-  hide () {
-    this.selection.style('display', 'none')
+    return this.node.getBoundingClientRect().width
   }
 
   move (position, direction = 'right') {
@@ -37,8 +33,8 @@ class Tooltip {
  * Tooltip used in timechart's overlay div
  */
 export class TimeChartTooltip extends Tooltip {
-  constructor (rootSelector) {
-    super(rootSelector, 'd3-foresight-time-chart-tooltip')
+  constructor () {
+    super('d3-foresight-time-chart-tooltip')
   }
 
   renderText (data) {
@@ -120,8 +116,8 @@ export class TimeChartTooltip extends Tooltip {
  * Tooltip used in control panel and axes labels
  */
 export class InfoTooltip extends Tooltip {
-  constructor (rootSelector) {
-    super(rootSelector, 'd3-foresight-info-tooltip')
+  constructor () {
+    super('d3-foresight-info-tooltip')
   }
 
   renderText (data) {
@@ -140,8 +136,8 @@ export class InfoTooltip extends Tooltip {
  * Tooltip for probability distributions
  */
 export class DistributionTooltip extends Tooltip {
-  constructor (rootSelector) {
-    super(rootSelector, 'd3-foresight-distribution-tooltip')
+  constructor () {
+    super('d3-foresight-distribution-tooltip')
   }
 
   renderValues (predictions, index, binVal) {

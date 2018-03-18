@@ -46,7 +46,9 @@ export default class TimeChart extends Chart {
       this.infoTooltip
     )
 
-    this.timeChartTooltip = new commonComponents.TimeChartTooltip(this.selection)
+    this.timeChartTooltip = new commonComponents.TimeChartTooltip()
+    this.selection.append(() => this.timeChartTooltip.node)
+
     this.timerect = new timeChartComponents.TimeRect(this)
     this.overlay = new timeChartComponents.Overlay(this)
     this.history = new timeChartComponents.HistoricalLines(this)

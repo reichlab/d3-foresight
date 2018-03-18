@@ -161,7 +161,7 @@ export default class Prediction {
             .transition()
             .duration(300)
             .style('stroke', colorHover)
-          timeChartTooltip.show()
+          timeChartTooltip.hidden = false
           timeChartTooltip.renderPoint(id, [
             {
               key: 'Season Onset',
@@ -174,7 +174,7 @@ export default class Prediction {
             .transition()
             .duration(200)
             .style('stroke', 'transparent')
-          timeChartTooltip.hide()
+          timeChartTooltip.hidden = true
         })
         .on('mousemove', function () {
           moveTooltipTo(timeChartTooltip, d3.select('.overlay'))
@@ -227,7 +227,7 @@ export default class Prediction {
             .transition()
             .duration(300)
             .style('stroke', colorHover)
-          timeChartTooltip.show()
+          timeChartTooltip.hidden = false
           timeChartTooltip.renderPoint(id, [
             {
               key: 'Peak Percent',
@@ -244,7 +244,7 @@ export default class Prediction {
             .transition()
             .duration(200)
             .style('stroke', 'transparent')
-          timeChartTooltip.hide()
+          timeChartTooltip.hidden = true
         })
         .on('mousemove', function () {
           moveTooltipTo(timeChartTooltip, d3.select('.overlay'))
