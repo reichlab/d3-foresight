@@ -1,5 +1,6 @@
 /**
- * Functions for generating html for tooltips
+ * Functions for working with tooltips.
+ * As of now, we generate html strings and render with d3Selection.html
  */
 
 /**
@@ -35,7 +36,7 @@ export function parseText ({ title, text }): string {
  * `values` go as rows below the title
  */
 export function parsePoint ({ title, values, color }): string {
-  let html = `<div class='tooltip-row' style='background:${color}'>${title}</div>`
+  let html = `<div class='tooltip-row' style='background:${color};color:white'>${title}</div>`
   values.forEach(v => {
     html += `<div class='tooltip-row'>
                ${v.key}
@@ -51,16 +52,24 @@ export function parsePoint ({ title, values, color }): string {
  * Each of the `predictions` at `index` provide the data for rows
  */
 export function parsePredictions ({ title, predictions, index }): string {
-  let html = `<div class='tooltip-row'>
-                <em>${title}</em>
-              </div>`
   let maxPreds = 10
+  let html = ''
+
+  if (title) {
+    html += `<div class='tooltip-row'>
+               <em>${title}</em>
+             </div>`
+  }
 
   // Show only those items which have some value to be shown at index
-  let visiblePreds = predictions.filter(p => p.query(index))
+  let visiblePreds = predictions.filter(p => {
+    let data = p.query(index)
+    return data === 0 || data
+  })
 
   visiblePreds.slice(0, maxPreds).forEach(p => {
-    html += `<div class='tooltip-row' style='background:${p.color}'>
+    let style = `background:${p.color};color:${p.color ? 'white' : ''}`
+    html += `<div class='tooltip-row' style='${style}'>
                ${p.id}
                <span class='bold'>
                  ${p.query(index).toFixed(2)}

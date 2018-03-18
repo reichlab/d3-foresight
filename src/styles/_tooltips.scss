@@ -10,15 +10,8 @@
   box-shadow: 0 0 2px;
   font-size: 11px;
   position: fixed;
+  max-width: 250px;
   z-index: 100;
-
-  .bold {
-    font-weight: bold;
-  }
-}
-
-.d3-foresight-info-tooltip {
-  max-width: 150px;
 
   .tooltip-title {
     @include cell-padding;
@@ -31,63 +24,16 @@
     @include cell-padding;
     margin-top: 0;
   }
-}
 
-.d3-foresight-time-chart-tooltip {
-  .bold {
-    float: right;
-    font-weight: bold;
-    margin-left: 5px;
-  }
-
-  .actual,
-  .observed {
+  .tooltip-row {
     @include cell-padding;
     background-color: $white;
     color: $gray;
   }
 
-  .prediction {
-    @include cell-padding;
-    color: $white;
-  }
-
-  .point,
-  .tooltip-text {
-    @include cell-padding;
-    color: $gray;
-
-    &.head {
-      color: $white;
-    }
-  }
-}
-
-.d3-foresight-distribution-tooltip {
   .bold {
     float: right;
-    font-weight: bold;
     margin-left: 5px;
-  }
-
-  .prediction {
-    @include cell-padding;
-    color: $white;
-  }
-
-  .actual,
-  .observed {
-    @include cell-padding;
-    background-color: $white;
-    color: $gray;
-  }
-
-  .tooltip-text {
-    @include cell-padding;
-    color: $gray;
-
-    &.head {
-      color: $white;
-    }
+    font-weight: bold;
   }
 }
