@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { moveTooltipTo } from '../../utilities/mouse'
+import * as tt from '../../utilities/tooltip'
 import * as ev from '../../events'
 
 export default class Overlay {
@@ -8,7 +8,7 @@ export default class Overlay {
     let height = parent.height
     let onsetHeight = parent.onsetHeight
     let width = parent.width
-    let timeChartTooltip = parent.timeChartTooltip
+    let tooltip = parent.tooltip
     let xScale = parent.xScale
     let chartHeight = height + onsetHeight
 
@@ -49,11 +49,11 @@ export default class Overlay {
       .attr('width', width)
       .on('mouseover', () => {
         line.style('display', null)
-        timeChartTooltip.hidden = false
+        tooltip.hidden = false
       })
       .on('mouseout', () => {
         line.style('display', 'none')
-        timeChartTooltip.hidden = true
+        tooltip.hidden = true
       })
 
     // Add mouse move and click events
@@ -71,11 +71,23 @@ export default class Overlay {
           .attr('x1', snappedX)
           .attr('x2', snappedX)
 
-        timeChartTooltip.renderValues(parent.observed, parent.actual,
-                                      parent.predictions, index)
+        let visiblePreds = parent.predictions.filter(p => p.query(index))
+        let ttTitle = ''
+        if (visiblePreds.length > 0) {
+          // Add note regarding which prediction is getting displayed
+          let aheadIndex = visiblePreds[0].displayedIdx(index)
+          if (aheadIndex !== null) {
+            ttTitle = `${aheadIndex + 1} week${aheadIndex ? 's' : ''} ahead`
+          }
+        }
 
-        // Find position for tooltip
-        moveTooltipTo(timeChartTooltip, d3.select(this))
+        tooltip.render(tt.parsePredictions({
+          title: ttTitle,
+          predictions: [parent.observed, parent.actual, ...parent.predictions],
+          index
+        }))
+
+        tt.moveTooltip(tooltip, d3.select(this))
       })
       .on('click', function () {
         ev.publish(ev.JUMP_TO_INDEX, Math.round(xScale.invert(d3.mouse(this)[0])))

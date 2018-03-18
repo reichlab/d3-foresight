@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { moveTooltipTo } from '../../utilities/mouse'
+import * as tt from '../../utilities/tooltip'
 import * as utils from '../../utilities/distribution-chart'
 
 export default class Overlay {
@@ -7,7 +7,7 @@ export default class Overlay {
     let svg = parent.svg
     let height = parent.height
     let width = parent.width
-    let distributionTooltip = parent.distributionTooltip
+    let tooltip = parent.tooltip
     let xScale = parent.xScale
 
     // Add mouse hover line
@@ -25,11 +25,11 @@ export default class Overlay {
       .attr('width', width)
       .on('mouseover', () => {
         line.style('display', null)
-        distributionTooltip.hidden = false
+        tooltip.hidden = false
       })
       .on('mouseout', () => {
         line.style('display', 'none')
-        distributionTooltip.hidden = true
+        tooltip.hidden = true
       })
       .on('mousemove', function () {
         let mouse = d3.mouse(this)
@@ -46,10 +46,15 @@ export default class Overlay {
 
         // Format bin value to display
         let binVal = utils.formatBin(xScale.domain(), index)
-        distributionTooltip.renderValues(parent.predictions, index, binVal)
+
+        tooltip.render(tt.parsePredictions({
+          title: `Bin: ${binVal}`,
+          predictions: parent.predictions,
+          index
+        }))
 
         // Tooltip position
-        moveTooltipTo(distributionTooltip, d3.select(this))
+        tt.moveTooltip(tooltip, d3.select(this))
       })
   }
 }

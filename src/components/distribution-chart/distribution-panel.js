@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
-import * as commonComponents from '../common'
+import { XAxis } from '../common/axis-x'
+import { YAxis } from '../common/axis-y'
 import Prediction from './prediction'
 import * as utils from '../../utilities/distribution-chart'
 import Overlay from './overlay'
@@ -10,19 +11,19 @@ import * as colors from '../../utilities/colors'
  * A panel displaying distributions for one curve
  */
 export default class DistributionPanel {
-  constructor (svg, width, height, infoTooltip, distributionTooltip) {
+  constructor (svg, width, height, tooltip) {
     this.xScale = d3.scalePoint().range([0, width])
     this.yScale = d3.scaleLinear().range([height, 0])
 
-    this.xAxis = new commonComponents.XAxis(
+    this.xAxis = new XAxis(
       svg,
       width,
       height,
       0,
       {},
-      infoTooltip
+      tooltip
     )
-    this.yAxis = new commonComponents.YAxis(
+    this.yAxis = new YAxis(
       svg,
       height,
       0,
@@ -30,7 +31,7 @@ export default class DistributionPanel {
         title: 'Probability',
         description: 'Probability assigned to x-axis bins'
       },
-      infoTooltip
+      tooltip
     )
 
     this.svg = svg
@@ -38,7 +39,7 @@ export default class DistributionPanel {
     this.width = width
     this.predictions = []
     this.selectedCurveIdx = null
-    this.distributionTooltip = distributionTooltip
+    this.tooltip = tooltip
     this.overlay = new Overlay(this)
     this.noPredText = new NoPredText(this)
   }

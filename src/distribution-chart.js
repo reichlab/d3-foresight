@@ -1,6 +1,8 @@
 import * as d3 from 'd3'
-import * as commonComponents from './components/common'
-import * as distributionChartComponents from './components/distribution-chart'
+import { XAxisDate } from './components/common/axis-x'
+import ControlPanel from './components/common/control-panel'
+import DistributionPanel from './components/distribution-chart/distribution-panel'
+import Pointer from './components/distribution-chart/pointer'
 import * as utils from './utilities/distribution-chart'
 import * as errors from './utilities/errors'
 import Chart from './chart'
@@ -29,18 +31,15 @@ export default class DistributionChart extends Chart {
     this.xScalePoint = d3.scalePoint().range([0, this.width])
 
     // Time axis for indicating current position
-    this.xAxis = new commonComponents.XAxisDate(
+    this.xAxis = new XAxisDate(
       this.svg,
       this.width,
       this.height,
       0,
       this.onsetHeight,
       this.config.axes.x,
-      this.infoTooltip
+      this.tooltip
     )
-
-    this.distributionTooltip = new commonComponents.DistributionTooltip()
-    this.selection.append(() => this.distributionTooltip.node)
 
     // create 4 panels and assign new svgs to them
     let panelMargin = {
@@ -64,12 +63,11 @@ export default class DistributionChart extends Chart {
           .append('g')
           .attr('transform', `translate(${panelMargin.left}, ${panelMargin.top})`)
 
-      return new distributionChartComponents.DistributionPanel(
+      return new DistributionPanel(
         svg,
         panelWidth - panelMargin.left - panelMargin.right,
         panelHeight - panelMargin.top - panelMargin.bottom,
-        this.infoTooltip,
-        this.distributionTooltip
+        this.tooltip
       )
     })
 
@@ -90,18 +88,18 @@ export default class DistributionChart extends Chart {
       return dd
     })
 
-    this.pointer = new distributionChartComponents.Pointer(this)
+    this.pointer = new Pointer(this)
 
     let panelConfig = {
       actual: false,
       observed: false,
       history: false,
       ci: false,
-      tooltip: this.infoTooltip
+      tooltip: this.tooltip
     }
 
     // Control panel
-    this.controlPanel = new commonComponents.ControlPanel(panelConfig)
+    this.controlPanel = new ControlPanel(panelConfig)
     this.selection.append(() => this.controlPanel.node)
 
     ev.addSub(this, ev.MOVE_NEXT, (msg, data) => {

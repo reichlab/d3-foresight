@@ -1,11 +1,11 @@
 import * as d3 from 'd3'
-import { moveTooltipTo } from '../../utilities/mouse'
+import * as tt from '../../utilities/tooltip'
 
 /**
  * Simple linear Y axis with informative label
  */
 export class YAxis {
-  constructor (svg, height, xOffset, axisConfig, infoTooltip) {
+  constructor (svg, height, xOffset, axisConfig, tooltip) {
     let axis = svg.append('g')
         .attr('class', 'axis axis-y')
         .attr('transform', `translate(${xOffset}, 0)`)
@@ -16,14 +16,11 @@ export class YAxis {
       .style('text-anchor', 'middle')
       .text(axisConfig.title)
       .style('cursor', 'pointer')
-      .on('mouseover', () => infoTooltip.hidden = false)
-      .on('mouseout', () => infoTooltip.hidden = true)
+      .on('mouseover', () => tooltip.hidden = false)
+      .on('mouseout', () => tooltip.hidden = true)
       .on('mousemove', function () {
-        infoTooltip.renderText({
-          title: null,
-          text: axisConfig.description
-        })
-        moveTooltipTo(infoTooltip, d3.select('.overlay'))
+        tooltip.render(tt.parseText({ text: axisConfig.description }))
+        tt.moveTooltip(tooltip, d3.select('.overlay'))
       })
       .on('click', () => {
         window.open(axisConfig.url, '_blank')

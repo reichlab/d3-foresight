@@ -6,7 +6,7 @@
  * Doc guard
  */
 import * as d3 from 'd3'
-import { moveTooltipTo } from '../../../utilities/mouse'
+import * as tt from '../../../utilities/tooltip'
 import Component from '../../component'
 
 /**
@@ -62,8 +62,8 @@ export default class DrawerRow extends Component {
     this.urlIcon
       .on('mousemove', function () {
         d3.event.stopPropagation()
-        tooltip.renderText({ text: 'Show details' })
-        moveTooltipTo(tooltip, d3.select(this), 'left')
+        tooltip.render(tt.parseText({ text: 'Show details' }))
+        tt.moveTooltip(tooltip, d3.select(this), 'left')
       })
       .on('click', () => d3.event.stopPropagation())
   }

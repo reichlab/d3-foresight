@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { moveTooltipTo } from '../utilities/mouse'
+import * as tt from '../utilities/tooltip'
 
 /**
  * Generic class for a component
@@ -37,13 +37,13 @@ export default class Component {
   /**
    * Add an on hover tooltip
    */
-  addTooltip (data, tooltip, direction = 'right') {
+  addTooltip (tooltip, html, direction = 'right') {
     this.selection
       .on('mouseover', () => tooltip.hidden = false)
       .on('mouseout', () => tooltip.hidden = true)
       .on('mousemove', function () {
-        tooltip.renderText(data)
-        moveTooltipTo(tooltip, d3.select(this), direction)
+        tooltip.render(html)
+        tt.moveTooltip(tooltip, d3.select(this), direction)
       })
   }
 

@@ -4,6 +4,7 @@ import DrawerRow from './drawer-row'
 import ToggleButtons from './toggle-buttons'
 import Component from '../../component'
 import SearchBox from './search-box'
+import * as tt from '../../../utilities/tooltip'
 
 /**
  * Legend nav drawer
@@ -54,7 +55,7 @@ export default class LegendDrawer extends Component {
       drawerRow.addOnClick(({ id, state }) => {
         ev.publish(ev.LEGEND_ITEM, { id, state })
       })
-      drawerRow.addTooltip(data.tooltipData, config.tooltip, 'left')
+      drawerRow.addTooltip(config.tooltip, tt.parseText(data.tooltipData), 'left')
       drawerRow.active = true
       actualContainer.append(() => drawerRow.node)
     })
@@ -70,10 +71,12 @@ export default class LegendDrawer extends Component {
 
       let ciValues = [...config.ci.values, 'none']
       this.ciButtons = new ToggleButtons(ciValues)
-      this.ciButtons.addTooltip({
-        title: 'Confidence Interval',
-        text: 'Select confidence interval for prediction markers'
-      }, config.tooltip, 'left')
+      this.ciButtons.addTooltip(
+        config.tooltip,
+        tt.parseText({
+          title: 'Confidence Interval',
+          text: 'Select confidence interval for prediction markers'
+        }), 'left')
 
       this.ciButtons.addOnClick(({ idx }) => {
         ev.publish(ev.LEGEND_CI, { idx: (ciValues.length - 1) === idx ? null : idx })
@@ -88,10 +91,13 @@ export default class LegendDrawer extends Component {
     showHideItem.append('span').text('Show')
 
     this.showHideButtons = new ToggleButtons(['all', 'none'])
-    this.showHideButtons.addTooltip({
-      title: 'Toggle visibility',
-      text: 'Show / hide all predictions'
-    }, config.tooltip, 'left')
+    this.showHideButtons.addTooltip(
+      config.tooltip,
+      tt.parseText({
+        title: 'Toggle visibility',
+        text: 'Show / hide all predictions'
+      }), 'left')
+
     this.showHideButtons.addOnClick(({ idx }) => {
       this.showHideAllItems(idx === 0)
     })
@@ -152,10 +158,12 @@ export default class LegendDrawer extends Component {
         ev.publish(ev.LEGEND_ITEM, { id, state })
       })
 
-      drawerRow.addTooltip({
-        title: p.meta.name,
-        text: p.meta.description
-      }, this.tooltip, 'left')
+      drawerRow.addTooltip(
+        this.tooltip,
+        tt.parseText({
+          title: p.meta.name,
+          text: p.meta.description
+        }), 'left')
 
       drawerRow.active = !p.hidden
       this.predictionContainer.append(() => drawerRow.node)

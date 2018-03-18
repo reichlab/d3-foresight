@@ -67,7 +67,7 @@ export default class Prediction {
   }
 
   query (index) {
-    return (!this.noData && !this.hidden && this.displayedData[index])
+    return (!this.noData && !this.hidden && this.displayedData[index][1])
   }
 
   /**

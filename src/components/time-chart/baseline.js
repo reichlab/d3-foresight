@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { moveTooltipTo } from '../../utilities/mouse'
+import * as tt from '../../utilities/tooltip'
 
 /**
  * Baseline
@@ -7,7 +7,7 @@ import { moveTooltipTo } from '../../utilities/mouse'
 export default class Baseline {
   constructor (parent) {
     let config = parent.config
-    let infoTooltip = parent.infoTooltip
+    let tooltip = parent.tooltip
 
     let group = parent.svg.append('g')
       .attr('class', 'baseline-group')
@@ -41,15 +41,11 @@ export default class Baseline {
     }
 
     text.style('cursor', 'pointer')
-      .on('mouseover', () => infoTooltip.hidden = false)
-      .on('mouseout', () => infoTooltip.hidden = true)
+      .on('mouseover', () => tooltip.hidden = false)
+      .on('mouseout', () => tooltip.hidden = true)
       .on('mousemove', () => {
-        infoTooltip.renderText({
-          title: null,
-          text: config.baseline.description
-        })
-
-        moveTooltipTo(infoTooltip, d3.select('.overlay'), 'left')
+        tooltip.render(tt.parseText({ text: config.baseline.description }))
+        tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')
       })
       .on('click', () => {
         window.open(config.baseline.url, '_blank')

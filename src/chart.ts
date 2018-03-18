@@ -1,5 +1,5 @@
 import * as errors from './utilities/errors'
-import { InfoTooltip } from './components/common'
+import Tooltip from './components/common/tooltip'
 import { Event } from './interfaces'
 import * as ev from './events'
 
@@ -11,7 +11,7 @@ export default class Chart {
   width: number
   height: number
   svg: any
-  infoTooltip: InfoTooltip
+  tooltip: Tooltip
   selection: any
   onsetHeight: number
   hooks: { [name: string]: any[] }
@@ -54,8 +54,8 @@ export default class Chart {
       .append('g')
       .attr('transform', `translate(${this.config.margin.left},${this.config.margin.top})`)
 
-    this.infoTooltip = new InfoTooltip()
-    selection.append(() => this.infoTooltip.node)
+    this.tooltip = new Tooltip()
+    selection.append(() => this.tooltip.node)
 
     this.selection = selection
     this.onsetHeight = onsetHeight
