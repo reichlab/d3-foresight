@@ -11,6 +11,7 @@ export default class Observed {
     group.append('path')
       .attr('class', 'line-observed')
 
+    this.id = 'Observed'
     this.group = group
   }
 

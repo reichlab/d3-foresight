@@ -2,8 +2,16 @@ import * as d3 from 'd3'
 import * as utils from './utilities/time-chart'
 import * as colors from './utilities/colors'
 import * as errors from './utilities/errors'
-import * as commonComponents from './components/common'
-import * as timeChartComponents from './components/time-chart'
+import { XAxisDate } from './components/common/axis-x'
+import { YAxis } from './components/common/axis-y'
+import ControlPanel from './components/common/control-panel'
+import Actual from './components/time-chart/actual'
+import Baseline from './components/time-chart/baseline'
+import HistoricalLines from './components/time-chart/historical-lines'
+import Observed from './components/time-chart/observed'
+import Overlay from './components/time-chart/overlay'
+import Prediction from './components/time-chart/prediction'
+import TimeRect from './components/time-chart/timerect'
 import Chart from './chart'
 import * as ev from './events'
 
@@ -19,9 +27,9 @@ export default class TimeChart extends Chart {
       confidenceIntervals: []
     }
 
-    let elementSelection = d3.select(element)
+    let selection = d3.select(element)
         .attr('class', 'd3-foresight-chart d3-foresight-time-chart')
-    super(elementSelection, 30, Object.assign({}, defaultConfig, options))
+    super(selection, 30, Object.assign({}, defaultConfig, options))
 
     // Initialize scales
     this.xScale = d3.scaleLinear().range([0, this.width])
@@ -29,43 +37,46 @@ export default class TimeChart extends Chart {
     this.xScalePoint = d3.scalePoint().range([0, this.width])
     this.yScale = d3.scaleLinear().range([this.height, 0])
 
-    this.yAxis = new commonComponents.YAxis(
+    this.yAxis = new YAxis(
       this.svg,
       this.height,
       0,
       this.config.axes.y,
-      this.infoTooltip
+      this.tooltip
     )
-    this.xAxis = new commonComponents.XAxisDate(
+    this.xAxis = new XAxisDate(
       this.svg,
       this.width,
       this.height,
       0,
       this.onsetHeight,
       this.config.axes.x,
-      this.infoTooltip
+      this.tooltip
     )
 
-    this.timeChartTooltip = new commonComponents.TimeChartTooltip(elementSelection)
-    this.timerect = new timeChartComponents.TimeRect(this)
-    this.overlay = new timeChartComponents.Overlay(this)
-    this.history = new timeChartComponents.HistoricalLines(this)
-    this.baseline = new timeChartComponents.Baseline(this)
-    this.actual = new timeChartComponents.Actual(this)
-    this.observed = new timeChartComponents.Observed(this)
+    this.timerect = new TimeRect(this)
+    this.overlay = new Overlay(this)
+    this.history = new HistoricalLines(this)
+    this.baseline = new Baseline(this)
+    this.actual = new Actual(this)
+    this.observed = new Observed(this)
     this.predictions = []
     this.cid = this.config.confidenceIntervals.length - 1
 
-    let showCi = this.cid !== -1
     let panelConfig = {
       actual: true,
       observed: true,
       history: true,
-      ci: showCi
+      ci: this.cid === -1 ? false : {
+        idx: this.cid,
+        values: this.config.confidenceIntervals
+      },
+      tooltip: this.tooltip
     }
 
     // Control panel
-    this.controlPanel = new commonComponents.ControlPanel(this, panelConfig)
+    this.controlPanel = new ControlPanel(panelConfig)
+    this.selection.append(() => this.controlPanel.node)
 
     // Event subscriptions for control panel
     ev.addSub(this, ev.MOVE_NEXT, (msg, data) => {
@@ -152,7 +163,7 @@ export default class TimeChart extends Chart {
       if (markerIndex === -1) {
         // The marker is not present from previous calls to plot
         let onsetYPos = (idx + 1) * onsetDiff + this.height + 1
-        predMarker = new timeChartComponents.Prediction(
+        predMarker = new Prediction(
           this, m.id, m.meta, this.colors[idx], onsetYPos
         )
         this.predictions.push(predMarker)

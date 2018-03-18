@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import * as ev from '../../../events'
-import { moveTooltipTo } from '../../../utilities/mouse'
+import * as tt from '../../../utilities/tooltip'
 import Component from '../../component'
 
 /**
@@ -38,14 +38,11 @@ export default class ControlButtons extends Component {
       return this.selection.append('div')
         .classed('btn', true)
         .text(data.iconText)
-        .on('mouseover', () => tooltip.show())
-        .on('mouseout', () => tooltip.hide())
+        .on('mouseover', () => { tooltip.hidden = false })
+        .on('mouseout', () => { tooltip.hidden = true })
         .on('mousemove', function () {
-          tooltip.renderText({
-            title: null,
-            text: data.tooltipText
-          })
-          moveTooltipTo(tooltip, d3.select(this), 'left')
+          tooltip.render(tt.parseText({ text: data.tooltipText }))
+          tt.moveTooltip(tooltip, d3.select(this), 'left')
         })
         .on('click', () => ev.publish(data.event, {}))
     })

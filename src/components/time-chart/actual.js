@@ -11,6 +11,7 @@ export default class Actual {
     group.append('path')
       .attr('class', 'line-actual')
 
+    this.id = 'Actual'
     this.group = group
   }
 

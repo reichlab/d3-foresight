@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { moveTooltipTo } from '../../utilities/mouse'
+import * as tt from '../../utilities/tooltip'
 
 /**
  * Historical lines
@@ -8,12 +8,12 @@ export default class HistoricalLines {
   constructor (parent) {
     this.group = parent.svg.append('g')
       .attr('class', 'history-group')
-    this.timeChartTooltip = parent.timeChartTooltip
+    this.tooltip = parent.tooltip
   }
 
   plot (parent, historicalData) {
     this.clear()
-    let timeChartTooltip = this.timeChartTooltip
+    let tooltip = this.tooltip
 
     let line = d3.line()
         .x(d => parent.xScale(d.x))
@@ -40,15 +40,15 @@ export default class HistoricalLines {
         d3.select('.line-history.highlight')
           .datum(plottingData)
           .attr('d', line)
-        timeChartTooltip.show()
+        tooltip.hidden = false
       }).on('mouseout', function () {
         d3.select('.line-history.highlight')
           .datum([])
           .attr('d', line)
-        timeChartTooltip.hide()
+        tooltip.hidden = true
       }).on('mousemove', function (event) {
-        timeChartTooltip.renderText(hd.id)
-        moveTooltipTo(timeChartTooltip, d3.select('.overlay'))
+        tooltip.render(tt.parseText({ text: hd.id }))
+        tt.moveTooltip(tooltip, d3.select('.overlay'))
       })
     })
 

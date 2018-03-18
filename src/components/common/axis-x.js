@@ -1,12 +1,12 @@
 import * as d3 from 'd3'
 import textures from 'textures'
-import { moveTooltipTo } from '../../utilities/mouse'
+import * as tt from '../../utilities/tooltip'
 
 /**
  * Simple linear X axis with informative label
  */
 export class XAxis {
-  constructor (svg, width, height, yOffset, axisConfig, infoTooltip) {
+  constructor (svg, width, height, yOffset, axisConfig, tooltip) {
     let axisGroup = svg.append('g')
         .attr('class', 'axis axis-x')
         .attr('transform', `translate(0, ${height - yOffset})`)
@@ -35,14 +35,11 @@ export class XAxis {
     }
 
     xText.style('cursor', 'pointer')
-      .on('mouseover', () => infoTooltip.show())
-      .on('mouseout', () => infoTooltip.hide())
+      .on('mouseover', () => { tooltip.hidden = false })
+      .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', () => {
-        infoTooltip.renderText({
-          title: null,
-          text: axisConfig.description
-        })
-        moveTooltipTo(infoTooltip, d3.select('.overlay'), 'left')
+        tooltip.render(tt.parseText({ text: axisConfig.description }))
+        tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')
       })
       .on('click', () => {
         window.open(axisConfig.url, '_blank')
@@ -68,7 +65,7 @@ export class XAxis {
  * X axis with week numbers, time and onset panel
  */
 export class XAxisDate {
-  constructor (svg, width, height, yOffset, onsetOffset, axisConfig, infoTooltip) {
+  constructor (svg, width, height, yOffset, onsetOffset, axisConfig, tooltip) {
     // Keep onset panel between xaxis and plot
     let xAxisPos = height + onsetOffset
     // Main axis with ticks below the onset panel
@@ -104,14 +101,11 @@ export class XAxisDate {
     }
 
     xText.style('cursor', 'pointer')
-      .on('mouseover', () => infoTooltip.show())
-      .on('mouseout', () => infoTooltip.hide())
+      .on('mouseover', () => { tooltip.hidden = false })
+      .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', () => {
-        infoTooltip.renderText({
-          title: null,
-          text: axisConfig.description
-        })
-        moveTooltipTo(infoTooltip, d3.select('.overlay'), 'left')
+        tooltip.render(tt.parseText({ text: axisConfig.description }))
+        tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')
       })
       .on('click', () => {
         window.open(axisConfig.url, '_blank')

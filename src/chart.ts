@@ -1,5 +1,5 @@
 import * as errors from './utilities/errors'
-import { InfoTooltip } from './components/common'
+import Tooltip from './components/common/tooltip'
 import { Event } from './interfaces'
 import * as ev from './events'
 
@@ -11,12 +11,12 @@ export default class Chart {
   width: number
   height: number
   svg: any
-  infoTooltip: InfoTooltip
-  elementSelection: any
+  tooltip: Tooltip
+  selection: any
   onsetHeight: number
   hooks: { [name: string]: any[] }
 
-  constructor (elementSelection, onsetHeight, options = {}) {
+  constructor (selection, onsetHeight, options = {}) {
     let defaultConfig = {
       axes: {
         x: {
@@ -39,7 +39,7 @@ export default class Chart {
     }
     this.config = (<any>Object).assign({}, defaultConfig, options)
 
-    let chartBB = elementSelection.node().getBoundingClientRect()
+    let chartBB = selection.node().getBoundingClientRect()
     let divWidth = chartBB.width
     let divHeight = 480
 
@@ -48,14 +48,16 @@ export default class Chart {
     this.height = divHeight - this.config.margin.top - this.config.margin.bottom
 
     // Add svg
-    this.svg = elementSelection.append('svg')
+    this.svg = selection.append('svg')
       .attr('width', this.width + this.config.margin.left + this.config.margin.right)
       .attr('height', this.height + this.config.margin.top + this.config.margin.bottom)
       .append('g')
       .attr('transform', `translate(${this.config.margin.left},${this.config.margin.top})`)
 
-    this.infoTooltip = new InfoTooltip(elementSelection)
-    this.elementSelection = elementSelection
+    this.tooltip = new Tooltip()
+    selection.append(() => this.tooltip.node)
+
+    this.selection = selection
     this.onsetHeight = onsetHeight
   }
 

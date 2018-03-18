@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { moveTooltipTo } from '../../utilities/mouse'
+import * as tt from '../../utilities/tooltip'
 import * as colors from '../../utilities/colors'
 
 /**
@@ -122,7 +122,7 @@ export default class Prediction {
     this.xScale = parent.xScale
     this.yScale = parent.yScale
     this.ticks = parent.ticks
-    this.timeChartTooltip = parent.timeChartTooltip
+    this.tooltip = parent.tooltip
     this.displayedData = Array(this.modelData.length).fill(false)
   }
 
@@ -145,7 +145,7 @@ export default class Prediction {
       }
 
       let cid = this.cid
-      let timeChartTooltip = this.timeChartTooltip
+      let tooltip = this.tooltip
 
       // Move things
       let onset = this.modelData[idx].onsetTime
@@ -161,23 +161,22 @@ export default class Prediction {
             .transition()
             .duration(300)
             .style('stroke', colorHover)
-          timeChartTooltip.show()
-          timeChartTooltip.renderPoint(id, [
-            {
-              key: 'Season Onset',
-              value: ticks[onset.point]
-            }
-          ], color)
+          tooltip.hidden = false
+          tooltip.render(tt.parsePoint({
+            title: id,
+            values: [{ key: 'Season Onset', value: ticks[onset.point] }],
+            color
+          }))
         })
         .on('mouseout', function () {
           d3.select(this)
             .transition()
             .duration(200)
             .style('stroke', 'transparent')
-          timeChartTooltip.hide()
+          tooltip.hidden = true
         })
         .on('mousemove', function () {
-          moveTooltipTo(timeChartTooltip, d3.select('.overlay'))
+          tt.moveTooltip(tooltip, d3.select('.overlay'))
         })
 
       if (cid === null) {
@@ -227,27 +226,25 @@ export default class Prediction {
             .transition()
             .duration(300)
             .style('stroke', colorHover)
-          timeChartTooltip.show()
-          timeChartTooltip.renderPoint(id, [
-            {
-              key: 'Peak Percent',
-              value: pp.point
-            },
-            {
-              key: 'Peak Week',
-              value: ticks[pw.point]
-            }
-          ], color)
+          tooltip.hidden = false
+          tooltip.render(tt.parsePoint({
+            title: id,
+            values: [
+              { key: 'Peak Percent', value: pp.point },
+              { key: 'Peak Week', value: ticks[pw.point] }
+            ],
+            color
+          }))
         })
         .on('mouseout', function () {
           d3.select(this)
             .transition()
             .duration(200)
             .style('stroke', 'transparent')
-          timeChartTooltip.hide()
+          tooltip.hidden = true
         })
         .on('mousemove', function () {
-          moveTooltipTo(timeChartTooltip, d3.select('.overlay'))
+          tt.moveTooltip(tooltip, d3.select('.overlay'))
         })
 
       if (cid === null) {

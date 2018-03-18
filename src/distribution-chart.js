@@ -1,6 +1,8 @@
 import * as d3 from 'd3'
-import * as commonComponents from './components/common'
-import * as distributionChartComponents from './components/distribution-chart'
+import { XAxisDate } from './components/common/axis-x'
+import ControlPanel from './components/common/control-panel'
+import DistributionPanel from './components/distribution-chart/distribution-panel'
+import Pointer from './components/distribution-chart/pointer'
 import * as utils from './utilities/distribution-chart'
 import * as errors from './utilities/errors'
 import Chart from './chart'
@@ -19,9 +21,9 @@ export default class DistributionChart extends Chart {
       }
     }
 
-    let elementSelection = d3.select(element)
+    let selection = d3.select(element)
         .attr('class', 'd3-foresight-chart d3-foresight-distribution-chart')
-    super(elementSelection, 0, Object.assign({}, defaultConfig, options))
+    super(selection, 0, Object.assign({}, defaultConfig, options))
 
     // Initialize scales
     this.xScale = d3.scaleLinear().range([0, this.width])
@@ -29,17 +31,15 @@ export default class DistributionChart extends Chart {
     this.xScalePoint = d3.scalePoint().range([0, this.width])
 
     // Time axis for indicating current position
-    this.xAxis = new commonComponents.XAxisDate(
+    this.xAxis = new XAxisDate(
       this.svg,
       this.width,
       this.height,
       0,
       this.onsetHeight,
       this.config.axes.x,
-      this.infoTooltip
+      this.tooltip
     )
-
-    this.distributionTooltip = new commonComponents.DistributionTooltip(elementSelection)
 
     // create 4 panels and assign new svgs to them
     let panelMargin = {
@@ -63,18 +63,17 @@ export default class DistributionChart extends Chart {
           .append('g')
           .attr('transform', `translate(${panelMargin.left}, ${panelMargin.top})`)
 
-      return new distributionChartComponents.DistributionPanel(
+      return new DistributionPanel(
         svg,
         panelWidth - panelMargin.left - panelMargin.right,
         panelHeight - panelMargin.top - panelMargin.bottom,
-        this.infoTooltip,
-        this.distributionTooltip
+        this.tooltip
       )
     })
 
     // Add dropdowns for curve selection
     this.dropdowns = panelPositions.map(pos => {
-      let wrapperWrapper = elementSelection.append('div')
+      let wrapperWrapper = this.selection.append('div')
       wrapperWrapper.style('text-align', 'center')
 
       let wrapper = wrapperWrapper.append('span')
@@ -89,17 +88,19 @@ export default class DistributionChart extends Chart {
       return dd
     })
 
-    this.pointer = new distributionChartComponents.Pointer(this)
+    this.pointer = new Pointer(this)
 
     let panelConfig = {
       actual: false,
       observed: false,
       history: false,
-      ci: false
+      ci: false,
+      tooltip: this.tooltip
     }
 
     // Control panel
-    this.controlPanel = new commonComponents.ControlPanel(this, panelConfig)
+    this.controlPanel = new ControlPanel(panelConfig)
+    this.selection.append(() => this.controlPanel.node)
 
     ev.addSub(this, ev.MOVE_NEXT, (msg, data) => {
       ev.publish(ev.FORWARD_INDEX)
@@ -112,17 +113,6 @@ export default class DistributionChart extends Chart {
 
   // plot data
   plot (data) {
-    // NOTE
-    // Data has the following props
-    // timePoints -> to plot the time axis
-    // currentIdx -> to plot the pointer in onsetOffset
-    // models -> list of n items for n models, each with:
-    //   id
-    //   meta
-    //   curves (or maybe use predictions) list of t items for t targets:
-    //     name -> text naming the target
-    //     data -> series of (x, y) tuples about the distribution
-
     let curveNames = data.models[0].curves.map(t => t.name)
 
     this.dropdowns.forEach(dd => {
