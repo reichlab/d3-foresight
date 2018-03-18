@@ -16,8 +16,8 @@ export class YAxis {
       .style('text-anchor', 'middle')
       .text(axisConfig.title)
       .style('cursor', 'pointer')
-      .on('mouseover', () => tooltip.hidden = false)
-      .on('mouseout', () => tooltip.hidden = true)
+      .on('mouseover', () => { tooltip.hidden = false })
+      .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', function () {
         tooltip.render(tt.parseText({ text: axisConfig.description }))
         tt.moveTooltip(tooltip, d3.select('.overlay'))

@@ -39,8 +39,8 @@ export default class Component {
    */
   addTooltip (tooltip, html, direction = 'right') {
     this.selection
-      .on('mouseover', () => tooltip.hidden = false)
-      .on('mouseout', () => tooltip.hidden = true)
+      .on('mouseover', () => { tooltip.hidden = false })
+      .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', function () {
         tooltip.render(html)
         tt.moveTooltip(tooltip, d3.select(this), direction)

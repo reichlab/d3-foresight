@@ -231,7 +231,7 @@ export default class Prediction {
             title: id,
             values: [
               { key: 'Peak Percent', value: pp.point },
-              { key: 'Peak Week', value: ticks[pw.point]}
+              { key: 'Peak Week', value: ticks[pw.point] }
             ],
             color
           }))

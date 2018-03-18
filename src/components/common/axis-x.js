@@ -35,8 +35,8 @@ export class XAxis {
     }
 
     xText.style('cursor', 'pointer')
-      .on('mouseover', () => tooltip.hidden = false)
-      .on('mouseout', () => tooltip.hidden = true)
+      .on('mouseover', () => { tooltip.hidden = false })
+      .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', () => {
         tooltip.render(tt.parseText({ text: axisConfig.description }))
         tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')
@@ -101,8 +101,8 @@ export class XAxisDate {
     }
 
     xText.style('cursor', 'pointer')
-      .on('mouseover', () => tooltip.hidden = false)
-      .on('mouseout', () => tooltip.hidden = true)
+      .on('mouseover', () => { tooltip.hidden = false })
+      .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', () => {
         tooltip.render(tt.parseText({ text: axisConfig.description }))
         tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')

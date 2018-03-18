@@ -41,8 +41,8 @@ export default class Baseline {
     }
 
     text.style('cursor', 'pointer')
-      .on('mouseover', () => tooltip.hidden = false)
-      .on('mouseout', () => tooltip.hidden = true)
+      .on('mouseover', () => { tooltip.hidden = false })
+      .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', () => {
         tooltip.render(tt.parseText({ text: config.baseline.description }))
         tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')

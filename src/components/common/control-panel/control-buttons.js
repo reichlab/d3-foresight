@@ -38,8 +38,8 @@ export default class ControlButtons extends Component {
       return this.selection.append('div')
         .classed('btn', true)
         .text(data.iconText)
-        .on('mouseover', () => tooltip.hidden = false)
-        .on('mouseout', () => tooltip.hidden = true)
+        .on('mouseover', () => { tooltip.hidden = false })
+        .on('mouseout', () => { tooltip.hidden = true })
         .on('mousemove', function () {
           tooltip.render(tt.parseText({ text: data.tooltipText }))
           tt.moveTooltip(tooltip, d3.select(this), 'left')
