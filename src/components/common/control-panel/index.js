@@ -14,12 +14,10 @@ export default class ControlPanel extends Component {
     this.config = config
 
     // Add legend drawer
-    this.legendDrawer = new LegendDrawer(config)
-    this.selection.append(() => this.legendDrawer.node)
+    this.legendDrawer = this.append(new LegendDrawer(config))
 
     // Buttons on the side of panel
-    let sideButtons = new ControlButtons(config.tooltip)
-    this.selection.append(() => sideButtons.node)
+    let sideButtons = this.append(new ControlButtons(config.tooltip))
 
     ev.addSub(this, ev.TOGGLE_LEGEND, (msg, data) => {
       this.legendDrawer.hidden = !this.legendDrawer.hidden
