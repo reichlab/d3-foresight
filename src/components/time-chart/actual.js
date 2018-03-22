@@ -52,7 +52,11 @@ export default class Actual extends SComponent {
     if (this.hidden) {
       return false
     } else {
-      return this.data[idx].y
+      try {
+        return this.data[idx].y
+      } catch (e) {
+        return false
+      }
     }
   }
 }
