@@ -112,7 +112,7 @@ export default class Overlay {
     // Update no prediction text
     this.noPredText
       .transition()
-      .duration(100)
+      .duration(200)
       .style('display', (predictions.filter(p => p.noData).length !== 0) ? null : 'none')
   }
 }

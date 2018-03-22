@@ -63,13 +63,13 @@ export default class Baseline {
 
     this.group.select('.baseline')
       .transition()
-      .duration(300)
+      .duration(200)
       .attr('y1', parent.yScale(baselineData))
       .attr('y2', parent.yScale(baselineData))
 
     this.group.select('text')
       .transition()
-      .duration(300)
+      .duration(200)
       .attr('dy', parent.yScale(baselineData))
   }
 

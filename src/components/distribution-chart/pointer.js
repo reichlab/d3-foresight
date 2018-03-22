@@ -41,7 +41,7 @@ export default class Pointer {
   plot (currentIdx, xScale, clickCallback) {
     this.group.select('.pointer-triangle')
       .transition()
-      .duration(300)
+      .duration(200)
       .attr('points', generateTrianglePoints([xScale(currentIdx), this.yPos]))
 
     this.group.select('.pointer-overlay').on('click', function () {

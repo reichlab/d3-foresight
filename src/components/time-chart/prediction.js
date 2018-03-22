@@ -159,7 +159,7 @@ export default class Prediction {
         .on('mouseover', function () {
           d3.select(this)
             .transition()
-            .duration(300)
+            .duration(200)
             .style('stroke', colorHover)
           tooltip.hidden = false
           tooltip.render(tt.parsePoint({
@@ -224,7 +224,7 @@ export default class Prediction {
         .on('mouseover', function () {
           d3.select(this)
             .transition()
-            .duration(300)
+            .duration(200)
             .style('stroke', colorHover)
           tooltip.hidden = false
           tooltip.render(tt.parsePoint({
