@@ -49,6 +49,10 @@ export default class Actual extends SComponent {
   }
 
   query (idx) {
-    return this.data[idx].y
+    if (this.hidden) {
+      return false
+    } else {
+      return this.data[idx].y
+    }
   }
 }

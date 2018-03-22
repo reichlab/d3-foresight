@@ -66,7 +66,11 @@ export default class Observed extends SComponent {
 
   query (idx) {
     try {
-      return this.filteredData[idx].y
+      if (this.hidden) {
+        return false
+      } else {
+        return this.filteredData[idx].y
+      }
     } catch (e) {
       return false
     }
