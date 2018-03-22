@@ -8,4 +8,14 @@ export default class SComponent extends Component {
   constructor () {
     super(document.createElementNS(d3.namespaces.svg, 'g'))
   }
+
+  /**
+   * Remove all subelements of the selection
+   */
+  clear () {
+    this.selection.selectAll('*')
+      .transition()
+      .duration(200)
+      .remove()
+  }
 }

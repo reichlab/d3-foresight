@@ -1,19 +1,20 @@
 import * as d3 from 'd3'
 import * as tt from '../../utilities/tooltip'
+import SComponent from '../s-component'
 
 /**
  * Historical lines
  */
-export default class HistoricalLines {
-  constructor (parent) {
-    this.group = parent.svg.append('g')
-      .attr('class', 'history-group')
-    this.tooltip = parent.tooltip
+export default class HistoricalLines extends SComponent {
+  constructor () {
+    super()
+    this.selection.attr('class', 'history-group')
+    this.id = 'History'
   }
 
   plot (parent, historicalData) {
     this.clear()
-    let tooltip = this.tooltip
+    let tooltip = parent.tooltip
 
     let line = d3.line()
         .x(d => parent.xScale(d.x))
@@ -27,7 +28,7 @@ export default class HistoricalLines {
         }
       })
 
-      let path = this.group.append('path')
+      let path = this.selection.append('path')
           .attr('class', 'line-history')
           .attr('id', hd.id + '-history')
 
@@ -53,21 +54,7 @@ export default class HistoricalLines {
     })
 
     // Add highlight overlay
-    this.group.append('path')
+    this.selection.append('path')
       .attr('class', 'line-history highlight')
-  }
-
-  get hidden () {
-    return this.group.style('visibility') === 'hidden'
-  }
-
-  set hidden (value) {
-    this.group.style('visibility', value ? 'hidden' : null)
-  }
-
-  clear () {
-    this.group.selectAll('*')
-      .transition()
-      .duration(200).remove()
   }
 }
