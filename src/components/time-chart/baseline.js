@@ -1,46 +1,42 @@
 import * as d3 from 'd3'
 import * as tt from '../../utilities/tooltip'
+import SComponent from '../s-component'
 
 /**
  * Baseline
  */
-export default class Baseline {
-  constructor (parent) {
-    let config = parent.config
-    let tooltip = parent.tooltip
+export default class Baseline extends SComponent {
+  constructor (config, tooltip) {
+    super()
+    this.selection.attr('class', 'baseline-group')
 
-    let group = parent.svg.append('g')
-      .attr('class', 'baseline-group')
-
-    group.append('line')
+    this.line = this.selection.append('line')
       .attr('x1', 0)
-      .attr('y1', parent.height)
-      .attr('x2', parent.width)
-      .attr('y2', parent.height)
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', 0)
       .attr('class', 'baseline')
 
-    let text = group.append('text')
-        .attr('transform', `translate(${parent.width + 10}, 0)`)
+    this.text = this.selection.append('text')
 
     // Setup multiline text
-    let baselineText = config.baseline.text
-    if (Array.isArray(baselineText)) {
-      text.append('tspan')
-        .text(baselineText[0])
+    if (Array.isArray(config.text)) {
+      this.text.append('tspan')
+        .text(config.text[0])
         .attr('x', 0)
-      baselineText.slice(1).forEach(txt => {
-        text.append('tspan')
+      config.text.slice(1).forEach(txt => {
+        this.text.append('tspan')
           .text(txt)
           .attr('x', 0)
           .attr('dy', '1em')
       })
     } else {
-      text.append('tspan')
-        .text(baselineText)
+      this.text.append('tspan')
+        .text(config.text)
         .attr('x', 0)
     }
 
-    text.style('cursor', 'pointer')
+    this.text.style('cursor', 'pointer')
       .on('mouseover', () => { tooltip.hidden = false })
       .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', () => {
@@ -50,38 +46,27 @@ export default class Baseline {
       .on('click', () => {
         window.open(config.baseline.url, '_blank')
       })
-
-    this.group = group
   }
 
-  plot (parent, baselineData) {
-    if (baselineData) this.show()
-    else {
-      this.hide()
+  plot (parent, baseline) {
+    if (baseline) {
+      this.hidden = false
+    } else {
+      this.hidden = true
       return
     }
 
-    this.group.select('.baseline')
+    this.line
       .transition()
       .duration(200)
-      .attr('y1', parent.yScale(baselineData))
-      .attr('y2', parent.yScale(baselineData))
+      .attr('y1', parent.yScale(baseline))
+      .attr('x2', parent.width)
+      .attr('y2', parent.yScale(baseline))
 
-    this.group.select('text')
+    this.text
       .transition()
       .duration(200)
-      .attr('dy', parent.yScale(baselineData))
-  }
-
-  // Hide baseline
-  hide () {
-    this.group
-      .style('visibility', 'hidden')
-  }
-
-  // Show baseline
-  show () {
-    this.group
-      .style('visibility', null)
+      .attr('transform', `translate(${parent.width + 10}, 0)`)
+      .attr('dy', parent.yScale(baseline))
   }
 }

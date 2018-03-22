@@ -6,15 +6,15 @@ import SComponent from '../s-component'
  * Historical lines
  */
 export default class HistoricalLines extends SComponent {
-  constructor () {
+  constructor (tooltip) {
     super()
     this.selection.attr('class', 'history-group')
+    this.tooltip = tooltip
     this.id = 'History'
   }
 
   plot (parent, historicalData) {
     this.clear()
-    let tooltip = parent.tooltip
 
     let line = d3.line()
         .x(d => parent.xScale(d.x))
@@ -37,6 +37,7 @@ export default class HistoricalLines extends SComponent {
         .duration(200)
         .attr('d', line)
 
+      let tooltip = this.tooltip
       path.on('mouseover', function () {
         d3.select('.line-history.highlight')
           .datum(plottingData)

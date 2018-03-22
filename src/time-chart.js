@@ -56,8 +56,8 @@ export default class TimeChart extends Chart {
 
     this.timerect = new TimeRect(this)
     this.overlay = new Overlay(this)
-    this.history = this.append(new HistoricalLines())
-    this.baseline = new Baseline(this)
+    this.history = this.append(new HistoricalLines(this.tooltip))
+    this.baseline = this.append(new Baseline(this.config.baseline, this.tooltip))
     this.actual = this.append(new Actual())
     this.observed = this.append(new Observed())
     this.predictions = []

@@ -80,7 +80,7 @@ export default class Chart {
   }
 
   /**
-   * Append another component to this
+   * Append another component to svg
    */
   append (component) {
     this.svg.append(() => component.node)
