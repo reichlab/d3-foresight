@@ -1,18 +1,16 @@
 import * as d3 from 'd3'
+import SComponent from '../s-component'
 
 /**
  * Observed (at the time of prediction) line
  */
-export default class Observed {
-  constructor (parent) {
-    let group = parent.svg.append('g')
-        .attr('class', 'observed-group')
-
-    group.append('path')
+export default class Observed extends SComponent {
+  constructor () {
+    super()
+    this.selection.attr('class', 'observed-group')
+    this.line = this.selection.append('path')
       .attr('class', 'line-observed')
-
     this.id = 'Observed'
-    this.group = group
   }
 
   plot (parent, observedData) {
@@ -37,7 +35,7 @@ export default class Observed {
       filteredData = []
     }
 
-    let circles = this.group.selectAll('.point-observed')
+    let circles = this.selection.selectAll('.point-observed')
         .data(filteredData)
 
     circles.exit().remove()
@@ -56,7 +54,7 @@ export default class Observed {
         .x(d => this.xScale(d.x))
         .y(d => this.yScale(d.y))
 
-    this.group.select('.line-observed')
+    this.line
       .datum(filteredData)
       .transition()
       .duration(200)

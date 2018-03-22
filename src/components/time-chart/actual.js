@@ -1,18 +1,16 @@
 import * as d3 from 'd3'
+import SComponent from '../s-component'
 
 /**
  * Actual line
  */
-export default class Actual {
-  constructor (parent) {
-    let group = parent.svg.append('g')
-        .attr('class', 'actual-group')
-
-    group.append('path')
+export default class Actual extends SComponent {
+  constructor () {
+    super()
+    this.selection.attr('class', 'actual-group')
+    this.line = this.selection.append('path')
       .attr('class', 'line-actual')
-
     this.id = 'Actual'
-    this.group = group
   }
 
   plot (parent, actualData) {
@@ -28,14 +26,14 @@ export default class Actual {
       }
     })
 
-    this.group.select('.line-actual')
+    this.line
       .datum(this.data.filter(d => d.y))
       .transition()
       .duration(200)
       .attr('d', line)
 
     // Only plot non nulls
-    let circles = this.group.selectAll('.point-actual')
+    let circles = this.selection.selectAll('.point-actual')
         .data(this.data.filter(d => d.y))
 
     circles.exit().remove()

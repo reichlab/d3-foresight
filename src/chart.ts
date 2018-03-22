@@ -78,4 +78,12 @@ export default class Chart {
   removeHook (hookName: Event, subId: number) {
     ev.removeSub(this, hookName, subId)
   }
+
+  /**
+   * Append another component to this
+   */
+  append (component) {
+    this.svg.append(() => component.node)
+    return component
+  }
 }

@@ -58,8 +58,8 @@ export default class TimeChart extends Chart {
     this.overlay = new Overlay(this)
     this.history = new HistoricalLines(this)
     this.baseline = new Baseline(this)
-    this.actual = new Actual(this)
-    this.observed = new Observed(this)
+    this.actual = this.append(new Actual())
+    this.observed = this.append(new Observed())
     this.predictions = []
     this.cid = this.config.confidenceIntervals.length - 1
 
@@ -92,6 +92,10 @@ export default class TimeChart extends Chart {
     ev.addSub(this, ev.LEGEND_ITEM, (msg, { id }) => {
       if (id === 'History') {
         this.history.hidden = !this.history.hidden
+      } else if (id === 'Actual') {
+        this.actual.hidden = !this.actual.hidden
+      } else if (id === 'Observed') {
+        this.observed.hidden = !this.observed.hidden
       }
     })
 

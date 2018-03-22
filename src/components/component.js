@@ -5,15 +5,8 @@ import * as tt from '../utilities/tooltip'
  * Generic class for a component
  */
 export default class Component {
-  constructor () {
-    this.div = d3.select(document.createElement('div'))
-  }
-
-  /**
-   * Return d3 selection for main div
-   */
-  get selection () {
-    return this.div
+  constructor (elem = document.createElement('div')) {
+    this.selection = d3.select(elem)
   }
 
   /**
