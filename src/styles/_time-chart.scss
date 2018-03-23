@@ -125,28 +125,22 @@
   }
 }
 
-.now-group {
-  .now-line {
-    stroke: $black;
-    stroke-dasharray: 10 5;
-    stroke-width: 1px;
-  }
-
-  .now-text {
-    fill: $gray-light;
-    font-size: 10px;
-    text-transform: uppercase;
-  }
+.now-line {
+  stroke: $black;
+  stroke-dasharray: 10 5;
+  stroke-width: 1px;
 }
 
-// No prediction text
+.now-text {
+  fill: $gray-light;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
 .no-pred-text {
   font-size: 10px;
-  left: 80px;
   letter-spacing: 1px;
   line-height: 25px;
-  margin-bottom: 5px;
-  position: absolute;
+  fill: $gray-light;
   text-transform: uppercase;
-  top: 30px;
 }
