@@ -1,6 +1,3 @@
-import * as d3 from 'd3'
-import * as tt from '../../../utilities/tooltip'
-import * as colors from '../../../utilities/colors'
 import SComponent from '../../s-component'
 import LineMarker from './line-marker'
 import OnsetMarker from './onset-marker'

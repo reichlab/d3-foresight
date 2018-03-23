@@ -1,6 +1,4 @@
 import * as d3 from 'd3'
-import * as tt from '../../../utilities/tooltip'
-import * as colors from '../../../utilities/colors'
 import SComponent from '../../s-component'
 
 export default class LineMarker extends SComponent {
