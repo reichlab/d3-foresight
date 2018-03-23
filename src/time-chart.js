@@ -54,7 +54,7 @@ export default class TimeChart extends Chart {
       this.tooltip
     )
 
-    this.timerect = new TimeRect(this)
+    this.timerect = this.append(new TimeRect())
     this.overlay = new Overlay(this)
     this.history = this.append(new HistoricalLines(this.tooltip))
     this.baseline = this.append(new Baseline(this.config.baseline, this.tooltip))
@@ -202,9 +202,7 @@ export default class TimeChart extends Chart {
   update (idx) {
     this.currentIdx = idx
     this.timerect.update(idx)
-    this.predictions.forEach(p => {
-      p.update(idx)
-    })
+    this.predictions.forEach(p => { p.update(idx) })
     this.overlay.update(this.predictions)
     this.observed.update(idx)
     this.controlPanel.update(this.predictions)
