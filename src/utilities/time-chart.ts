@@ -29,7 +29,7 @@ export function getXDateDomain (timePoints: Timepoint[], pointType: Point) {
     } else if (pointType === 'regular-week') {
       return d3.timeParse('%Y-%W')(d.year + '-' + d.week)
     } else {
-      throw new errors.UnknownPointTypeException()
+      throw new errors.UnknownPointType()
     }
   }))
 }
