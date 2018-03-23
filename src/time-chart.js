@@ -125,6 +125,7 @@ export default class TimeChart extends Chart {
       xScale: this.xScale,
       xScaleDate: this.xScaleDate,
       xScalePoint: this.xScalePoint,
+      ticks: this.ticks,
       yScale: this.yScale
     }
   }
@@ -183,22 +184,23 @@ export default class TimeChart extends Chart {
     // Assume unique model ids
     data.models.forEach((m, idx) => {
       let predMarker
-      let markerIndex = this.predictions.map(p => p.id).indexOf(m.id)
+      let markerIndex = this.predictions.findIndex(p => p.id === m.id)
       if (markerIndex === -1) {
         // The marker is not present from previous calls to plot
-        let onsetYPos = (idx + 1) * onsetDiff + this.height + 1
-        predMarker = new Prediction(
-          this, m.id, m.meta, this.colors[idx], onsetYPos
-        )
+        predMarker = new Prediction({
+          id: m.id,
+          meta: m.meta,
+          color: this.colors[idx],
+          onsetY: (idx + 1) * onsetDiff + this.height + 1,
+          cid: this.cid,
+          tooltip: this.tooltip
+        })
+        this.append(predMarker)
         this.predictions.push(predMarker)
       } else {
         predMarker = this.predictions[markerIndex]
       }
-      predMarker.plot(
-        this,
-        m.predictions,
-        utils.getPredictionStartingPoints(data)
-      )
+      predMarker.plot(this.scales, m.predictions, utils.getPredictionStartingPoints(data))
     })
 
     // Update models shown in control panel
