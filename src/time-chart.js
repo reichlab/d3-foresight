@@ -13,6 +13,7 @@ import Overlay from './components/time-chart/overlay'
 import Prediction from './components/time-chart/prediction'
 import TimeRect from './components/time-chart/timerect'
 import Chart from './chart'
+import { verifyTimeChartData } from './utilities/data/verify'
 import * as ev from './events'
 
 export default class TimeChart extends Chart {
@@ -109,6 +110,8 @@ export default class TimeChart extends Chart {
 
   // plot data
   plot (data) {
+    verifyTimeChartData(data)
+
     this.timePoints = data.timePoints
     if (this.config.pointType.endsWith('-week')) {
       this.ticks = this.timePoints.map(tp => tp.week)

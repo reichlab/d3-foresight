@@ -6,6 +6,7 @@ import Pointer from './components/distribution-chart/pointer'
 import * as utils from './utilities/distribution-chart'
 import * as errors from './utilities/errors'
 import Chart from './chart'
+import { verifyDistributionChartData } from './utilities/data/verify'
 import * as ev from './events'
 
 export default class DistributionChart extends Chart {
@@ -113,6 +114,8 @@ export default class DistributionChart extends Chart {
 
   // plot data
   plot (data) {
+    verifyDistributionChartData(data)
+
     let curveNames = data.models[0].curves.map(t => t.name)
 
     this.dropdowns.forEach(dd => {
