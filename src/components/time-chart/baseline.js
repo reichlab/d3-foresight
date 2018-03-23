@@ -40,11 +40,11 @@ export default class Baseline extends SComponent {
       .on('mouseover', () => { tooltip.hidden = false })
       .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', () => {
-        tooltip.render(tt.parseText({ text: config.baseline.description }))
+        tooltip.render(tt.parseText({ text: config.description }))
         tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')
       })
       .on('click', () => {
-        window.open(config.baseline.url, '_blank')
+        window.open(config.url, '_blank')
       })
   }
 
