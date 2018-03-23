@@ -72,7 +72,8 @@ export default class TimeChart extends Chart {
         idx: this.cid,
         values: this.config.confidenceIntervals
       },
-      tooltip: this.tooltip
+      tooltip: this.tooltip,
+      uuid: this.uuid
     }
 
     // Control panel
@@ -80,17 +81,17 @@ export default class TimeChart extends Chart {
     this.selection.append(() => this.controlPanel.node)
 
     // Event subscriptions for control panel
-    ev.addSub(this, ev.MOVE_NEXT, (msg, data) => {
+    ev.addSub(this.uuid, ev.MOVE_NEXT, (msg, data) => {
       this.moveForward()
-      ev.publish(ev.FORWARD_INDEX)
+      ev.publish(this.uuid, ev.FORWARD_INDEX)
     })
 
-    ev.addSub(this, ev.MOVE_PREV, (msg, data) => {
+    ev.addSub(this.uuid, ev.MOVE_PREV, (msg, data) => {
       this.moveBackward()
-      ev.publish(ev.BACKWARD_INDEX)
+      ev.publish(this.uuid, ev.BACKWARD_INDEX)
     })
 
-    ev.addSub(this, ev.LEGEND_ITEM, (msg, { id }) => {
+    ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id }) => {
       if (id === 'History') {
         this.history.hidden = !this.history.hidden
       } else if (id === 'Actual') {
@@ -100,7 +101,7 @@ export default class TimeChart extends Chart {
       }
     })
 
-    ev.addSub(this, ev.LEGEND_CI, (msg, { idx }) => {
+    ev.addSub(this.uuid, ev.LEGEND_CI, (msg, { idx }) => {
       this.predictions.forEach(p => {
         this.cid = p.cid = idx
         p.update(this.currentIdx)
@@ -187,7 +188,7 @@ export default class TimeChart extends Chart {
     // Update models shown in control panel
     this.controlPanel.plot(this.predictions)
 
-    ev.addSub(this, ev.LEGEND_ITEM, (msg, { id, state }) => {
+    ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id, state }) => {
       let predMarker = this.predictions.find(p => p.id === id)
       if (predMarker) {
         predMarker.hidden = !state

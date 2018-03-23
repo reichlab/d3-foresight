@@ -21,44 +21,29 @@ export const FORWARD_INDEX : Event = 'FORWARD_INDEX'
 export const BACKWARD_INDEX : Event = 'BACKWARD_INDEX'
 
 /**
- * Initialize structure for keeping tokens in subscriber
+ * Reset all subscriptions for an event
  */
-function initTokens (subscriber, event?: Event) {
-  subscriber.tokens = subscriber.tokens || {}
-  if (event && !subscriber.tokens[event]) {
-    subscriber.tokens[event] = []
-  }
-}
-
-/**
- * Reset all subscriptions
- */
-export function resetSub (subscriber, event: Event) {
-  initTokens(subscriber, event)
-  subscriber.tokens[event].forEach(tk => PubSub.unsubscribe(tk))
-  subscriber.tokens[event] = []
+export function resetSub (prefix: string, event: Event) {
+  PubSub.unsubscribe(`${prefix}.${event}`)
 }
 
 /**
  * Remove subscription for a token
  */
-export function removeSub (subscriber, event: Event, subId: number) {
-  initTokens(subscriber, event)
-  let token = subscriber.tokens[event][subId]
+export function removeSub (token) {
   PubSub.unsubscribe(token)
-  subscriber.tokens[event].splice(subId, 1)
 }
 
 /**
  * Function to subscribe an object with an event
  */
-export function addSub (subscriber, event: Event, fn): number {
-  initTokens(subscriber, event)
-  subscriber.tokens[event].push(PubSub.subscribe(event, fn))
-  return subscriber.tokens[event].length
+export function addSub (prefix: string, event: Event, fn) {
+  return PubSub.subscribe(`${prefix}.${event}`, fn)
 }
 
 /**
  * Publish an event
  */
-export const publish = PubSub.publish
+export function publish (prefix: string, event: Event, data) {
+  PubSub.publish(`${prefix}.${event}`, data)
+}

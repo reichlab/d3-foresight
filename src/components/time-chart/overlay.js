@@ -90,7 +90,7 @@ export default class Overlay {
         tt.moveTooltip(tooltip, d3.select(this))
       })
       .on('click', function () {
-        ev.publish(ev.JUMP_TO_INDEX, Math.round(xScale.invert(d3.mouse(this)[0])))
+        ev.publish(parent.uuid, ev.JUMP_TO_INDEX, Math.round(xScale.invert(d3.mouse(this)[0])))
       })
   }
 

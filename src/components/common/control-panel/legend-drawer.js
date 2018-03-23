@@ -53,7 +53,7 @@ export default class LegendDrawer extends Component {
     actualItems.filter(item => item.show).forEach(data => {
       let drawerRow = new DrawerRow(data.text, data.color)
       drawerRow.addOnClick(({ id, state }) => {
-        ev.publish(ev.LEGEND_ITEM, { id, state })
+        ev.publish(config.uuid, ev.LEGEND_ITEM, { id, state })
       })
       drawerRow.addTooltip(config.tooltip, tt.parseText(data.tooltipData), 'left')
       drawerRow.active = true
@@ -79,7 +79,7 @@ export default class LegendDrawer extends Component {
         }), 'left')
 
       this.ciButtons.addOnClick(({ idx }) => {
-        ev.publish(ev.LEGEND_CI, { idx: (ciValues.length - 1) === idx ? null : idx })
+        ev.publish(config.uuid, ev.LEGEND_CI, { idx: (ciValues.length - 1) === idx ? null : idx })
       })
       this.ciButtons.set(config.ci.idx)
       ciItem.append(() => this.ciButtons.node)
@@ -112,6 +112,7 @@ export default class LegendDrawer extends Component {
       .attr('class', 'legend-prediction-container')
 
     this.tooltip = config.tooltip
+    this.uuid = config.uuid
   }
 
   // Show / hide the "row items divs" while filtering with the search box
@@ -155,7 +156,7 @@ export default class LegendDrawer extends Component {
 
       drawerRow.addOnClick(({ id, state }) => {
         this.showHideButtons.reset()
-        ev.publish(ev.LEGEND_ITEM, { id, state })
+        ev.publish(this.uuid, ev.LEGEND_ITEM, { id, state })
       })
 
       drawerRow.addTooltip(

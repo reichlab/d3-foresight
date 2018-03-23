@@ -7,7 +7,7 @@ import Component from '../../component'
  * Side buttons in control panel
  */
 export default class ControlButtons extends Component {
-  constructor (tooltip) {
+  constructor (tooltip, uuid) {
     super()
 
     this.selection.classed('nav-controls', true)
@@ -44,7 +44,7 @@ export default class ControlButtons extends Component {
           tooltip.render(tt.parseText({ text: data.tooltipText }))
           tt.moveTooltip(tooltip, d3.select(this), 'left')
         })
-        .on('click', () => ev.publish(data.event, {}))
+        .on('click', () => ev.publish(uuid, data.event, {}))
     })
 
     this.legendBtn = buttons[0]

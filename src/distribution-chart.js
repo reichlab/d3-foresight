@@ -96,19 +96,20 @@ export default class DistributionChart extends Chart {
       observed: false,
       history: false,
       ci: false,
-      tooltip: this.tooltip
+      tooltip: this.tooltip,
+      uuid: this.uuid
     }
 
     // Control panel
     this.controlPanel = new ControlPanel(panelConfig)
     this.selection.append(() => this.controlPanel.node)
 
-    ev.addSub(this, ev.MOVE_NEXT, (msg, data) => {
-      ev.publish(ev.FORWARD_INDEX)
+    ev.addSub(this.uuid, ev.MOVE_NEXT, (msg, data) => {
+      ev.publish(this.uuid, ev.FORWARD_INDEX)
     })
 
-    ev.addSub(this, ev.MOVE_PREV, (msg, data) => {
-      ev.publish(ev.BACKWARD_INDEX)
+    ev.addSub(this.uuid, ev.MOVE_PREV, (msg, data) => {
+      ev.publish(this.uuid, ev.BACKWARD_INDEX)
     })
   }
 
@@ -140,7 +141,7 @@ export default class DistributionChart extends Chart {
 
     // Plot pointer position
     this.pointer.plot(data.currentIdx, this.xScale, clickIndex => {
-      ev.publish(ev.JUMP_TO_INDEX, clickIndex)
+      ev.publish(this.uuid, ev.JUMP_TO_INDEX, clickIndex)
     })
 
     let yLimits = utils.getYLimits(data)
@@ -169,7 +170,7 @@ export default class DistributionChart extends Chart {
     // Update models shown in control panel
     this.controlPanel.plot(this.panels[0].predictions)
 
-    ev.addSub(this, ev.LEGEND_ITEM, (msg, { id, state }) => {
+    ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id, state }) => {
       this.panels.forEach(p => {
         let predMarker = p.predictions.find(p => p.id === id)
         if (predMarker) {

@@ -2,6 +2,7 @@ import * as errors from './utilities/errors'
 import Tooltip from './components/common/tooltip'
 import { Event } from './interfaces'
 import * as ev from './events'
+import * as uuid from 'uuid/v4'
 
 /**
  * Chart superclass
@@ -14,6 +15,7 @@ export default class Chart {
   tooltip: Tooltip
   selection: any
   onsetHeight: number
+  uuid: string
   hooks: { [name: string]: any[] }
 
   constructor (selection, onsetHeight, options = {}) {
@@ -59,6 +61,9 @@ export default class Chart {
 
     this.selection = selection
     this.onsetHeight = onsetHeight
+
+    // Create a uuid for this instance
+    this.uuid = uuid()
   }
 
   plot (data) {}
@@ -69,14 +74,14 @@ export default class Chart {
    * Append hook function if the hookName is supported and return subId
    */
   addHook (hookName: Event, fn): number {
-    return ev.addSub(this, hookName, (msg, data) => fn(data))
+    return ev.addSub(this.uuid, hookName, (msg, data) => fn(data))
   }
 
   /**
    * Remove specified subscription
    */
-  removeHook (hookName: Event, subId: number) {
-    ev.removeSub(this, hookName, subId)
+  removeHook (token) {
+    ev.removeSub(token)
   }
 
   /**
