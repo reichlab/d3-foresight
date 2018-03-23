@@ -91,13 +91,18 @@ export default class TimeChart extends Chart {
       ev.publish(this.uuid, ev.BACKWARD_INDEX)
     })
 
-    ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id }) => {
+    ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id, state }) => {
       if (id === 'History') {
         this.history.hidden = !this.history.hidden
       } else if (id === 'Actual') {
         this.actual.hidden = !this.actual.hidden
       } else if (id === 'Observed') {
         this.observed.hidden = !this.observed.hidden
+      } else {
+        let predMarker = this.predictions.find(p => p.id === id)
+        if (predMarker) {
+          predMarker.hidden = !state
+        }
       }
     })
 
@@ -209,13 +214,6 @@ export default class TimeChart extends Chart {
     // Check if it is live data
     let showNowLine = this.actualIndices.length < this.timePoints.length
     this.overlay.plot(this.scales, showNowLine, [this.actual, this.observed, ...this.predictions])
-
-    ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id, state }) => {
-      let predMarker = this.predictions.find(p => p.id === id)
-      if (predMarker) {
-        predMarker.hidden = !state
-      }
-    })
 
     // Hot start the chart
     this.currentIdx = 0
