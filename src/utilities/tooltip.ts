@@ -7,11 +7,12 @@
  * Doc guard
  */
 import { getMousePosition } from './mouse'
+import Tooltip from '../components/common/tooltip'
 
 /**
  * Move tooltip to the position of the selection
  */
-export function moveTooltip (tooltip, selection, direction = 'right') {
+export function moveTooltip (tooltip: Tooltip, selection, direction = 'right') {
   let [x, y] = getMousePosition(selection)
   tooltip.move({ x, y }, direction)
 }
