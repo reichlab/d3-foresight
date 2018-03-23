@@ -55,10 +55,10 @@ export default class TimeChart extends Chart {
       this.tooltip
     )
 
-    this.timerect = this.append(new TimeRect())
-    this.overlay = new Overlay(this)
-    this.history = this.append(new HistoricalLines(this.tooltip))
-    this.baseline = this.append(new Baseline(this.config.baseline, this.tooltip))
+    this.timerect = this.append(new TimeRect(this.layout))
+    this.overlay = this.append(new Overlay(this.layout, { tooltip: this.tooltip, uuid: this.uuid }))
+    this.history = this.append(new HistoricalLines({ tooltip: this.tooltip }))
+    this.baseline = this.append(new Baseline(this.layout, { ...this.config.baseline, tooltip: this.tooltip }))
     this.actual = this.append(new Actual())
     this.observed = this.append(new Observed())
     this.predictions = []
@@ -109,6 +109,26 @@ export default class TimeChart extends Chart {
     })
   }
 
+  /**
+   * Return layout related parameters
+   */
+  get layout () {
+    return {
+      width: this.width,
+      height: this.height,
+      totalHeight: this.height + this.onsetHeight
+    }
+  }
+
+  get scales () {
+    return {
+      xScale: this.xScale,
+      xScaleDate: this.xScaleDate,
+      xScalePoint: this.xScalePoint,
+      yScale: this.yScale
+    }
+  }
+
   // plot data
   plot (data) {
     verifyTimeChartData(data)
@@ -133,18 +153,14 @@ export default class TimeChart extends Chart {
     this.xAxis.plot(this.xScalePoint, this.xScaleDate)
     this.yAxis.plot(this.yScale)
 
-    // Check if it is live data
-    let showNowLine = this.actualIndices.length < this.timePoints.length
-    this.overlay.plot(this, showNowLine)
-
     // Update markers with data
-    this.timerect.plot(this)
-    this.baseline.plot(this, data.baseline)
-    this.actual.plot(this, data.actual)
-    this.observed.plot(this, data.observed)
+    this.timerect.plot(this.scales)
+    this.baseline.plot(this.scales, data.baseline)
+    this.actual.plot(this.scales, data.actual)
+    this.observed.plot(this.scales, data.observed)
 
     // Reset history lines
-    this.history.plot(this, data.history)
+    this.history.plot(this.scales, data.history)
 
     let totalModels = data.models.length
     let onsetDiff = (this.onsetHeight - 2) / (totalModels + 1)
@@ -187,6 +203,10 @@ export default class TimeChart extends Chart {
 
     // Update models shown in control panel
     this.controlPanel.plot(this.predictions)
+
+    // Check if it is live data
+    let showNowLine = this.actualIndices.length < this.timePoints.length
+    this.overlay.plot(this.scales, showNowLine, [this.actual, this.observed, ...this.predictions])
 
     ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id, state }) => {
       let predMarker = this.predictions.find(p => p.id === id)

@@ -6,25 +6,26 @@ import SComponent from '../s-component'
  * Baseline
  */
 export default class Baseline extends SComponent {
-  constructor (config, tooltip) {
+  constructor (layout, { tooltip, text, description, url }) {
     super()
     this.selection.attr('class', 'baseline-group')
 
     this.line = this.selection.append('line')
       .attr('x1', 0)
       .attr('y1', 0)
-      .attr('x2', 0)
+      .attr('x2', layout.width)
       .attr('y2', 0)
       .attr('class', 'baseline')
 
     this.text = this.selection.append('text')
+      .attr('transform', `translate(${layout.width + 10}, 0)`)
 
     // Setup multiline text
-    if (Array.isArray(config.text)) {
+    if (Array.isArray(text)) {
       this.text.append('tspan')
-        .text(config.text[0])
+        .text(text[0])
         .attr('x', 0)
-      config.text.slice(1).forEach(txt => {
+      text.slice(1).forEach(txt => {
         this.text.append('tspan')
           .text(txt)
           .attr('x', 0)
@@ -32,7 +33,7 @@ export default class Baseline extends SComponent {
       })
     } else {
       this.text.append('tspan')
-        .text(config.text)
+        .text(text)
         .attr('x', 0)
     }
 
@@ -40,15 +41,15 @@ export default class Baseline extends SComponent {
       .on('mouseover', () => { tooltip.hidden = false })
       .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', () => {
-        tooltip.render(tt.parseText({ text: config.description }))
+        tooltip.render(tt.parseText({ text: description }))
         tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')
       })
       .on('click', () => {
-        window.open(config.url, '_blank')
+        window.open(url, '_blank')
       })
   }
 
-  plot (parent, baseline) {
+  plot (scales, baseline) {
     if (baseline) {
       this.hidden = false
     } else {
@@ -59,14 +60,12 @@ export default class Baseline extends SComponent {
     this.line
       .transition()
       .duration(200)
-      .attr('y1', parent.yScale(baseline))
-      .attr('x2', parent.width)
-      .attr('y2', parent.yScale(baseline))
+      .attr('y1', scales.yScale(baseline))
+      .attr('y2', scales.yScale(baseline))
 
     this.text
       .transition()
       .duration(200)
-      .attr('transform', `translate(${parent.width + 10}, 0)`)
-      .attr('dy', parent.yScale(baseline))
+      .attr('dy', scales.yScale(baseline))
   }
 }

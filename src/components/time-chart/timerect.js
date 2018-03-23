@@ -4,19 +4,18 @@ import SComponent from '../s-component'
  * Time rectangle for navigation guidance
  */
 export default class TimeRect extends SComponent {
-  constructor () {
+  constructor (layout) {
     super()
     this.rect = this.selection.append('rect')
       .attr('x', 0)
       .attr('y', 0)
       .attr('width', 0)
-      .attr('height', 0)
+      .attr('height', layout.height)
       .attr('class', 'timerect')
   }
 
-  plot (parent) {
-    this.xScale = parent.xScale
-    this.rect.attr('height', parent.height)
+  plot (scales) {
+    this.xScale = scales.xScale
   }
 
   update (idx) {

@@ -13,11 +13,11 @@ export default class Observed extends SComponent {
     this.id = 'Observed'
   }
 
-  plot (parent, observedData) {
+  plot (scales, observedData) {
     // Save data for queries and updates
     this.observedData = observedData
-    this.xScale = parent.xScale
-    this.yScale = parent.yScale
+    this.xScale = scales.xScale
+    this.yScale = scales.yScale
   }
 
   update (idx) {

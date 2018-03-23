@@ -6,19 +6,19 @@ import SComponent from '../s-component'
  * Historical lines
  */
 export default class HistoricalLines extends SComponent {
-  constructor (tooltip) {
+  constructor ({ tooltip }) {
     super()
     this.selection.attr('class', 'history-group')
     this.tooltip = tooltip
     this.id = 'History'
   }
 
-  plot (parent, historicalData) {
+  plot (scales, historicalData) {
     this.clear()
 
     let line = d3.line()
-        .x(d => parent.xScale(d.x))
-        .y(d => parent.yScale(d.y))
+        .x(d => scales.xScale(d.x))
+        .y(d => scales.yScale(d.y))
 
     historicalData.map(hd => {
       let plottingData = hd.actual.map((data, idx) => {

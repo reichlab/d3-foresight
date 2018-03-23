@@ -13,10 +13,10 @@ export default class Actual extends SComponent {
     this.id = 'Actual'
   }
 
-  plot (parent, actualData) {
+  plot (scales, actualData) {
     let line = d3.line()
-        .x(d => parent.xScale(d.x))
-        .y(d => parent.yScale(d.y))
+        .x(d => scales.xScale(d.x))
+        .y(d => scales.yScale(d.y))
 
     // Save data for queries
     this.data = actualData.map((data, idx) => {
@@ -43,8 +43,8 @@ export default class Actual extends SComponent {
       .attr('class', 'point-actual')
       .transition(200)
       .ease(d3.easeQuadOut)
-      .attr('cx', d => parent.xScale(d.x))
-      .attr('cy', d => parent.yScale(d.y))
+      .attr('cx', d => scales.xScale(d.x))
+      .attr('cy', d => scales.yScale(d.y))
       .attr('r', 2)
   }
 
