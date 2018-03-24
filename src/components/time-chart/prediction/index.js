@@ -11,18 +11,26 @@ import PeakMarker from './peak-marker'
  * - Peak
  */
 export default class Prediction extends SComponent {
-  constructor ({ id, meta, color, onsetY, cid, tooltip }) {
+  constructor ({ id, meta, color, onsetY, cid, tooltip, onset, peak }) {
     super()
 
     this.lineMarker = this.append(new LineMarker(id, color))
-    this.peakMarker = this.append(new PeakMarker(id, color))
-    this.onsetMarker = this.append(new OnsetMarker(id, color, onsetY))
+    if (onset) {
+      this.onsetMarker = this.append(new OnsetMarker(id, color, onsetY))
+    }
+    if (peak) {
+      this.peakMarker = this.append(new PeakMarker(id, color))
+    }
 
     this.color = color
     this.id = id
     this.meta = meta
     this.cid = cid
     this.tooltip = tooltip
+    this.show = {
+      onset: onset,
+      peak: peak
+    }
 
     // Tells if the prediction is hidden by some other component
     this._hidden = false
@@ -62,8 +70,12 @@ export default class Prediction extends SComponent {
         this.showMarkers()
       }
 
-      this.onsetMarker.move(this.config, currData.onsetTime)
-      this.peakMarker.move(this.config, currData.peakTime, currData.peakValue)
+      if (this.show.onset) {
+        this.onsetMarker.move(this.config, currData.onsetTime)
+      }
+      if (this.show.peak) {
+        this.peakMarker.move(this.config, currData.peakTime, currData.peakValue)
+      }
 
       // Move main pointers
       let nextTimeData = []
@@ -129,14 +141,22 @@ export default class Prediction extends SComponent {
   }
 
   hideMarkers () {
-    this.onsetMarker.hidden = true
-    this.peakMarker.hidden = true
+    if (this.show.onset) {
+      this.onsetMarker.hidden = true
+    }
+    if (this.show.peak) {
+      this.peakMarker.hidden = true
+    }
     this.lineMarker.hidden = true
   }
 
   showMarkers () {
-    this.onsetMarker.hidden = false
-    this.peakMarker.hidden = false
+    if (this.show.onset) {
+      this.onsetMarker.hidden = false
+    }
+    if (this.show.peak) {
+      this.peakMarker.hidden = false
+    }
     this.lineMarker.hidden = false
   }
 

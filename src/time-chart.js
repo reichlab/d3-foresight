@@ -201,7 +201,8 @@ export default class TimeChart extends Chart {
           color: this.colors[idx],
           onsetY: (idx + 1) * onsetDiff + this.height + 1,
           cid: this.cid,
-          tooltip: this.tooltip
+          tooltip: this.tooltip,
+          ...this.dataConfig.predictions
         })
         this.append(predMarker)
         this.predictions.push(predMarker)
