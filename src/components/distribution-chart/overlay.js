@@ -6,7 +6,6 @@ import SComponent from '../s-component'
 export default class Overlay extends SComponent {
   constructor (layout, { tooltip }) {
     super()
-    let xScale = parent.xScale
 
     // Add mouse hover line
     this.line = this.selection.append('line')
