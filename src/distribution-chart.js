@@ -6,7 +6,8 @@ import Pointer from './components/distribution-chart/pointer'
 import * as utils from './utilities/distribution-chart'
 import * as errors from './utilities/errors'
 import Chart from './chart'
-import { verifyDistributionChartData } from './utilities/data/verify'
+import { verifyDistChartData } from './utilities/data/verify'
+import { getDistChartDataConfig } from './utilities/data/config'
 import * as ev from './events'
 
 export default class DistributionChart extends Chart {
@@ -85,18 +86,7 @@ export default class DistributionChart extends Chart {
     })
 
     this.pointer = this.append(new Pointer(this.layout, { uuid: this.uuid }))
-
-    let panelConfig = {
-      actual: false,
-      observed: false,
-      history: false,
-      ci: false,
-      tooltip: this.tooltip,
-      uuid: this.uuid
-    }
-
-    // Control panel
-    this.controlPanel = new ControlPanel(panelConfig)
+    this.controlPanel = new ControlPanel({ ci: false, tooltip: this.tooltip, uuid: this.uuid })
     this.selection.append(() => this.controlPanel.node)
 
     ev.addSub(this.uuid, ev.MOVE_NEXT, (msg, data) => {
@@ -137,8 +127,8 @@ export default class DistributionChart extends Chart {
 
   // plot data
   plot (data) {
-    verifyDistributionChartData(data)
-
+    verifyDistChartData(data)
+    let dataConfig = getDistChartDataConfig(data)
     let curveNames = data.models[0].curves.map(t => t.name)
 
     this.dropdowns.forEach(dd => {
@@ -186,7 +176,7 @@ export default class DistributionChart extends Chart {
     })
 
     // Update models shown in control panel
-    this.controlPanel.plot(this.panels[0].predictions)
+    this.controlPanel.plot(this.panels[0].predictions, dataConfig)
 
     // Fade out models with no predictions
     this.controlPanel.update(this.panels[0].predictions)

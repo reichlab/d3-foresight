@@ -21,7 +21,6 @@ export default class LegendDrawer extends Component {
 
     let actualItems = [
       {
-        show: config.actual,
         color: palette.actual,
         text: 'Actual',
         tooltipData: {
@@ -30,7 +29,6 @@ export default class LegendDrawer extends Component {
         }
       },
       {
-        show: config.observed,
         color: palette.observed,
         text: 'Observed',
         tooltipData: {
@@ -39,7 +37,6 @@ export default class LegendDrawer extends Component {
         }
       },
       {
-        show: config.history,
         color: palette['history-highlight'],
         text: 'History',
         tooltipData: {
@@ -50,7 +47,8 @@ export default class LegendDrawer extends Component {
     ]
 
     // Add rows for actual lines
-    actualItems.filter(item => item.show).forEach(data => {
+    this.actualRows = {}
+    actualItems.forEach(data => {
       let drawerRow = new DrawerRow(data.text, data.color)
       drawerRow.addOnClick(({ id, state }) => {
         ev.publish(config.uuid, ev.LEGEND_ITEM, { id, state })
@@ -58,6 +56,7 @@ export default class LegendDrawer extends Component {
       drawerRow.addTooltip(config.tooltip, tt.parseText(data.tooltipData), 'left')
       drawerRow.active = true
       actualContainer.append(() => drawerRow.node)
+      this.actualRows[data.text.toLowerCase()] = drawerRow
     })
 
     // Control buttons (CI, show/hide, search)
@@ -131,7 +130,12 @@ export default class LegendDrawer extends Component {
     })
   }
 
-  plot (predictions) {
+  plot (predictions, config) {
+    // Update the actual items above models
+    for (let actualId in this.actualRows) {
+      this.actualRows[actualId].hidden = !config[actualId]
+    }
+
     // Don't show search bar if predictions are less than or equal to maxNPreds
     let maxNPreds = 10
     if (predictions.length > maxNPreds) {

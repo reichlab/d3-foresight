@@ -14,7 +14,7 @@ import Prediction from './components/time-chart/prediction'
 import TimeRect from './components/time-chart/timerect'
 import Chart from './chart'
 import { verifyTimeChartData } from './utilities/data/verify'
-import { parseTimeChartData } from './utilities/data/config'
+import { getTimeChartDataConfig } from './utilities/data/config'
 import * as ev from './events'
 
 export default class TimeChart extends Chart {
@@ -59,9 +59,6 @@ export default class TimeChart extends Chart {
     this.cid = this.config.confidenceIntervals.length - 1
 
     let panelConfig = {
-      actual: true,
-      observed: true,
-      history: true,
       ci: this.cid === -1 ? false : {
         idx: this.cid,
         values: this.config.confidenceIntervals
@@ -132,7 +129,7 @@ export default class TimeChart extends Chart {
   // plot data
   plot (data) {
     verifyTimeChartData(data)
-    this.dataConfig = parseTimeChartData(data)
+    this.dataConfig = getTimeChartDataConfig(data)
 
     this.timePoints = data.timePoints
     if (this.config.pointType.endsWith('-week')) {
@@ -157,15 +154,19 @@ export default class TimeChart extends Chart {
     // Update markers with data
     this.timerect.plot(this.scales)
 
+    this.baseline.hidden = !this.dataConfig.baseline
     if (this.dataConfig.baseline) {
       this.baseline.plot(this.scales, data.baseline)
     }
+    this.actual.hidden = !this.dataConfig.actual
     if (this.dataConfig.actual) {
       this.actual.plot(this.scales, data.actual)
     }
+    this.observed.hidden = !this.dataConfig.observed
     if (this.dataConfig.observed) {
       this.observed.plot(this.scales, data.observed)
     }
+    this.history.hidden = !this.dataConfig.history
     if (this.dataConfig.history) {
       this.history.plot(this.scales, data.history)
     }
@@ -211,7 +212,7 @@ export default class TimeChart extends Chart {
     })
 
     // Update models shown in control panel
-    this.controlPanel.plot(this.predictions)
+    this.controlPanel.plot(this.predictions, this.dataConfig)
 
     // Check if it is live data
     let showNowLine = this.actualIndices.length < this.timePoints.length

@@ -34,7 +34,7 @@ export function verifyTimeChartData (data) {
 /**
  * Verify data for distribution chart
  */
-export function verifyDistributionChartData (data) {
+export function verifyDistChartData (data) {
   if (!('timePoints' in data)) {
     throw new IncorrectData('No timePoints key found in provided data')
   }

@@ -3,9 +3,9 @@
  */
 
 /**
- * Verify data for time chart and provide information about it
+ * Parse time chart data and provide information about it
  */
-export function parseTimeChartData (data) {
+export function getTimeChartDataConfig (data) {
   return {
     actual: 'actual' in data,
     observed: 'observed' in data,
@@ -13,8 +13,18 @@ export function parseTimeChartData (data) {
     baseline: 'baseline' in data,
     predictions: {
       peak: false, // Show peak
-      onset: false, // Show onset markers and panel
-      ci: false // Show ci selection
+      onset: false // Show onset markers and panel
     }
+  }
+}
+
+/**
+ * Parse distribution chart data and provide information about it
+ */
+export function getDistChartDataConfig (data) {
+  return {
+    actual: false,
+    observed: false,
+    history: false
   }
 }
