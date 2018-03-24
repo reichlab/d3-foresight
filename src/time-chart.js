@@ -208,7 +208,9 @@ export default class TimeChart extends Chart {
       } else {
         predMarker = this.predictions[markerIndex]
       }
-      predMarker.plot(this.scales, m.predictions, utils.getPredictionStartingPoints(data))
+      // Find the starting points
+      let initPoints = data.observed ? utils.getPredictionInitPoints(data.observed) : null
+      predMarker.plot(this.scales, m.predictions, initPoints)
     })
 
     // Update models shown in control panel

@@ -30,9 +30,9 @@ export default class Prediction extends SComponent {
     this.noData = true
   }
 
-  plot (scales, modelData, startingPointsData) {
+  plot (scales, modelData, initPoints) {
     this.modelData = modelData
-    this.startingPointsData = startingPointsData
+    this.initPoints = initPoints
     this.displayedData = Array(this.modelData.length).fill(false)
     this.scales = scales
   }
@@ -66,15 +66,18 @@ export default class Prediction extends SComponent {
       this.peakMarker.move(this.config, currData.peakTime, currData.peakValue)
 
       // Move main pointers
-      let startData = this.startingPointsData[idx]
+      let nextTimeData = []
 
-      // Actual point/area to be shown
-      let nextTimeData = [{
-        index: idx,
-        point: startData,
-        low: startData,
-        high: startData
-      }]
+      if (this.initPoints) {
+        // If we have anchor points to start at, use those
+        // as the first point in the predictions
+        nextTimeData.push({
+          index: idx,
+          point: this.initPoints[idx],
+          low: this.initPoints[idx],
+          high: this.initPoints[idx]
+        })
+      }
 
       let idxOverflow = Math.min(0, this.modelData.length - (idx + currData.series.length))
       let displayLimit = currData.series.length - idxOverflow

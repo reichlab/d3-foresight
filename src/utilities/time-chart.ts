@@ -7,8 +7,8 @@ import { Timepoint, Range, Point } from '../interfaces'
  * Return points where the predictions were made
  * This is used as the first point in prediction marker
  */
-export function getPredictionStartingPoints (data) {
-  return data.observed.map(d => {
+export function getPredictionInitPoints (observed) {
+  return observed.map(d => {
     // Handle zero length values
     try {
       if (d.length !== 0) {
