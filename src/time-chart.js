@@ -14,6 +14,7 @@ import Prediction from './components/time-chart/prediction'
 import TimeRect from './components/time-chart/timerect'
 import Chart from './chart'
 import { verifyTimeChartData } from './utilities/data/verify'
+import { parseTimeChartData } from './utilities/data/config'
 import * as ev from './events'
 
 export default class TimeChart extends Chart {
@@ -131,6 +132,7 @@ export default class TimeChart extends Chart {
   // plot data
   plot (data) {
     verifyTimeChartData(data)
+    this.dataConfig = parseTimeChartData(data)
 
     this.timePoints = data.timePoints
     if (this.config.pointType.endsWith('-week')) {
@@ -154,12 +156,19 @@ export default class TimeChart extends Chart {
 
     // Update markers with data
     this.timerect.plot(this.scales)
-    this.baseline.plot(this.scales, data.baseline)
-    this.actual.plot(this.scales, data.actual)
-    this.observed.plot(this.scales, data.observed)
 
-    // Reset history lines
-    this.history.plot(this.scales, data.history)
+    if (this.dataConfig.baseline) {
+      this.baseline.plot(this.scales, data.baseline)
+    }
+    if (this.dataConfig.actual) {
+      this.actual.plot(this.scales, data.actual)
+    }
+    if (this.dataConfig.observed) {
+      this.observed.plot(this.scales, data.observed)
+    }
+    if (this.dataConfig.history) {
+      this.history.plot(this.scales, data.history)
+    }
 
     let totalModels = data.models.length
     let onsetDiff = (this.onsetHeight - 2) / (totalModels + 1)
@@ -221,7 +230,9 @@ export default class TimeChart extends Chart {
     this.timerect.update(idx)
     this.predictions.forEach(p => { p.update(idx) })
     this.overlay.update(this.predictions)
-    this.observed.update(idx)
+    if (this.dataConfig.observed) {
+      this.observed.update(idx)
+    }
     this.controlPanel.update(this.predictions)
   }
 
