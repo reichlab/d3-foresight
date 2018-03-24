@@ -14,6 +14,7 @@ export default class Overlay extends SComponent {
       .attr('y1', 0)
       .attr('x2', 0)
       .attr('y2', layout.height)
+      .style('display', 'none')
 
     this.overlay = this.selection.append('rect')
       .attr('class', 'overlay')

@@ -72,6 +72,7 @@ export default class Overlay extends SComponent {
     this.noPredText = this.append(new NoPredText(layout))
     this.todayLine = this.append(new TodayLine(layout))
     this.hoverLine = this.append(new HoverLine(layout))
+    this.hoverLine.hidden = true
 
     this.overlay = this.selection.append('rect')
       .attr('class', 'overlay')
