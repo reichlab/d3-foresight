@@ -1,28 +1,29 @@
 import * as d3 from 'd3'
 import textures from 'textures'
 import * as tt from '../../utilities/tooltip'
+import SComponent from '../s-component'
 
 /**
  * Simple linear X axis with informative label
  */
-export class XAxis {
-  constructor (svg, width, height, yOffset, axisConfig, tooltip) {
-    let axisGroup = svg.append('g')
-        .attr('class', 'axis axis-x')
-        .attr('transform', `translate(0, ${height - yOffset})`)
+export class XAxis extends SComponent {
+  constructor (layout, { tooltip, title, description, url }) {
+    super()
+    this.selection
+      .attr('class', 'axis axis-x')
+      .attr('transform', `translate(0, ${layout.height})`)
 
-    let xText = axisGroup
+    let xText = this.selection
         .append('text')
         .attr('text-anchor', 'start')
-        .attr('transform', `translate(${width + 10}, -15)`)
+        .attr('transform', `translate(${layout.width + 10}, -15)`)
 
     // Setup multiline text
-    let xTitle = axisConfig.title
-    if (Array.isArray(xTitle)) {
+    if (Array.isArray(title)) {
       xText.append('tspan')
-        .text(xTitle[0])
+        .text(title[0])
         .attr('x', 0)
-      xTitle.slice(1).forEach(txt => {
+      title.slice(1).forEach(txt => {
         xText.append('tspan')
           .text(txt)
           .attr('x', 0)
@@ -30,7 +31,7 @@ export class XAxis {
       })
     } else {
       xText.append('tspan')
-        .text(xTitle)
+        .text(title)
         .attr('x', 0)
     }
 
@@ -38,25 +39,25 @@ export class XAxis {
       .on('mouseover', () => { tooltip.hidden = false })
       .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', () => {
-        tooltip.render(tt.parseText({ text: axisConfig.description }))
+        tooltip.render(tt.parseText({ text: description }))
         tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')
       })
       .on('click', () => {
-        window.open(axisConfig.url, '_blank')
+        window.open(url, '_blank')
       })
-    this.svg = svg
-    this.width = width
+
+    this.layout = layout
   }
 
-  plot (xScale, maxTicks) {
-    let xAxis = d3.axisBottom(xScale)
-    let totalTicks = xScale.domain().length
+  plot (scales, maxTicks) {
+    let xAxis = d3.axisBottom(scales.xScale)
+    let totalTicks = scales.xScale.domain().length
     if (maxTicks && (maxTicks < totalTicks / 2)) {
       // Show upto maxTicks ticks
       let showAt = parseInt(totalTicks / maxTicks)
-      xAxis.tickValues(xScale.domain().filter((d, i) => !(i % showAt)))
+      xAxis.tickValues(scales.xScale.domain().filter((d, i) => !(i % showAt)))
     }
-    this.svg.select('.axis-x')
+    this.selection
       .transition().duration(200).call(xAxis)
   }
 }
@@ -64,31 +65,29 @@ export class XAxis {
 /**
  * X axis with week numbers, time and onset panel
  */
-export class XAxisDate {
-  constructor (svg, width, height, yOffset, onsetOffset, axisConfig, tooltip) {
-    // Keep onset panel between xaxis and plot
-    let xAxisPos = height + onsetOffset
+export class XAxisDate extends SComponent {
+  constructor (layout, { tooltip, title, description, url }) {
+    super()
     // Main axis with ticks below the onset panel
-    svg.append('g')
+    this.selection.append('g')
       .attr('class', 'axis axis-x')
-      .attr('transform', `translate(0,${xAxisPos})`)
+      .attr('transform', `translate(0,${layout.totalHeight})`)
 
-    let axisXDate = svg.append('g')
+    let axisXDate = this.selection.append('g')
         .attr('class', 'axis axis-x-date')
-        .attr('transform', `translate(0,${xAxisPos + 25})`)
+        .attr('transform', `translate(0,${layout.totalHeight + 25})`)
 
     let xText = axisXDate
         .append('text')
         .attr('text-anchor', 'start')
-        .attr('transform', `translate(${width + 10},-15)`)
+        .attr('transform', `translate(${layout.width + 10},-15)`)
 
     // Setup multiline text
-    let xTitle = axisConfig.title
-    if (Array.isArray(xTitle)) {
+    if (Array.isArray(title)) {
       xText.append('tspan')
-        .text(xTitle[0])
+        .text(title[0])
         .attr('x', 0)
-      xTitle.slice(1).forEach(txt => {
+      title.slice(1).forEach(txt => {
         xText.append('tspan')
           .text(txt)
           .attr('x', 0)
@@ -96,7 +95,7 @@ export class XAxisDate {
       })
     } else {
       xText.append('tspan')
-        .text(xTitle)
+        .text(title)
         .attr('x', 0)
     }
 
@@ -104,18 +103,18 @@ export class XAxisDate {
       .on('mouseover', () => { tooltip.hidden = false })
       .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', () => {
-        tooltip.render(tt.parseText({ text: axisConfig.description }))
+        tooltip.render(tt.parseText({ text: description }))
         tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')
       })
       .on('click', () => {
-        window.open(axisConfig.url, '_blank')
+        window.open(url, '_blank')
       })
 
     // Setup reverse axis (over onset offset)
     // Clone of axis above onset panel, without text
-    svg.append('g')
+    this.selection.append('g')
       .attr('class', 'axis axis-x-ticks')
-      .attr('transform', `translate(0, ${height - yOffset})`)
+      .attr('transform', `translate(0, ${layout.height})`)
 
     // Create onset panel
     let onsetTexture = textures.lines()
@@ -123,47 +122,46 @@ export class XAxisDate {
         .strokeWidth(0.5)
         .size(8)
         .stroke('#ccc')
-    svg.call(onsetTexture)
+    this.selection.call(onsetTexture)
 
-    svg.append('rect')
+    this.selection.append('rect')
       .attr('class', 'onset-texture')
-      .attr('height', onsetOffset)
-      .attr('width', width)
+      .attr('height', layout.totalHeight - layout.height)
+      .attr('width', layout.width)
       .attr('x', 0)
-      .attr('y', height)
+      .attr('y', layout.height)
       .style('fill', onsetTexture.url())
 
-    this.svg = svg
-    this.width = width
+    this.layout = layout
   }
 
-  plot (xScalePoint, xScaleDate) {
-    let xAxis = d3.axisBottom(xScalePoint)
-        .tickValues(xScalePoint.domain().filter((d, i) => !(i % 2)))
+  plot (scales) {
+    let xAxis = d3.axisBottom(scales.xScalePoint)
+        .tickValues(scales.xScalePoint.domain().filter((d, i) => !(i % 2)))
 
-    let xAxisReverseTick = d3.axisTop(xScalePoint)
-        .tickValues(xScalePoint.domain().filter((d, i) => !(i % 2)))
+    let xAxisReverseTick = d3.axisTop(scales.xScalePoint)
+        .tickValues(scales.xScalePoint.domain().filter((d, i) => !(i % 2)))
 
-    let xAxisDate = d3.axisBottom(xScaleDate)
+    let xAxisDate = d3.axisBottom(scales.xScaleDate)
         .ticks(d3.timeMonth)
         .tickFormat(d3.timeFormat('%b %y'))
 
     // Mobile view fix
     if (this.width < 420) {
       xAxisDate.ticks(2)
-      xAxis.tickValues(xScalePoint.domain().filter((d, i) => !(i % 10)))
+      xAxis.tickValues(scales.xScalePoint.domain().filter((d, i) => !(i % 10)))
     }
 
-    this.svg.select('.axis-x')
+    this.selection.select('.axis-x')
       .transition().duration(200).call(xAxis)
 
     // Copy over ticks above the onsetpanel
-    let tickOnlyAxis = this.svg.select('.axis-x-ticks')
+    let tickOnlyAxis = this.selection.select('.axis-x-ticks')
         .transition().duration(200).call(xAxisReverseTick)
 
     tickOnlyAxis.selectAll('text').remove()
 
-    this.svg.select('.axis-x-date')
+    this.selection.select('.axis-x-date')
       .transition().duration(200).call(xAxisDate)
   }
 }

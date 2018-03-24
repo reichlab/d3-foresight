@@ -1,35 +1,35 @@
 import * as d3 from 'd3'
+import SComponent from '../s-component'
 
 /**
  * Prediction marker for distribution chart
  */
-export default class Prediction {
-  constructor (svg, id, meta, color) {
-    // Prediction group
-    let predictionGroup = svg.append('g')
-        .attr('class', 'prediction-group')
-        .attr('id', id + '-marker')
+export default class Prediction extends SComponent {
+  constructor ({ id, meta, color }) {
+    super()
+    this.selection
+      .attr('class', 'prediction-group')
+      .attr('id', id + '-marker')
 
-    predictionGroup.append('path')
+    this.selection.append('path')
       .attr('class', 'area-prediction')
       .style('fill', color)
 
-    predictionGroup.append('path')
+    this.selection.append('path')
       .attr('class', 'line-prediction')
       .style('stroke', color)
-
-    this.predictionGroup = predictionGroup
 
     this.color = color
     this.id = id
     this.meta = meta
+
     // Tells if the prediction is hidden by some other component
     this._hidden = false
     // Tells if data is available to be shown for current time
     this.noData = true
   }
 
-  plot (parent, curveData) {
+  plot (scales, curveData) {
     if (curveData.data === null) {
       // There is no data for current point, hide the markers without
       // setting exposed hidden flag
@@ -43,21 +43,21 @@ export default class Prediction {
       }
 
       let line = d3.line()
-          .x(d => parent.xScale(d[0]))
-          .y(d => parent.yScale(d[1]))
+          .x(d => scales.xScale(d[0]))
+          .y(d => scales.yScale(d[1]))
 
-      this.predictionGroup.select('.line-prediction')
+      this.selection.select('.line-prediction')
         .datum(curveData.data)
         .transition()
         .duration(200)
         .attr('d', line)
 
       let area = d3.area()
-          .x(d => parent.xScale(d[0]))
-          .y1(d => parent.yScale(0))
-          .y0(d => parent.yScale(d[1]))
+          .x(d => scales.xScale(d[0]))
+          .y1(d => scales.yScale(0))
+          .y0(d => scales.yScale(d[1]))
 
-      this.predictionGroup.select('.area-prediction')
+      this.selection.select('.area-prediction')
         .datum(curveData.data)
         .transition()
         .duration(200)
@@ -89,17 +89,18 @@ export default class Prediction {
   }
 
   hideMarkers () {
-    this.predictionGroup.style('visibility', 'hidden')
+    super.hidden = true
   }
 
   showMarkers () {
-    this.predictionGroup.style('visibility', null)
+    super.hidden = false
   }
 
   /**
    * Remove the markers
    */
   clear () {
-    this.predictionGroup.remove()
+    super.clear()
+    this.selection.remove()
   }
 }

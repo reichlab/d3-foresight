@@ -6,50 +6,44 @@ import * as utils from '../../utilities/distribution-chart'
 import Overlay from './overlay'
 import NoPredText from './no-pred-text'
 import * as colors from '../../utilities/colors'
+import SComponent from '../s-component'
 
 /**
  * A panel displaying distributions for one curve
  */
-export default class DistributionPanel {
-  constructor (svg, width, height, tooltip) {
-    this.xScale = d3.scalePoint().range([0, width])
-    this.yScale = d3.scaleLinear().range([height, 0])
+export default class DistributionPanel extends SComponent {
+  constructor (layout, { tooltip }) {
+    super()
+    this.xScale = d3.scalePoint().range([0, layout.width])
+    this.yScale = d3.scaleLinear().range([layout.height, 0])
+    this.xAxis = this.append(new XAxis(layout, { tooltip }))
+    this.yAxis = this.append(new YAxis(layout, {
+      title: 'Probability',
+      description: 'Probability assigned to x-axis bins',
+      tooltip: this.tooltip
+    }))
 
-    this.xAxis = new XAxis(
-      svg,
-      width,
-      height,
-      0,
-      {},
-      tooltip
-    )
-    this.yAxis = new YAxis(
-      svg,
-      height,
-      0,
-      {
-        title: 'Probability',
-        description: 'Probability assigned to x-axis bins'
-      },
-      tooltip
-    )
-
-    this.svg = svg
-    this.height = height
-    this.width = width
     this.predictions = []
     this.selectedCurveIdx = null
     this.tooltip = tooltip
-    this.overlay = new Overlay(this)
-    this.noPredText = new NoPredText(this)
+    this.layout = layout
+    this.overlay = this.append(new Overlay(layout, { tooltip }))
+    this.noPredText = this.append(new NoPredText())
+  }
+
+  get scales () {
+    return {
+      xScale: this.xScale,
+      yScale: this.yScale
+    }
   }
 
   plot (data, yLimits) {
     this.xScale.domain(utils.getXDomain(data, this.selectedCurveIdx))
     this.yScale.domain([0, yLimits[this.selectedCurveIdx]])
 
-    this.xAxis.plot(this.xScale, 10)
-    this.yAxis.plot(this.yScale, 5)
+    this.xAxis.plot(this.scales, 10)
+    this.yAxis.plot(this.scales, 5)
 
     // Setup colormap
     this.colors = colors.getColorMap(data.models.length)
@@ -69,18 +63,23 @@ export default class DistributionPanel {
     // Assume unique model ids
     data.models.forEach((m, idx) => {
       let predMarker
-      let markerIndex = this.predictions.map(p => p.id).indexOf(m.id)
+      let markerIndex = this.predictions.findIndex(p => p.id === m.id)
       if (markerIndex === -1) {
         // The marker is not present from previous calls to plot
-        predMarker = new Prediction(
-          this.svg, m.id, m.meta, this.colors[idx]
-        )
+        predMarker = new Prediction({
+          id: m.id,
+          meta: m.meta,
+          color: this.colors[idx]
+        })
+        this.append(predMarker)
         this.predictions.push(predMarker)
       } else {
         predMarker = this.predictions[markerIndex]
       }
-      predMarker.plot(this, m.curves[this.selectedCurveIdx])
+      predMarker.plot(this.scales, m.curves[this.selectedCurveIdx])
     })
+
+    this.overlay.plot(this.scales, this.predictions)
 
     // Check if all markers have noData. That means we can show NA text.
     this.noPredText.hidden = (this.predictions.filter(p => p.noData).length !== this.predictions.length)

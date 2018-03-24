@@ -1,41 +1,45 @@
 import * as d3 from 'd3'
 import * as tt from '../../utilities/tooltip'
 import * as utils from '../../utilities/distribution-chart'
+import SComponent from '../s-component'
 
-export default class Overlay {
-  constructor (parent) {
-    let svg = parent.svg
-    let height = parent.height
-    let width = parent.width
-    let tooltip = parent.tooltip
+export default class Overlay extends SComponent {
+  constructor (layout, { tooltip }) {
+    super()
     let xScale = parent.xScale
 
     // Add mouse hover line
-    let line = svg.append('line')
-        .attr('class', 'hover-line')
-        .attr('x1', 0)
-        .attr('y1', 0)
-        .attr('x2', 0)
-        .attr('y2', height)
-        .style('display', 'none')
+    this.line = this.selection.append('line')
+      .attr('class', 'hover-line')
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', layout.height)
 
-    svg.append('rect')
+    this.overlay = this.selection.append('rect')
       .attr('class', 'overlay')
-      .attr('height', height)
-      .attr('width', width)
+      .attr('height', layout.height)
+      .attr('width', layout.width)
       .on('mouseover', () => {
-        line.style('display', null)
+        this.line.style('display', null)
         tooltip.hidden = false
       })
       .on('mouseout', () => {
-        line.style('display', 'none')
+        this.line.style('display', 'none')
         tooltip.hidden = true
       })
+    this.tooltip = tooltip
+  }
+
+  plot (scales, predictions) {
+    let line = this.line
+    let tooltip = this.tooltip
+    this.overlay
       .on('mousemove', function () {
         let mouse = d3.mouse(this)
         // Snap x to nearest tick
-        let index = Math.round(mouse[0] / xScale.range()[1] * xScale.domain().length)
-        let snappedX = xScale(xScale.domain()[index])
+        let index = Math.round(mouse[0] / scales.xScale.range()[1] * scales.xScale.domain().length)
+        let snappedX = scales.xScale(scales.xScale.domain()[index])
 
         // Move the cursor
         line
@@ -45,11 +49,11 @@ export default class Overlay {
           .attr('x2', snappedX)
 
         // Format bin value to display
-        let binVal = utils.formatBin(xScale.domain(), index)
+        let binVal = utils.formatBin(scales.xScale.domain(), index)
 
         tooltip.render(tt.parsePredictions({
           title: `Bin: ${binVal}`,
-          predictions: parent.predictions,
+          predictions: predictions,
           index
         }))
 

@@ -38,22 +38,15 @@ export default class TimeChart extends Chart {
     this.xScalePoint = d3.scalePoint().range([0, this.width])
     this.yScale = d3.scaleLinear().range([this.height, 0])
 
-    this.yAxis = new YAxis(
-      this.svg,
-      this.height,
-      0,
-      this.config.axes.y,
-      this.tooltip
-    )
-    this.xAxis = new XAxisDate(
-      this.svg,
-      this.width,
-      this.height,
-      0,
-      this.onsetHeight,
-      this.config.axes.x,
-      this.tooltip
-    )
+    this.yAxis = this.append(new YAxis(this.layout, {
+      ...this.config.axes.y,
+      tooltip: this.tooltip
+    }))
+
+    this.xAxis = this.append(new XAxisDate(this.layout, {
+      ...this.config.axes.x,
+      tooltip: this.tooltip
+    }))
 
     this.timerect = this.append(new TimeRect(this.layout))
     this.overlay = this.append(new Overlay(this.layout, { tooltip: this.tooltip, uuid: this.uuid }))
@@ -156,8 +149,8 @@ export default class TimeChart extends Chart {
     this.xScaleDate.domain(utils.getXDateDomain(this.timePoints, this.config.pointType))
     this.xScalePoint.domain(this.ticks)
 
-    this.xAxis.plot(this.xScalePoint, this.xScaleDate)
-    this.yAxis.plot(this.yScale)
+    this.xAxis.plot(this.scales)
+    this.yAxis.plot(this.scales)
 
     // Update markers with data
     this.timerect.plot(this.scales)

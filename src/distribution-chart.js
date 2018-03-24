@@ -32,15 +32,10 @@ export default class DistributionChart extends Chart {
     this.xScalePoint = d3.scalePoint().range([0, this.width])
 
     // Time axis for indicating current position
-    this.xAxis = new XAxisDate(
-      this.svg,
-      this.width,
-      this.height,
-      0,
-      this.onsetHeight,
-      this.config.axes.x,
-      this.tooltip
-    )
+    this.xAxis = this.append(new XAxisDate(this.layout, {
+      ...this.config.axes.x,
+      tooltip: this.tooltip
+    }))
 
     // create 4 panels and assign new svgs to them
     let panelMargin = {
@@ -64,12 +59,12 @@ export default class DistributionChart extends Chart {
           .append('g')
           .attr('transform', `translate(${panelMargin.left}, ${panelMargin.top})`)
 
-      return new DistributionPanel(
-        svg,
-        panelWidth - panelMargin.left - panelMargin.right,
-        panelHeight - panelMargin.top - panelMargin.bottom,
-        this.tooltip
-      )
+      let panel = new DistributionPanel({
+        width: panelWidth - panelMargin.left - panelMargin.right,
+        height: panelHeight - panelMargin.top - panelMargin.bottom
+      }, { tooltip: this.tooltip })
+      svg.append(() => panel.node)
+      return panel
     })
 
     // Add dropdowns for curve selection
@@ -89,7 +84,7 @@ export default class DistributionChart extends Chart {
       return dd
     })
 
-    this.pointer = new Pointer(this)
+    this.pointer = this.append(new Pointer(this.layout, { uuid: this.uuid }))
 
     let panelConfig = {
       actual: false,
@@ -111,6 +106,33 @@ export default class DistributionChart extends Chart {
     ev.addSub(this.uuid, ev.MOVE_PREV, (msg, data) => {
       ev.publish(this.uuid, ev.BACKWARD_INDEX)
     })
+
+    ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id, state }) => {
+      this.panels.forEach(p => {
+        let predMarker = p.predictions.find(p => p.id === id)
+        if (predMarker) {
+          predMarker.hidden = !state
+        }
+      })
+    })
+  }
+
+  get layout () {
+    return {
+      width: this.width,
+      height: this.height,
+      totalHeight: this.height
+    }
+  }
+
+  get scales () {
+    return {
+      xScale: this.xScale,
+      xScaleDate: this.xScaleDate,
+      xScalePoint: this.xScalePoint,
+      ticks: this.ticks,
+      yScale: this.yScale
+    }
   }
 
   // plot data
@@ -137,12 +159,8 @@ export default class DistributionChart extends Chart {
     this.xScaleDate.domain(utils.getXDateDomain(this.timePoints, this.config.pointType))
     this.xScalePoint.domain(this.ticks)
     this.xScale.domain([0, this.timePoints.length - 1])
-    this.xAxis.plot(this.xScalePoint, this.xScaleDate)
-
-    // Plot pointer position
-    this.pointer.plot(data.currentIdx, this.xScale, clickIndex => {
-      ev.publish(this.uuid, ev.JUMP_TO_INDEX, clickIndex)
-    })
+    this.xAxis.plot(this.scales)
+    this.pointer.plot(this.scales, data.currentIdx)
 
     let yLimits = utils.getYLimits(data)
 
@@ -169,15 +187,6 @@ export default class DistributionChart extends Chart {
 
     // Update models shown in control panel
     this.controlPanel.plot(this.panels[0].predictions)
-
-    ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id, state }) => {
-      this.panels.forEach(p => {
-        let predMarker = p.predictions.find(p => p.id === id)
-        if (predMarker) {
-          predMarker.hidden = !state
-        }
-      })
-    })
 
     // Fade out models with no predictions
     this.controlPanel.update(this.panels[0].predictions)

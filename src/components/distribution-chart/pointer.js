@@ -1,4 +1,6 @@
 import * as d3 from 'd3'
+import SComponent from '../s-component'
+import * as ev from '../../events'
 
 /**
  * Return triangle points for drawing polyline centered at origin
@@ -15,37 +17,39 @@ const generateTrianglePoints = origin => {
 /**
  * Pointer over current position in time axis
  */
-export default class Pointer {
-  constructor (parent) {
-    let group = parent.svg.append('g')
-        .attr('class', 'time-pointer-group')
+export default class Pointer extends SComponent {
+  constructor (layout, { uuid }) {
+    super()
+    this.selection.attr('class', 'time-pointer-group')
 
     // Save fixed y position
-    this.yPos = parent.height
+    this.yPos = layout.height
 
-    group.append('polyline')
+    this.selection.append('polyline')
       .attr('class', 'pointer-triangle')
       .attr('points', generateTrianglePoints([0, this.yPos]))
 
     // Add overlay over axis to allow clicks
-    group.append('rect')
+    this.selection.append('rect')
       .attr('class', 'pointer-overlay')
       .attr('height', 80)
-      .attr('width', parent.width)
+      .attr('width', layout.width)
       .attr('x', 0)
-      .attr('y', parent.height - 30)
+      .attr('y', layout.height - 30)
 
-    this.group = group
+    this.uuid = uuid
   }
 
-  plot (currentIdx, xScale, clickCallback) {
-    this.group.select('.pointer-triangle')
+  plot (scales, currentIdx) {
+    let uuid = this.uuid
+    this.selection.select('.pointer-triangle')
       .transition()
       .duration(200)
-      .attr('points', generateTrianglePoints([xScale(currentIdx), this.yPos]))
+      .attr('points', generateTrianglePoints([scales.xScale(currentIdx), this.yPos]))
 
-    this.group.select('.pointer-overlay').on('click', function () {
-      clickCallback(Math.round(xScale.invert(d3.mouse(this)[0])))
+    this.selection.select('.pointer-overlay').on('click', function () {
+      let clickIndex = Math.round(scales.xScale.invert(d3.mouse(this)[0]))
+      ev.publish(uuid, ev.JUMP_TO_INDEX, clickIndex)
     })
   }
 }

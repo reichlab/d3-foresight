@@ -1,6 +1,9 @@
-export default class NoPredText {
-  constructor (parent) {
-    this.text = parent.svg.append('text')
+import SComponent from '../s-component'
+
+export default class NoPredText extends SComponent {
+  constructor () {
+    super()
+    this.text = this.selection.append('text')
       .attr('class', 'no-pred-text')
       .attr('transform', `translate(30 , 30)`)
 
@@ -12,13 +15,5 @@ export default class NoPredText {
       .text('for selected time')
       .attr('x', 0)
       .attr('dy', '2em')
-  }
-
-  set hidden (val) {
-    this.text.style('display', val ? 'none' : null)
-  }
-
-  get hidden () {
-    return this.text.style('display') === 'none'
   }
 }
