@@ -21,19 +21,3 @@ export function getPredictionInitPoints (observed) {
     }
   })
 }
-
-export function getXDateDomain (timePoints: Timepoint[], pointType: Point) {
-  return d3.extent(timePoints.map(d => {
-    if (pointType === 'mmwr-week') {
-      return (new mmwr.MMWRDate(d.year, d.week)).toMomentDate()
-    } else if (pointType === 'regular-week') {
-      return d3.timeParse('%Y-%W')(d.year + '-' + d.week)
-    } else {
-      throw new errors.UnknownPointType()
-    }
-  }))
-}
-
-export function getXDomain (timePoints: Timepoint[]): Range {
-  return [0, timePoints.length - 1]
-}

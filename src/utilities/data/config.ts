@@ -3,6 +3,12 @@
  */
 
 /**
+ * Doc guard
+ */
+import { Timepoint } from '../../interfaces'
+import * as errors from '../errors'
+
+/**
  * Tell if onset predictions are present in the data
  */
 function isOnsetPresent (modelsData): boolean {
@@ -31,9 +37,21 @@ function isPeakPresent (modelsData): boolean {
 }
 
 /**
+ * Return ticks to show for given timepoints
+ */
+function getTicks (timePoints: Timepoint[], pointType: string): number[] {
+  // @ts-ignore
+  if (pointType.endsWith('-week')) {
+    return timePoints.map(tp => tp.week)
+  } else {
+    throw new errors.UnknownPointType()
+  }
+}
+
+/**
  * Parse time chart data and provide information about it
  */
-export function getTimeChartDataConfig (data) {
+export function getTimeChartDataConfig (data, config) {
   return {
     actual: 'actual' in data,
     observed: 'observed' in data,
@@ -42,17 +60,22 @@ export function getTimeChartDataConfig (data) {
     predictions: {
       peak: isPeakPresent(data.models),
       onset: isOnsetPresent(data.models)
-    }
+    },
+    ticks: getTicks(data.timePoints, config.pointType),
+    pointType: config.pointType
   }
 }
 
 /**
  * Parse distribution chart data and provide information about it
  */
-export function getDistChartDataConfig (data) {
+export function getDistChartDataConfig (data, config) {
   return {
     actual: false,
     observed: false,
-    history: false
+    history: false,
+    ticks: getTicks(data.timePoints, config.pointType),
+    pointType: config.pointType,
+    curveNames: data.models[0].curves.map(c => c.name)
   }
 }

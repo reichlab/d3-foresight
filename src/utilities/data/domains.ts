@@ -2,6 +2,12 @@
  * Functions for finding scale domains from data object
  */
 
+/**
+ * Doc guard
+ */
+import * as mmwr from 'mmwr-week'
+import * as d3 from 'd3'
+import * as errors from '../errors'
 import { Range } from '../../interfaces'
 
 /**
@@ -50,4 +56,33 @@ export function y (data, dataConfig): Range {
   })
 
   return [min, 1.1 * max]
+}
+
+/**
+ * Return domain of x
+ */
+export function x (data, dataConfig): Range {
+  return [0, data.timePoints.length - 1]
+}
+
+/**
+ * Return domain for xdate
+ */
+export function xDate (data, dataConfig): Range {
+  return d3.extent(data.timePoints.map(tp => {
+    if (dataConfig.pointType === 'mmwr-week') {
+      return (new mmwr.MMWRDate(tp.year, tp.week)).toMomentDate()
+    } else if (dataConfig.pointType === 'regular-week') {
+      return d3.timeParse('%Y-%W')(tp.year + '-' + tp.week)
+    } else {
+      throw new errors.UnknownPointType()
+    }
+  }))
+}
+
+/**
+ * Return point scale domain
+ */
+export function xPoint (data, dataConfig): Range {
+  return dataConfig.ticks
 }

@@ -28,18 +28,6 @@ export function formatBin (series: number[], index: number): string {
   }
 }
 
-export function getXDateDomain (timePoints: Timepoint[], pointType: Point) {
-  return d3.extent(timePoints.map(d => {
-    if (pointType === 'mmwr-week') {
-      return (new mmwr.MMWRDate(d.year, d.week)).toMomentDate()
-    } else if (pointType === 'regular-week') {
-      return d3.timeParse('%Y-%W')(d.year + '-' + d.week)
-    } else {
-      throw new errors.UnknownPointType()
-    }
-  }))
-}
-
 export function getYDomain (data, curveIdx: number): Range {
   let modelMaxes = data.models.map(m => {
     let curveData = m.curves[curveIdx].data

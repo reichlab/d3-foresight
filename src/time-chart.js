@@ -130,35 +130,25 @@ export default class TimeChart extends Chart {
   // plot data
   plot (data) {
     verifyTimeChartData(data)
-    this.dataConfig = getTimeChartDataConfig(data)
-
-    this.timePoints = data.timePoints
-    if (this.config.pointType.endsWith('-week')) {
-      this.ticks = this.timePoints.map(tp => tp.week)
-    } else {
-      throw new errors.UnknownPointType()
-    }
+    this.dataConfig = getTimeChartDataConfig(data, this.config)
 
     this.actualIndices = data.actual.map((d, idx) => {
       return (d ? idx : null)
     }).filter(d => d !== null)
 
-    // Update domains
     if (this.config.axes.y.domain) {
       this.yScale.domain(this.config.axes.y.domain)
     } else {
       this.yScale.domain(domains.y(data, this.dataConfig))
     }
-    this.xScale.domain(utils.getXDomain(this.timePoints))
-    this.xScaleDate.domain(utils.getXDateDomain(this.timePoints, this.config.pointType))
-    this.xScalePoint.domain(this.ticks)
+    this.xScale.domain(domains.x(data, this.dataConfig))
+    this.xScaleDate.domain(domains.xDate(data, this.dataConfig))
+    this.xScalePoint.domain(domains.xPoint(data, this.dataConfig))
 
     this.xAxis.plot(this.scales)
     this.yAxis.plot(this.scales)
 
-    // Update markers with data
     this.timerect.plot(this.scales)
-
     this.baseline.hidden = !this.dataConfig.baseline
     if (this.dataConfig.baseline) {
       this.baseline.plot(this.scales, data.baseline)
@@ -223,7 +213,7 @@ export default class TimeChart extends Chart {
     this.controlPanel.plot(this.predictions, this.dataConfig)
 
     // Check if it is live data
-    let showNowLine = this.actualIndices.length < this.timePoints.length
+    let showNowLine = this.actualIndices.length < data.timePoints.length
     this.overlay.plot(this.scales, showNowLine, [this.actual, this.observed, ...this.predictions])
 
     // Hot start the chart

@@ -24,7 +24,7 @@ export type Point = 'regular-week' | 'mmwr-week'
 /**
  * Range of numbers
  */
-export type Range = [number, number]
+export type Range = [number, number] | [string, string] | any[]
 
 
 /**

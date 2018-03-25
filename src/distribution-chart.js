@@ -5,6 +5,7 @@ import DistributionPanel from './components/distribution-chart/distribution-pane
 import Pointer from './components/distribution-chart/pointer'
 import * as utils from './utilities/distribution-chart'
 import * as errors from './utilities/errors'
+import * as domains from './utilities/data/domains'
 import Chart from './chart'
 import { verifyDistChartData } from './utilities/data/verify'
 import { getDistChartDataConfig } from './utilities/data/config'
@@ -128,27 +129,22 @@ export default class DistributionChart extends Chart {
   // plot data
   plot (data) {
     verifyDistChartData(data)
-    let dataConfig = getDistChartDataConfig(data)
-    let curveNames = data.models[0].curves.map(t => t.name)
+    let dataConfig = getDistChartDataConfig(data, this.config)
+    this.ticks = dataConfig.ticks
 
     this.dropdowns.forEach(dd => {
       dd.selectAll('*').remove()
-      curveNames.forEach((cn, idx) => {
+      dataConfig.curveNames.forEach((cn, idx) => {
         let option = dd.append('option')
         option.text(cn)
         option.attr('value', idx)
       })
     })
 
-    this.timePoints = data.timePoints
-    if (this.config.pointType.endsWith('-week')) {
-      this.ticks = this.timePoints.map(tp => tp.week)
-    } else {
-      throw new errors.UnknownPointType()
-    }
-    this.xScaleDate.domain(utils.getXDateDomain(this.timePoints, this.config.pointType))
-    this.xScalePoint.domain(this.ticks)
-    this.xScale.domain([0, this.timePoints.length - 1])
+    this.xScaleDate.domain(domains.xDate(data, dataConfig))
+    this.xScalePoint.domain(domains.xPoint(data, dataConfig))
+    this.xScale.domain(domains.x(data, dataConfig))
+
     this.xAxis.plot(this.scales)
     this.pointer.plot(this.scales, data.currentIdx)
 
