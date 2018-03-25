@@ -95,7 +95,7 @@ export default class Prediction extends SComponent {
       let displayLimit = currData.series.length - idxOverflow
 
       for (let i = 0; i < displayLimit; i++) {
-        if (this.cid === null) {
+        if (this.cid === -1) {
           nextTimeData.push({
             index: i + idx + 1,
             point: currData.series[i].point,
