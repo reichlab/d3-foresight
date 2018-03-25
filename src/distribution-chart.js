@@ -3,8 +3,6 @@ import { XAxisDate } from './components/common/axis-x'
 import ControlPanel from './components/common/control-panel'
 import DistributionPanel from './components/distribution-chart/distribution-panel'
 import Pointer from './components/distribution-chart/pointer'
-import * as utils from './utilities/distribution-chart'
-import * as errors from './utilities/errors'
 import * as domains from './utilities/data/domains'
 import Chart from './chart'
 import { verifyDistChartData } from './utilities/data/verify'
@@ -148,7 +146,7 @@ export default class DistributionChart extends Chart {
     this.xAxis.plot(this.scales)
     this.pointer.plot(this.scales, data.currentIdx)
 
-    let yLimits = utils.getYLimits(data)
+    let yMaxima = domains.yCurveMaxima(data)
 
     // Provide curve data to the panels
     this.panels.forEach((p, idx) => {
@@ -158,7 +156,7 @@ export default class DistributionChart extends Chart {
       } else {
         this.dropdowns[idx].property('value', p.selectedCurveIdx)
       }
-      p.plot(data, yLimits)
+      p.plot(data, yMaxima)
     })
 
     // Add event listeners to dropdown
@@ -167,7 +165,7 @@ export default class DistributionChart extends Chart {
       dd.on('change', function () {
         let selectedIdx = parseInt(d3.select(this).property('value'))
         currentPanel.selectedCurveIdx = selectedIdx
-        currentPanel.plot(data, yLimits)
+        currentPanel.plot(data, yMaxima)
       })
     })
 

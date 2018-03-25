@@ -1,7 +1,6 @@
 import * as d3 from 'd3'
 import * as domains from './utilities/data/domains'
 import * as colors from './utilities/colors'
-import * as errors from './utilities/errors'
 import { XAxisDate } from './components/common/axis-x'
 import { YAxis } from './components/common/axis-y'
 import ControlPanel from './components/common/control-panel'

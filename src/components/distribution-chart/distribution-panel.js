@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 import { XAxis } from '../common/axis-x'
 import { YAxis } from '../common/axis-y'
 import Prediction from './prediction'
-import * as utils from '../../utilities/distribution-chart'
+import * as domains from '../../utilities/data/domains'
 import Overlay from './overlay'
 import NoPredText from './no-pred-text'
 import * as colors from '../../utilities/colors'
@@ -39,7 +39,7 @@ export default class DistributionPanel extends SComponent {
   }
 
   plot (data, yLimits) {
-    this.xScale.domain(utils.getXDomain(data, this.selectedCurveIdx))
+    this.xScale.domain(domains.xCurve(data, this.selectedCurveIdx))
     this.yScale.domain([0, yLimits[this.selectedCurveIdx]])
 
     this.xAxis.plot(this.scales, 10)

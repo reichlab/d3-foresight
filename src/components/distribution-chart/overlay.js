@@ -1,6 +1,5 @@
 import * as d3 from 'd3'
 import * as tt from '../../utilities/tooltip'
-import * as utils from '../../utilities/distribution-chart'
 import SComponent from '../s-component'
 
 export default class Overlay extends SComponent {
