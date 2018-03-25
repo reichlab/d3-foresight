@@ -1,5 +1,4 @@
 import * as d3 from 'd3'
-import * as utils from './utilities/time-chart'
 import * as domains from './utilities/data/domains'
 import * as colors from './utilities/colors'
 import * as errors from './utilities/errors'
@@ -17,6 +16,25 @@ import Chart from './chart'
 import { verifyTimeChartData } from './utilities/data/verify'
 import { getTimeChartDataConfig } from './utilities/data/config'
 import * as ev from './events'
+
+/**
+ * Return points where the predictions were made
+ * This is used as the first point in prediction marker
+ */
+function getPredictionInitPoints (observed) {
+  return observed.map(d => {
+    // Handle zero length values
+    try {
+      if (d.length !== 0) {
+        return d.find(ld => ld.lag === 0).value
+      } else {
+        return null
+      }
+    } catch (e) {
+      return null
+    }
+  })
+}
 
 export default class TimeChart extends Chart {
   constructor (element, options = {}) {
@@ -131,6 +149,7 @@ export default class TimeChart extends Chart {
   plot (data) {
     verifyTimeChartData(data)
     this.dataConfig = getTimeChartDataConfig(data, this.config)
+    this.ticks = this.dataConfig.ticks
 
     this.actualIndices = data.actual.map((d, idx) => {
       return (d ? idx : null)
@@ -205,7 +224,7 @@ export default class TimeChart extends Chart {
         predMarker = this.predictions[markerIndex]
       }
       // Find the starting points
-      let initPoints = data.observed ? utils.getPredictionInitPoints(data.observed) : null
+      let initPoints = data.observed ? getPredictionInitPoints(data.observed) : null
       predMarker.plot(this.scales, m.predictions, initPoints)
     })
 

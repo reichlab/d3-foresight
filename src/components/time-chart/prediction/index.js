@@ -78,16 +78,17 @@ export default class Prediction extends SComponent {
       }
 
       // Move main pointers
-      let nextTimeData = []
+      let series = []
+      let anchorPoint = this.initPoints && this.initPoints[idx]
 
-      if (this.initPoints) {
+      if (anchorPoint !== null) {
         // If we have anchor points to start at, use those
         // as the first point in the predictions
-        nextTimeData.push({
+        series.push({
           index: idx,
-          point: this.initPoints[idx],
-          low: this.initPoints[idx],
-          high: this.initPoints[idx]
+          point: anchorPoint,
+          low: anchorPoint,
+          high: anchorPoint
         })
       }
 
@@ -95,30 +96,21 @@ export default class Prediction extends SComponent {
       let displayLimit = currData.series.length - idxOverflow
 
       for (let i = 0; i < displayLimit; i++) {
-        if (this.cid === -1) {
-          nextTimeData.push({
-            index: i + idx + 1,
-            point: currData.series[i].point,
-            low: currData.series[i].point,
-            high: currData.series[i].point
-          })
-        } else {
-          nextTimeData.push({
-            index: i + idx + 1,
-            point: currData.series[i].point,
-            low: currData.series[i].low[this.cid],
-            high: currData.series[i].high[this.cid]
-          })
-        }
+        series.push({
+          index: i + idx + 1,
+          point: currData.series[i].point,
+          low: this.cid === -1 ? currData.series[i].point : currData.series[i].low[this.cid],
+          high: this.cid === -1 ? currData.series[i].point : currData.series[i].high[this.cid]
+        })
       }
 
       // Save indexed data for query
       this.displayedData = Array(this.modelData.length).fill(false)
-      nextTimeData.slice(1).forEach(d => {
+      series.slice(anchorPoint !== null ? 1 : 0).forEach(d => {
         this.displayedData[d.index] = d.point
       })
 
-      this.lineMarker.move(this.config, nextTimeData)
+      this.lineMarker.move(this.config, series, anchorPoint)
     }
   }
 

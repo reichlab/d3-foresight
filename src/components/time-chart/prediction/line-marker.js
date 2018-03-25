@@ -23,9 +23,9 @@ export default class LineMarker extends SComponent {
       .style('stroke', color)
   }
 
-  move (cfg, nextTimeData) {
+  move (cfg, series, anchorPoint) {
     let circles = this.selection.selectAll('.point-prediction')
-        .data(nextTimeData.slice(1))
+        .data(series.slice(anchorPoint !== null ? 1 : 0))
 
     circles.exit().remove()
 
@@ -45,7 +45,7 @@ export default class LineMarker extends SComponent {
         .y(d => cfg.scales.yScale(d.point))
 
     this.selection.select('.line-prediction')
-      .datum(nextTimeData)
+      .datum(series)
       .transition()
       .duration(200)
       .attr('d', line)
@@ -56,7 +56,7 @@ export default class LineMarker extends SComponent {
         .y0(d => cfg.scales.yScale(d.high))
 
     this.selection.select('.area-prediction')
-      .datum(nextTimeData)
+      .datum(series)
       .transition()
       .duration(200)
       .attr('d', area)
