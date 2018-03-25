@@ -150,10 +150,6 @@ export default class TimeChart extends Chart {
     this.dataConfig = getTimeChartDataConfig(data, this.config)
     this.ticks = this.dataConfig.ticks
 
-    this.actualIndices = data.actual.map((d, idx) => {
-      return (d ? idx : null)
-    }).filter(d => d !== null)
-
     if (this.config.axes.y.domain) {
       this.yScale.domain(this.config.axes.y.domain)
     } else {
@@ -231,7 +227,14 @@ export default class TimeChart extends Chart {
     this.controlPanel.plot(this.predictions, this.dataConfig)
 
     // Check if it is live data
-    let showNowLine = this.actualIndices.length < data.timePoints.length
+    let showNowLine = false
+    if (this.dataConfig.actual) {
+      let actualIndices = data.actual.map((d, idx) => {
+        return (d ? idx : null)
+      }).filter(d => d !== null)
+
+      showNowLine = actualIndices.length < data.timePoints.length
+    }
     this.overlay.plot(this.scales, showNowLine, [this.actual, this.observed, ...this.predictions])
 
     // Hot start the chart
@@ -257,13 +260,13 @@ export default class TimeChart extends Chart {
    * Move chart one step ahead
    */
   moveForward () {
-    this.update(Math.min(this.currentIdx + 1, this.actualIndices[this.actualIndices.length - 1]))
+    this.update(Math.min(this.currentIdx + 1, this.dataConfig.ticks.length - 1))
   }
 
   /**
    * Move chart one step back
    */
   moveBackward () {
-    this.update(Math.max(this.currentIdx - 1, this.actualIndices[0]))
+    this.update(Math.max(this.currentIdx - 1, 0))
   }
 }
