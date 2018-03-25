@@ -6,7 +6,7 @@
 /**
  * Doc guard
  */
-import { getMousePosition } from './mouse'
+import { getMousePosition } from './misc'
 import Tooltip from '../components/common/tooltip'
 
 /**

@@ -1,5 +1,5 @@
 /**
- * Module for handling mouse information
+ * Module for miscellaneous functions
  */
 
 /**
@@ -18,4 +18,20 @@ export function getMousePosition (d3Selection): Position {
   let [x, y] = d3.mouse(d3Selection.node())
   let bb = d3Selection.node().getBoundingClientRect()
   return [x + bb.left, y + bb.top]
+}
+
+/**
+ * Return prediction objects which are present in modelsData. Clear the ones
+ * which are absent.
+ */
+export function filterActivePredictions (predictions, modelsData) {
+  let modelIds = modelsData.map(m => m.id)
+  return predictions.filter(p => {
+    if (modelIds.indexOf(p.id) === -1) {
+      p.clear()
+      return false
+    } else {
+      return true
+    }
+  })
 }

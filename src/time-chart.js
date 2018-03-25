@@ -14,6 +14,7 @@ import TimeRect from './components/time-chart/timerect'
 import Chart from './chart'
 import { verifyTimeChartData } from './utilities/data/verify'
 import { getTimeChartDataConfig } from './utilities/data/config'
+import { filterActivePredictions } from './utilities/misc'
 import * as ev from './events'
 
 /**
@@ -187,15 +188,7 @@ export default class TimeChart extends Chart {
     this.colors = colors.getColorMap(data.models.length)
 
     // Clear markers not needed
-    let currentPredictionIds = data.models.map(m => m.id)
-    this.predictions = this.predictions.filter(p => {
-      if (currentPredictionIds.indexOf(p.id) === -1) {
-        p.clear()
-        return false
-      } else {
-        return true
-      }
-    })
+    this.predictions = filterActivePredictions(this.predictions, data.models)
 
     // Generate markers for predictions if not already there
     // Assume unique model ids
