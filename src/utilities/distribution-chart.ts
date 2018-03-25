@@ -3,43 +3,6 @@ import * as mmwr from 'mmwr-week'
 import * as errors from './errors'
 import { Timepoint, Point, Range } from '../interfaces'
 
-/**
- * Return a formatted string representing a bin at index from series
- */
-export function formatBin (series: number[], index: number): string {
-  let start = series[index]
-  let end
-
-  // Figure out if we are working with integers
-  let diff = series[1] - series[0]
-
-  if (index === (series.length - 1)) {
-    // We are at the end, use the diff
-    end = start + diff
-  } else {
-    end = series[index + 1]
-  }
-
-  if (diff < 1) {
-    // These are floats
-    return `${start.toFixed(2)}-${end.toFixed(2)}`
-  } else {
-    return `${start}-${end}`
-  }
-}
-
-export function getYDomain (data, curveIdx: number): Range {
-  let modelMaxes = data.models.map(m => {
-    let curveData = m.curves[curveIdx].data
-    if (!curveData) {
-      return 0
-    } else {
-      return Math.max(...curveData.map(d => d[1]))
-    }
-  })
-  return [0, Math.max(...modelMaxes)]
-}
-
 export function getXDomain (data, curveIdx: number): Range {
   // This assumes an ordinal scale
   for (let i = 0; i < data.models.length; i++) {

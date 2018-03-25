@@ -49,7 +49,7 @@ export default class Overlay extends SComponent {
           .attr('x2', snappedX)
 
         // Format bin value to display
-        let binVal = utils.formatBin(scales.xScale.domain(), index)
+        let binVal = tt.formatBin(scales.xScale.domain(), index)
 
         tooltip.render(tt.parsePredictions({
           title: `Bin: ${binVal}`,

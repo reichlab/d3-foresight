@@ -10,6 +10,31 @@ import { getMousePosition } from './mouse'
 import Tooltip from '../components/common/tooltip'
 
 /**
+ * Return a formatted string representing a bin at index from series
+ */
+export function formatBin (series: number[], index: number): string {
+  let start = series[index]
+  let end
+
+  // Figure out if we are working with integers
+  let diff = series[1] - series[0]
+
+  if (index === (series.length - 1)) {
+    // We are at the end, use the diff
+    end = start + diff
+  } else {
+    end = series[index + 1]
+  }
+
+  if (diff < 1) {
+    // These are floats
+    return `${start.toFixed(2)}-${end.toFixed(2)}`
+  } else {
+    return `${start}-${end}`
+  }
+}
+
+/**
  * Move tooltip to the position of the selection
  */
 export function moveTooltip (tooltip: Tooltip, selection, direction = 'right') {
