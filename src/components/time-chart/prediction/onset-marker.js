@@ -72,7 +72,7 @@ export default class OnsetMarker extends SComponent {
         tt.moveTooltip(cfg.tooltip, d3.select('.overlay'))
       })
 
-    if (cfg.cid === null) {
+    if (cfg.cid === -1) {
       ['.range', '.stopper'].forEach(cls => {
         this.selection.selectAll(cls)
           .attr('display', 'none')

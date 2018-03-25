@@ -78,7 +78,7 @@ export default class LegendDrawer extends Component {
         }), 'left')
 
       this.ciButtons.addOnClick(({ idx }) => {
-        ev.publish(config.uuid, ev.LEGEND_CI, { idx: (ciValues.length - 1) === idx ? null : idx })
+        ev.publish(config.uuid, ev.LEGEND_CI, { idx: (ciValues.length - 1) === idx ? -1 : idx })
       })
       this.ciButtons.set(config.ci.idx)
       ciItem.append(() => this.ciButtons.node)
