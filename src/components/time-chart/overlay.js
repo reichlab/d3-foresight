@@ -120,7 +120,7 @@ export default class Overlay extends SComponent {
           // Add note regarding which prediction is getting displayed
           let aheadIndex = visiblePreds[0].displayedIdx(index)
           if (aheadIndex !== null) {
-            ttTitle = `${aheadIndex + 1} week${aheadIndex ? 's' : ''} ahead`
+            ttTitle = `${aheadIndex + 1} ahead`
           }
         }
 
