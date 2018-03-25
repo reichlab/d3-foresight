@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-01-28 Sun 05:42 -->
+<!-- 2018-03-25 Sun 00:22 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>d3-foresight</title>
@@ -180,7 +180,15 @@
   .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
-<script src="./d3-foresight.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="./assets/d3-foresight.js"></script>
+<script src="./assets/script.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,800" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono" />
+<link rel="stylesheet" href="./assets/css/main.css">
+<link rel="stylesheet" href="./assets/fontello/fontello.css">
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -231,10 +239,181 @@ for the JavaScript code in this tag.
 <body>
 <div id="content">
 <h1 class="title">d3-foresight</h1>
+<p>
+Pellentesque dapibus suscipit ligula.  Donec posuere augue in quam.  Etiam vel
+tortor sodales tellus ultricies commodo.  Suspendisse potenti.  Aenean in sem ac
+leo mollis blandit.  Donec neque quam, dignissim in, mollis nec, sagittis eu,
+wisi.  Phasellus lacus.  Etiam laoreet quam sed arcu.  Phasellus at dui in
+ligula mollis ultricies.  Integer placerat tristique nisl.  Praesent augue.
+Fusce commodo.  Vestibulum convallis, lorem a tempus semper, dui dui euismod
+elit, vitae placerat urna tortor vitae lacus.  Nullam libero mauris, consequat
+quis, varius et, dictum id, arcu.  Mauris mollis tincidunt felis.  Aliquam
+feugiat tellus ut neque.  Nulla facilisis, risus a rhoncus fermentum, tellus
+tellus lacinia purus, et dictum nunc justo sit amet elit
+</p>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org60f8aa9">1. Quickstart</a>
+<ul>
+<li><a href="#org0c993b7">1.1. TimeChart</a></li>
+<li><a href="#orga5c29f7">1.2. DistributionChart</a></li>
+</ul>
+</li>
+<li><a href="#org0b17a3e">2. Hooks</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org60f8aa9" class="outline-2">
+<h2 id="org60f8aa9"><span class="section-number-2">1</span> Quickstart</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<code>d3-foresight</code> needs <a href="https://d3js.org/">d3</a> and <a href="https://momentjs.com">momentjs</a>. Include these in your html:
+</p>
+
+<pre class="example">
+&lt;script src="https://d3js.org/d3.v4.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Get the js file from ./dist/d3-foresight.min.js. The package is also --&gt;
+&lt;!-- available in npm --&gt;
+&lt;script src="./d3-foresight.min.js"&gt;&lt;/script&gt;
+</pre>
+</div>
+
+<div id="outline-container-org0c993b7" class="outline-3">
+<h3 id="org0c993b7"><span class="section-number-3">1.1</span> TimeChart</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+This visualizes prediction of time series by some models upto a provided number
+of time steps in future at each step of time. Basic usage instruction follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js">document.addEventListener<span class="org-rainbow-delimiters-depth-1">(</span><span class="org-string">"DOMContentLoaded"</span>, <span class="org-keyword">function</span> <span class="org-rainbow-delimiters-depth-2">(</span><span class="org-variable-name">event</span><span class="org-rainbow-delimiters-depth-2">)</span> <span class="org-rainbow-delimiters-depth-2">{</span>
+  <span class="org-keyword">let</span> <span class="org-variable-name">timeChartOptions</span> = <span class="org-rainbow-delimiters-depth-3">{</span>
+    pointType: <span class="org-string">'mmwr-week'</span>
+  <span class="org-rainbow-delimiters-depth-3">}</span>
+
+  <span class="org-keyword">let</span> <span class="org-variable-name">timeChart</span> = <span class="org-keyword">new</span> <span class="org-type">d3Foresight.TimeChart</span><span class="org-rainbow-delimiters-depth-3">(</span><span class="org-string">'#timechart'</span>, timeChartOptions<span class="org-rainbow-delimiters-depth-3">)</span>
+
+  <span class="org-keyword">let</span> <span class="org-variable-name">data</span> = <span class="org-rainbow-delimiters-depth-3">{</span>
+    timePoints: <span class="org-rainbow-delimiters-depth-4">[</span>
+      <span class="org-rainbow-delimiters-depth-5">{</span> week: <span class="org-highlight-numbers-number">20</span>, year: <span class="org-highlight-numbers-number">2016</span> <span class="org-rainbow-delimiters-depth-5">}</span>,
+      <span class="org-rainbow-delimiters-depth-5">{</span> week: <span class="org-highlight-numbers-number">21</span>, year: <span class="org-highlight-numbers-number">2016</span> <span class="org-rainbow-delimiters-depth-5">}</span>,
+      <span class="org-rainbow-delimiters-depth-5">{</span> week: <span class="org-highlight-numbers-number">22</span>, year: <span class="org-highlight-numbers-number">2016</span> <span class="org-rainbow-delimiters-depth-5">}</span>,
+      <span class="org-rainbow-delimiters-depth-5">{</span> week: <span class="org-highlight-numbers-number">23</span>, year: <span class="org-highlight-numbers-number">2016</span> <span class="org-rainbow-delimiters-depth-5">}</span>,
+      <span class="org-rainbow-delimiters-depth-5">{</span> week: <span class="org-highlight-numbers-number">24</span>, year: <span class="org-highlight-numbers-number">2016</span> <span class="org-rainbow-delimiters-depth-5">}</span>,
+    <span class="org-rainbow-delimiters-depth-4">]</span>,
+    actual: <span class="org-rainbow-delimiters-depth-4">[</span><span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">1</span>, <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">3</span>, <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">4</span>, <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">3</span>, <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">1</span><span class="org-rainbow-delimiters-depth-4">]</span>,
+    models: <span class="org-rainbow-delimiters-depth-4">[</span>
+      <span class="org-rainbow-delimiters-depth-5">{</span>
+        id: <span class="org-string">'mod'</span>,
+        meta: <span class="org-rainbow-delimiters-depth-6">{</span>
+          name: <span class="org-string">'Name'</span>,
+          description: <span class="org-string">'Model description here'</span>,
+          url: <span class="org-string">'http://github.com'</span>
+        <span class="org-rainbow-delimiters-depth-6">}</span>,
+        predictions: <span class="org-rainbow-delimiters-depth-6">[</span>
+          <span class="org-constant">null</span>,
+          <span class="org-rainbow-delimiters-depth-7">{</span>
+            series: <span class="org-rainbow-delimiters-depth-8">[</span>
+              <span class="org-rainbow-delimiters-depth-9">{</span> point: <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">5</span> <span class="org-rainbow-delimiters-depth-9">}</span>,
+              <span class="org-rainbow-delimiters-depth-9">{</span> point: <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">5</span> <span class="org-rainbow-delimiters-depth-9">}</span>,
+            <span class="org-rainbow-delimiters-depth-8">]</span>
+          <span class="org-rainbow-delimiters-depth-7">}</span>,
+          <span class="org-rainbow-delimiters-depth-7">{</span>
+            series: <span class="org-rainbow-delimiters-depth-8">[</span>
+              <span class="org-rainbow-delimiters-depth-9">{</span> point: <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">5</span> <span class="org-rainbow-delimiters-depth-9">}</span>,
+              <span class="org-rainbow-delimiters-depth-9">{</span> point: <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">5</span> <span class="org-rainbow-delimiters-depth-9">}</span>,
+            <span class="org-rainbow-delimiters-depth-8">]</span>
+          <span class="org-rainbow-delimiters-depth-7">}</span>,
+          <span class="org-constant">null</span>,
+          <span class="org-constant">null</span>
+        <span class="org-rainbow-delimiters-depth-6">]</span>
+      <span class="org-rainbow-delimiters-depth-5">}</span>
+    <span class="org-rainbow-delimiters-depth-4">]</span>
+  <span class="org-rainbow-delimiters-depth-3">}</span>
+  timeChart.plot<span class="org-rainbow-delimiters-depth-3">(</span>data<span class="org-rainbow-delimiters-depth-3">)</span>
+
+  window.tc = timeChart
+  <span class="org-comment-delimiter">// </span><span class="org-comment">For updating the current position of displayed predictions</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">timeChart.update(0)</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">Or simply</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">timeChart.moveForward()</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">timeChart.moveBackward()</span>
+<span class="org-rainbow-delimiters-depth-2">}</span><span class="org-rainbow-delimiters-depth-1">)</span>
+</pre>
+</div>
+
+<div>
+<div id="timechart"></div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga5c29f7" class="outline-3">
+<h3 id="orga5c29f7"><span class="section-number-3">1.2</span> DistributionChart</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+This visualizes probability distribution of the model outputs.
+</p>
+
+<p>
+```js
+let distributionChart = new DistributionChart('#target-div')
+</p>
+
+<p>
+// TODO: Description of data
+distributionChart.plot(data)
+```
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0b17a3e" class="outline-2">
+<h2 id="org0b17a3e"><span class="section-number-2">2</span> Hooks</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+The charts can call user defined hooks when movement events are triggered inside
+(e.g. by clicking on movement buttons or clicking on the overlay). To register
+your custom functions to be called on these events, you can `addHook` (this
+doesn't overwrite already added hooks, so its safe in that sense).
+</p>
+
+<p>
+```js
+timeChart.addHook('forward-index', () =&gt; {
+  // This is triggered when an event moved the visualization forward in time
+  console.log('chart moved forward')
+})
+</p>
+
+<p>
+timeChart.addHook('backward-index', () =&gt; {
+  // This is triggered when an event moved the visualization backward in time
+  console.log('chart moved backward')
+})
+</p>
+
+<p>
+timeChart.addHook('jump-to-index', (index) =&gt; {
+  // This is triggered when an event moved the visualization to certain discrete `index` in time
+  console.log('chart moved to ' + index)
+})
+```
+</p>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Abhinav Tushar</p>
-<p class="date">Created: 2018-01-28 Sun 05:42</p>
+<p class="date">Created: 2018-03-25 Sun 00:22</p>
 <p class="validation"></p>
 </div>
 </body>
