@@ -34,27 +34,6 @@ export function getXDateDomain (timePoints: Timepoint[], pointType: Point) {
   }))
 }
 
-export function getYDomain (data): Range {
-  // Max from actual data
-  let maxValues = [Math.max(...data.actual.filter(d => d))]
-  // Max from observed data
-  maxValues.push(Math.max(...data.observed.map(d => {
-    return Math.max(...d.map(dl => dl.value))
-  })))
-  // Max from historical data
-  data.history.forEach(h => {
-    maxValues.push(Math.max(...h.actual))
-  })
-  // Max from all the models
-  data.models.map(mdl => {
-    maxValues.push(Math.max(...mdl.predictions.filter(m => m).map(d => {
-      return Math.max(...[...d.series.map(s => Math.max(...s.high)), Math.max(...d.peakValue.high)])
-    })))
-  })
-  // HACK Clipping at 13 since we don't predict beyond that
-  return [0, Math.min(13, 1.1 * Math.max(...maxValues))]
-}
-
 export function getXDomain (timePoints: Timepoint[]): Range {
   return [0, timePoints.length - 1]
 }

@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import * as utils from './utilities/time-chart'
+import * as domains from './utilities/data/domains'
 import * as colors from './utilities/colors'
 import * as errors from './utilities/errors'
 import { XAxisDate } from './components/common/axis-x'
@@ -143,7 +144,11 @@ export default class TimeChart extends Chart {
     }).filter(d => d !== null)
 
     // Update domains
-    this.yScale.domain(utils.getYDomain(data))
+    if (this.config.axes.y.domain) {
+      this.yScale.domain(this.config.axes.y.domain)
+    } else {
+      this.yScale.domain(domains.y(data, this.dataConfig))
+    }
     this.xScale.domain(utils.getXDomain(this.timePoints))
     this.xScaleDate.domain(utils.getXDateDomain(this.timePoints, this.config.pointType))
     this.xScalePoint.domain(this.ticks)
