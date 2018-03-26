@@ -61,7 +61,7 @@ timeChart.plot(data)
 
 // 3. Update
 // Move to the given index in the set of timePoints
-timeChart.update(0)
+timeChart.update(10)
 // Or simply use
 // timeChart.moveForward()
 // timeChart.moveBackward()

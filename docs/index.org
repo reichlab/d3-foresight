@@ -7,7 +7,7 @@
 
 {{{js(https://d3js.org/d3.v4.min.js)}}}
 {{{js(https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js)}}}
-{{{js(./assets/d3-foresight.js)}}}
+{{{js(./assets/d3-foresight.min.js)}}}
 {{{js(./assets/script.js)}}}
 
 {{{css(https://fonts.googleapis.com/css?family=Merriweather:900\,900italic\,300\,300italic)}}}
@@ -192,7 +192,7 @@ The life cycle of ~TimeChart~ involves the following stages:
 
   // 3. Update
   // Move to the given index in the set of timePoints
-  timeChart.update(0)
+  timeChart.update(10)
   // Or simply use
   // timeChart.moveForward()
   // timeChart.moveBackward()
