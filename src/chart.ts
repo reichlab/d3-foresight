@@ -18,7 +18,7 @@ export default class Chart {
   uuid: string
   hooks: { [name: string]: any[] }
 
-  constructor (selection, onsetHeight, options = {}) {
+  constructor (selection, options = {}) {
     let defaultConfig = {
       axes: {
         x: {
@@ -35,11 +35,16 @@ export default class Chart {
       margin: {
         top: 5,
         right: 50,
-        bottom: 70 + onsetHeight,
+        bottom: 70,
         left: 55
-      }
+      },
+      onset: false
     }
     this.config = (<any>Object).assign({}, defaultConfig, options)
+
+    // Add space for onset
+    this.onsetHeight = this.config.onset ? 30 : 0
+    this.config.margin.bottom += this.onsetHeight
 
     let chartBB = selection.node().getBoundingClientRect()
     let divWidth = chartBB.width
@@ -60,7 +65,6 @@ export default class Chart {
     selection.append(() => this.tooltip.node)
 
     this.selection = selection
-    this.onsetHeight = onsetHeight
 
     // Create a uuid for this instance
     this.uuid = uuid()

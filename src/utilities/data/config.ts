@@ -59,7 +59,7 @@ export function getTimeChartDataConfig (data, config) {
     baseline: 'baseline' in data,
     predictions: {
       peak: isPeakPresent(data.models),
-      onset: isOnsetPresent(data.models)
+      onset: config.onset && isOnsetPresent(data.models)
     },
     ticks: getTicks(data.timePoints, config.pointType),
     pointType: config.pointType
