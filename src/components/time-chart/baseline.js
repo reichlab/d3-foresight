@@ -37,16 +37,21 @@ export default class Baseline extends SComponent {
         .attr('x', 0)
     }
 
-    this.text.style('cursor', 'pointer')
+    this.text
       .on('mouseover', () => { tooltip.hidden = false })
       .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', function () {
         tooltip.render(tt.parseText({ text: description }))
         tt.moveTooltip(tooltip, selectUncle(this, '.overlay'), 'left')
       })
-      .on('click', () => {
-        window.open(url, '_blank')
-      })
+
+    if (url) {
+      this.text
+        .style('cursor', 'pointer')
+        .on('click', () => {
+          window.open(url, '_blank')
+        })
+    }
   }
 
   plot (scales, baseline) {

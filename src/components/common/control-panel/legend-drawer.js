@@ -156,7 +156,9 @@ export default class LegendDrawer extends Component {
     this.predictionContainer.selectAll('*').remove()
     this.rows = predictions.map(p => {
       let drawerRow = new DrawerRow(p.id, p.color)
-      drawerRow.addLink(p.meta.url, this.tooltip)
+      if (p.meta.url) {
+        drawerRow.addLink(p.meta.url, this.tooltip)
+      }
 
       drawerRow.addOnClick(({ id, state }) => {
         this.showHideButtons.reset()

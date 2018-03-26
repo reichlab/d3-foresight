@@ -51,7 +51,7 @@
           "format": "uri"
         }
       },
-      "required": ["description", "name", "url"]
+      "required": ["description", "name"]
     },
     "predictions": {
       "description": "Prediction array for each time point",

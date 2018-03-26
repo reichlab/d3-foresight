@@ -36,16 +36,21 @@ export class XAxis extends SComponent {
         .attr('x', 0)
     }
 
-    xText.style('cursor', 'pointer')
+    xText
       .on('mouseover', () => { tooltip.hidden = false })
       .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', function () {
         tooltip.render(tt.parseText({ text: description }))
         tt.moveTooltip(tooltip, selectUncle(this, '.overlay'), 'left')
       })
-      .on('click', () => {
-        window.open(url, '_blank')
-      })
+
+    if (url) {
+      xText
+        .style('cursor', 'pointer')
+        .on('click', () => {
+          window.open(url, '_blank')
+        })
+    }
 
     this.layout = layout
   }
@@ -100,16 +105,21 @@ export class XAxisDate extends SComponent {
         .attr('x', 0)
     }
 
-    xText.style('cursor', 'pointer')
+    xText
       .on('mouseover', () => { tooltip.hidden = false })
       .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', function () {
         tooltip.render(tt.parseText({ text: description }))
         tt.moveTooltip(tooltip, selectUncle(this, '.overlay'), 'left')
       })
-      .on('click', () => {
-        window.open(url, '_blank')
-      })
+
+    if (url) {
+      xText
+        .style('cursor', 'pointer')
+        .on('click', () => {
+          window.open(url, '_blank')
+        })
+    }
 
     // Setup reverse axis (over onset offset)
     // Clone of axis above onset panel, without text
