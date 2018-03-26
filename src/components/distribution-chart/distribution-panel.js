@@ -21,7 +21,7 @@ export default class DistributionPanel extends SComponent {
     this.yAxis = this.append(new YAxis(layout, {
       title: 'Probability',
       description: 'Probability assigned to x-axis bins',
-      tooltip: this.tooltip
+      tooltip
     }))
 
     this.predictions = []
