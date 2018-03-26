@@ -58,7 +58,7 @@ export default class OnsetMarker extends SComponent {
         cfg.tooltip.hidden = false
         cfg.tooltip.render(tt.parsePoint({
           title: cfg.id,
-          values: [{ key: 'Season Onset', value: cfg.scales.ticks[onset.point] }],
+          values: [{ key: 'Onset', value: cfg.scales.ticks[onset.point] }],
           color: cfg.color
         }))
       })
