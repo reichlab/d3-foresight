@@ -1,16 +1,33 @@
-#+TITLE: d3-foresight
+#+TITLE: D3-foresight documentation
 
-#+OPTIONS: toc:nil
-#+HTML_HEAD: <script src="https://d3js.org/d3.v4.min.js"></script>
-#+HTML_HEAD: <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-#+HTML_HEAD: <script src="./assets/d3-foresight.js"></script>
-#+HTML_HEAD: <script src="./assets/script.js"></script>
+#+OPTIONS: toc:nil title:nil
+#+MACRO: js #+HTML_HEAD: <script src="$1"></script>
+#+MACRO: css #+HTML_HEAD: <link rel="stylesheet" href="$1" />
+#+MACRO: badge @@html:<a href="$1" class="image-link"><img src="$2" /></a>@@
 
-#+HTML_HEAD: <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic" />
-#+HTML_HEAD: <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,800" />
-#+HTML_HEAD: <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono" />
-#+HTML_HEAD: <link rel="stylesheet" href="./assets/css/main.css">
-#+HTML_HEAD: <link rel="stylesheet" href="./assets/fontello/fontello.css">
+{{{js(https://d3js.org/d3.v4.min.js)}}}
+{{{js(https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js)}}}
+{{{js(./assets/d3-foresight.js)}}}
+{{{js(./assets/script.js)}}}
+
+{{{css(https://fonts.googleapis.com/css?family=Merriweather:900\,900italic\,300\,300italic)}}}
+{{{css(https://fonts.googleapis.com/css?family=Open+Sans:400\,300\,800)}}}
+{{{css(https://fonts.googleapis.com/css?family=Fira+Mono)}}}
+{{{css(./assets/css/main.css)}}}
+{{{css(./assets/css/overrides.css)}}}
+{{{css(./assets/fontello/fontello.css)}}}
+
+#+HTML: <div class="page-header">
+@@html:   <div class="page-meta small">Document last updated@@ {{{time(%Y-%m-%d %a %H:%M)}}}@@html:</div>@@
+#+HTML:   <h1>D3 <em>Foresight</em></h1>
+#+HTML: </div>
+
+{{{badge(https://travis-ci.org/reichlab/d3-foresight,https://img.shields.io/travis/reichlab/d3-foresight/master.svg?style=for-the-badge)}}}
+{{{badge(https://www.npmjs.com/package/d3-foresight,https://img.shields.io/npm/v/d3-foresight.svg?style=for-the-badge)}}}
+{{{badge(https://www.npmjs.com/package/d3-foresight,https://img.shields.io/npm/l/d3-foresight.svg?style=for-the-badge)}}}
+{{{badge(https://github.com/reichlab/d3-foresight/issues,https://img.shields.io/github/issues/reichlab/d3-foresight.svg?style=for-the-badge)}}}
+
+{{{badge(https://github.com/feross/standard,https://cdn.rawgit.com/feross/standard/master/badge.svg)}}}
 
 Pellentesque dapibus suscipit ligula.  Donec posuere augue in quam.  Etiam vel
 tortor sodales tellus ultricies commodo.  Suspendisse potenti.  Aenean in sem ac
