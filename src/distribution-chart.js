@@ -23,7 +23,7 @@ export default class DistributionChart extends Chart {
     }
 
     let selection = d3.select(element)
-        .attr('class', 'd3-foresight-chart d3-foresight-distribution-chart')
+        .attr('class', 'd3f-chart d3f-distribution-chart')
     super(selection, Object.assign({}, defaultConfig, options))
 
     // Initialize scales

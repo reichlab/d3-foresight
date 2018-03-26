@@ -1,5 +1,5 @@
 {
-  "accent": "#3273dc",
+  "accent": "#5c6bc0",
   "actual": "#66d600",
   "observed": "#18817f",
   "history": "#ddd",
@@ -7,6 +7,7 @@
 
   "axis-ticks": "#bbb",
   "hover-line": "#bbb",
+  "disabled": "#bbb",
 
   "black": "#000",
   "gray": "#333",

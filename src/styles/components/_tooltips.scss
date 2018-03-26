@@ -1,13 +1,7 @@
-// Styles for tooltips
-
-@mixin cell-padding() {
-  padding: 5px 10px;
-}
-
-.d3-foresight-tooltip {
+.d3f-tooltip {
   background-color: $white;
-  border-radius: 1px;
-  box-shadow: 0 0 2px;
+  @include shadow();
+  @include border($shadow);
   font-size: 11px;
   position: fixed;
   max-width: 250px;

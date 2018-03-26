@@ -49,7 +49,7 @@ export default class TimeChart extends Chart {
     }
 
     let selection = d3.select(element)
-        .attr('class', 'd3-foresight-chart d3-foresight-time-chart')
+        .attr('class', 'd3f-chart d3f-time-chart')
     super(selection, Object.assign({}, defaultConfig, options))
 
     // Initialize scales

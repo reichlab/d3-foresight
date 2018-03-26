@@ -34,7 +34,7 @@ export default class Chart {
       },
       margin: {
         top: 5,
-        right: 50,
+        right: 60,
         bottom: 70,
         left: 55
       },

@@ -1,4 +1,4 @@
-import './styles/style.scss'
+import './styles/main.scss'
 import { JUMP_TO_INDEX, FORWARD_INDEX, BACKWARD_INDEX } from './events'
 
 export { default as TimeChart } from './time-chart'

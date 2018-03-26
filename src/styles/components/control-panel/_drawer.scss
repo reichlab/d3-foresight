@@ -1,0 +1,80 @@
+.nav-drawer {
+  @include no-select();
+  @include shadow();
+  @include border($shadow);
+  background-color: $white;
+  font-size: 11px;
+  min-width: 200px;
+  position: absolute;
+  right: 60px;
+  top: 12px;
+
+  .legend-prediction-container {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  // Control buttons item
+  .legend-control-container {
+    background-color: $white-shade;
+    padding: 5px 0;
+
+    .control-item {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+    }
+
+    .control-item > span:first-child {
+      margin-right: 5px;
+    }
+
+    .toggle-button {
+      @include border($shadow);
+      background-color: $white;
+      padding: 2px 6px;
+
+      &.selected {
+        background-color: $accent;
+        border-color: $accent;
+        color: $white;
+      }
+    }
+  }
+
+  .item {
+    padding: 4px 10px;
+
+    i {
+      display: inline-block;
+      font-size: 9px;
+      font-style: normal;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    .item-title {
+      display: inline-block;
+      font-size: 11px;
+      vertical-align: middle;
+    }
+
+    .item-url {
+      font-size: 9px;
+      margin-left: 10px;
+      margin-right: 5px;
+      float: right;
+      color: $gray-light;
+      text-decoration: none;
+    }
+
+    &.na {
+      i {
+        color: $disabled !important;
+      }
+
+      color: $disabled;
+    }
+  }
+}

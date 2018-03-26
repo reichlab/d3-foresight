@@ -8,7 +8,7 @@ export default class Tooltip extends Component {
     super()
 
     this.selection
-      .attr('class', `d3-foresight-tooltip`)
+      .attr('class', `d3f-tooltip`)
       .style('display', 'none')
 
     this.offset = 15

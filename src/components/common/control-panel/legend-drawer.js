@@ -1,5 +1,5 @@
 import * as ev from '../../../events'
-import palette from '../../../styles/palette.json'
+import colors from '../../../styles/modules/colors.json'
 import DrawerRow from './drawer-row'
 import ToggleButtons from './toggle-buttons'
 import Component from '../../component'
@@ -21,7 +21,7 @@ export default class LegendDrawer extends Component {
 
     let actualItems = [
       {
-        color: palette.actual,
+        color: colors.actual,
         text: 'Actual',
         tooltipData: {
           title: 'Actual Data',
@@ -29,7 +29,7 @@ export default class LegendDrawer extends Component {
         }
       },
       {
-        color: palette.observed,
+        color: colors.observed,
         text: 'Observed',
         tooltipData: {
           title: 'Observed Data',
@@ -37,7 +37,7 @@ export default class LegendDrawer extends Component {
         }
       },
       {
-        color: palette['history-highlight'],
+        color: colors['history'],
         text: 'History',
         tooltipData: {
           title: 'Historical Data',

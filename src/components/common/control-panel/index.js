@@ -10,7 +10,7 @@ import Component from '../../component'
 export default class ControlPanel extends Component {
   constructor (config) {
     super()
-    this.selection.attr('class', 'd3-foresight-controls')
+    this.selection.attr('class', 'd3f-controls')
     this.config = config
 
     // Add legend drawer
