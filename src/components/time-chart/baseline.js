@@ -1,4 +1,3 @@
-import * as d3 from 'd3'
 import * as tt from '../../utilities/tooltip'
 import { selectUncle } from '../../utilities/misc'
 import SComponent from '../s-component'
