@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-03-25 Sun 22:17 -->
+<!-- 2018-03-25 Sun 23:51 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>D3-foresight documentation</title>
@@ -241,7 +241,7 @@ for the JavaScript code in this tag.
 <div id="content">
 <div class="page-header">
 <p>
-   <div class="page-meta small">Document last updated 2018-03-25 Sun 22:17</div>
+   <div class="page-meta small">Document last updated 2018-03-25 Sun 23:51</div>
 </p>
 <h1>D3 <em>Foresight</em></h1>
 </div>
@@ -258,35 +258,40 @@ for the JavaScript code in this tag.
 </p>
 
 <p>
-D3 Foresight is a <a href="https://github.com/d3/d3">d3</a> based library for visualizing time series forecasts. At a
-<i>time point</i>, a general time series model trying to predict a single variable
-series (like temperature) makes forecasts for some time points in the future
-with some uncertainty described by probability distributions. Other than these
-predictions, it might also provide an estimate of <i>peak</i> and some <i>onset/outbreak</i>
-point (as defined by a baseline). This visualizations in this library try to
-cover these cases. See <a href="http://reichlab.io/flusight">reichlab/flusight</a> for a demo.
+D3 Foresight is a <a href="https://github.com/d3/d3">d3</a> based library for visualizing time series forecasts
+interactively. At a <i>time point</i>, a general time series model trying to predict a
+single variable series (like temperature) makes forecasts for some time points
+in the future with some uncertainty described by probability distributions.
+Other than these predictions, it might also provide an estimate of <i>peak</i> and some
+<i>onset/outbreak</i> point (as defined by a baseline). This visualizations in this
+library try to cover these cases. See <a href="http://reichlab.io/flusight">reichlab/flusight</a> for a demo.
 </p>
 
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org08ccaac">Setting up</a></li>
-<li><a href="#org30f3c75">TimeChart</a></li>
-<li><a href="#orgf1edc63"><span class="todo TODO">TODO</span> DistributionChart</a></li>
-<li><a href="#org085f010">Hooks</a></li>
+<li><a href="#org6afcc24">Setting up</a></li>
+<li><a href="#org9fc2245">TimeChart</a>
+<ul>
+<li><a href="#org2f0878c">Basic plot</a></li>
+<li><a href="#orga34e9f6"><span class="todo TODO">TODO</span> Advanced plots</a></li>
+</ul>
+</li>
+<li><a href="#orgd8a2401"><span class="todo TODO">TODO</span> DistributionChart</a></li>
+<li><a href="#org9cf7ad3">Hooks</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org08ccaac" class="outline-2">
-<h2 id="org08ccaac">Setting up</h2>
-<div class="outline-text-2" id="text-org08ccaac">
+<div id="outline-container-org6afcc24" class="outline-2">
+<h2 id="org6afcc24">Setting up</h2>
+<div class="outline-text-2" id="text-org6afcc24">
 <p>
-<code>d3-foresight</code> requires <a href="https://d3js.org/">d3</a> and <a href="https://momentjs.com">momentjs</a> as external dependencies. To build
-d3-foresight itself, use <code>npm compile</code> (for <code>./dist/d3-foresight.js</code>) or <code>npm build</code>
-(for <code>./dist/d3-foresight.min.js</code>). The library is also available on npm as
-<a href="https://www.npmjs.com/package/d3-foresight">d3-foresight</a>. In browser, include these in your html:
+The library requires <a href="https://d3js.org/">d3</a> and <a href="https://momentjs.com">momentjs</a> as external dependencies. To build
+foresight itself, use <code>npm compile</code> (for <code>./dist/d3-foresight.js</code>) or <code>npm build</code> (for
+<code>./dist/d3-foresight.min.js</code>). The library is also available on npm as
+<a href="https://www.npmjs.com/package/d3-foresight">d3-foresight</a>. For browser, include these in your html:
 </p>
 
 <pre class="example">
@@ -306,83 +311,231 @@ for that can be added using:
 </div>
 </div>
 
-<div id="outline-container-org30f3c75" class="outline-2">
-<h2 id="org30f3c75">TimeChart</h2>
-<div class="outline-text-2" id="text-org30f3c75">
+<div id="outline-container-org9fc2245" class="outline-2">
+<h2 id="org9fc2245">TimeChart</h2>
+<div class="outline-text-2" id="text-org9fc2245">
 <p>
-This visualizes prediction of time series by some models upto a provided number
-of time steps in future at each step of time. Basic usage instruction follows:
+A <code>TimeChart</code> displays the time series to be predicted and the models'
+predictions. Beyond the very minimal plots involving only model forecasts, it
+can show the following items:
+</p>
+
+<ul class="org-ul">
+<li>The actual time series to be predicted.</li>
+<li>The <i>observed</i> time series. This might be different from the actual series if
+the truth is revised (e.g. due to reporting delays in the incident count for
+certain disease).</li>
+<li>Baseline value for the year/season.</li>
+<li>History of the series over some past years/seasons.</li>
+<li>Additional prediction information from models like
+<ul class="org-ul">
+<li>Confidence intervals</li>
+<li>Peak and onset prediction</li>
+</ul></li>
+</ul>
+</div>
+
+<div id="outline-container-org2f0878c" class="outline-3">
+<h3 id="org2f0878c">Basic plot</h3>
+<div class="outline-text-3" id="text-org2f0878c">
+<p>
+In this section, we will plot a very basic visualization involving one model
+providing random numbers as forecasts for a year.
+</p>
+</div>
+
+<div id="outline-container-org3930a87" class="outline-4">
+<h4 id="org3930a87">Configuration</h4>
+<div class="outline-text-4" id="text-org3930a87">
+<p>
+Time in foresight is represented using <code>timePoints</code> which is an array mapping to
+discrete date/time values. As of now, foresight supports the following two type
+of time points:
+</p>
+
+<ol class="org-ol">
+<li><code>regular-week</code></li>
+<li><code>mmwr-week</code> based on <a href="https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf">MMWR definitions</a></li>
+</ol>
+
+<p>
+Both are <i>week</i> based points and are represented as objects like shown:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js">document.addEventListener<span class="org-rainbow-delimiters-depth-1">(</span><span class="org-string">"DOMContentLoaded"</span>, <span class="org-keyword">function</span> <span class="org-rainbow-delimiters-depth-2">(</span><span class="org-variable-name">event</span><span class="org-rainbow-delimiters-depth-2">)</span> <span class="org-rainbow-delimiters-depth-2">{</span>
-  <span class="org-keyword">let</span> <span class="org-variable-name">timeChartOptions</span> = <span class="org-rainbow-delimiters-depth-3">{</span>
-    pointType: <span class="org-string">'mmwr-week'</span>
-  <span class="org-rainbow-delimiters-depth-3">}</span>
+<pre class="src src-json"><span class="org-rainbow-delimiters-depth-1">{</span>
+  week: <span class="org-highlight-numbers-number">20</span>,
+  year: <span class="org-highlight-numbers-number">2016</span>
+<span class="org-rainbow-delimiters-depth-1">}</span>
+</pre>
+</div>
 
-  <span class="org-keyword">let</span> <span class="org-variable-name">timeChart</span> = <span class="org-keyword">new</span> <span class="org-type">d3Foresight.TimeChart</span><span class="org-rainbow-delimiters-depth-3">(</span><span class="org-string">'#timechart'</span>, timeChartOptions<span class="org-rainbow-delimiters-depth-3">)</span>
+<p>
+Lets work on regular weeks for the year 2016. Our week choice can be passed to
+foresight charts using a config object which is the following in our case:
+</p>
 
-  <span class="org-keyword">let</span> <span class="org-variable-name">data</span> = <span class="org-rainbow-delimiters-depth-3">{</span>
-    timePoints: <span class="org-rainbow-delimiters-depth-4">[</span>
-      <span class="org-rainbow-delimiters-depth-5">{</span> week: <span class="org-highlight-numbers-number">20</span>, year: <span class="org-highlight-numbers-number">2016</span> <span class="org-rainbow-delimiters-depth-5">}</span>,
-      <span class="org-rainbow-delimiters-depth-5">{</span> week: <span class="org-highlight-numbers-number">21</span>, year: <span class="org-highlight-numbers-number">2016</span> <span class="org-rainbow-delimiters-depth-5">}</span>,
-      <span class="org-rainbow-delimiters-depth-5">{</span> week: <span class="org-highlight-numbers-number">22</span>, year: <span class="org-highlight-numbers-number">2016</span> <span class="org-rainbow-delimiters-depth-5">}</span>,
-      <span class="org-rainbow-delimiters-depth-5">{</span> week: <span class="org-highlight-numbers-number">23</span>, year: <span class="org-highlight-numbers-number">2016</span> <span class="org-rainbow-delimiters-depth-5">}</span>,
-      <span class="org-rainbow-delimiters-depth-5">{</span> week: <span class="org-highlight-numbers-number">24</span>, year: <span class="org-highlight-numbers-number">2016</span> <span class="org-rainbow-delimiters-depth-5">}</span>,
-    <span class="org-rainbow-delimiters-depth-4">]</span>,
-    actual: <span class="org-rainbow-delimiters-depth-4">[</span><span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">1</span>, <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">3</span>, <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">4</span>, <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">3</span>, <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">1</span><span class="org-rainbow-delimiters-depth-4">]</span>,
-    models: <span class="org-rainbow-delimiters-depth-4">[</span>
-      <span class="org-rainbow-delimiters-depth-5">{</span>
-        id: <span class="org-string">'mod'</span>,
-        meta: <span class="org-rainbow-delimiters-depth-6">{</span>
-          name: <span class="org-string">'Name'</span>,
-          description: <span class="org-string">'Model description here'</span>,
-          url: <span class="org-string">'http://github.com'</span>
-        <span class="org-rainbow-delimiters-depth-6">}</span>,
-        predictions: <span class="org-rainbow-delimiters-depth-6">[</span>
-          <span class="org-constant">null</span>,
-          <span class="org-rainbow-delimiters-depth-7">{</span>
-            series: <span class="org-rainbow-delimiters-depth-8">[</span>
-              <span class="org-rainbow-delimiters-depth-9">{</span> point: <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">5</span> <span class="org-rainbow-delimiters-depth-9">}</span>,
-              <span class="org-rainbow-delimiters-depth-9">{</span> point: <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">5</span> <span class="org-rainbow-delimiters-depth-9">}</span>,
-            <span class="org-rainbow-delimiters-depth-8">]</span>
-          <span class="org-rainbow-delimiters-depth-7">}</span>,
-          <span class="org-rainbow-delimiters-depth-7">{</span>
-            series: <span class="org-rainbow-delimiters-depth-8">[</span>
-              <span class="org-rainbow-delimiters-depth-9">{</span> point: <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">5</span> <span class="org-rainbow-delimiters-depth-9">}</span>,
-              <span class="org-rainbow-delimiters-depth-9">{</span> point: <span class="org-highlight-numbers-number">1</span>.<span class="org-highlight-numbers-number">5</span> <span class="org-rainbow-delimiters-depth-9">}</span>,
-            <span class="org-rainbow-delimiters-depth-8">]</span>
-          <span class="org-rainbow-delimiters-depth-7">}</span>,
-          <span class="org-constant">null</span>,
-          <span class="org-constant">null</span>
-        <span class="org-rainbow-delimiters-depth-6">]</span>
-      <span class="org-rainbow-delimiters-depth-5">}</span>
-    <span class="org-rainbow-delimiters-depth-4">]</span>
-  <span class="org-rainbow-delimiters-depth-3">}</span>
-  timeChart.plot<span class="org-rainbow-delimiters-depth-3">(</span>data<span class="org-rainbow-delimiters-depth-3">)</span>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">let</span> <span class="org-variable-name">config</span> = <span class="org-rainbow-delimiters-depth-1">{</span>
+  pointType: <span class="org-string">'regular-week'</span>, <span class="org-comment-delimiter">// </span><span class="org-comment">This is optional since regular-week is default</span>
+  axes: <span class="org-rainbow-delimiters-depth-2">{</span>
+    y: <span class="org-rainbow-delimiters-depth-3">{</span>
+      title: <span class="org-string">'Random numbers'</span> <span class="org-comment-delimiter">// </span><span class="org-comment">Title for the y axis</span>
+    <span class="org-rainbow-delimiters-depth-3">}</span>
+  <span class="org-rainbow-delimiters-depth-2">}</span>
+<span class="org-rainbow-delimiters-depth-1">}</span>
+</pre>
+</div>
+</div>
+</div>
 
-  window.tc = timeChart
-  <span class="org-comment-delimiter">// </span><span class="org-comment">For updating the current position of displayed predictions</span>
-  <span class="org-comment-delimiter">// </span><span class="org-comment">timeChart.update(0)</span>
-  <span class="org-comment-delimiter">// </span><span class="org-comment">Or simply</span>
-  <span class="org-comment-delimiter">// </span><span class="org-comment">timeChart.moveForward()</span>
-  <span class="org-comment-delimiter">// </span><span class="org-comment">timeChart.moveBackward()</span>
+<div id="outline-container-orgc210437" class="outline-4">
+<h4 id="orgc210437">Data</h4>
+<div class="outline-text-4" id="text-orgc210437">
+<p>
+At minimum, <code>TimeChart</code> expects an array of time points and an array of model
+data. The time points in our case go from week 1 to week 52 of 2016 and can be
+represented as:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">let</span> <span class="org-variable-name">timePoints</span> = <span class="org-rainbow-delimiters-depth-1">[</span>...Array<span class="org-rainbow-delimiters-depth-2">(</span><span class="org-highlight-numbers-number">51</span><span class="org-rainbow-delimiters-depth-2">)</span>.keys<span class="org-rainbow-delimiters-depth-2">()</span><span class="org-rainbow-delimiters-depth-1">]</span>.map<span class="org-rainbow-delimiters-depth-1">(</span>w =&gt; <span class="org-rainbow-delimiters-depth-2">{</span>
+  <span class="org-keyword">return</span> <span class="org-rainbow-delimiters-depth-3">{</span> week: w + <span class="org-highlight-numbers-number">1</span>, year: <span class="org-highlight-numbers-number">2016</span> <span class="org-rainbow-delimiters-depth-3">}</span>
 <span class="org-rainbow-delimiters-depth-2">}</span><span class="org-rainbow-delimiters-depth-1">)</span>
 </pre>
 </div>
 
-<div>
-<div id="timechart"></div>
+<p>
+At each time point, our model provides predictions for the next 10 time points.
+These predictions are represented in an array of same size as the time points.
+For when the model has no predictions, we put in <code>null</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-comment-delimiter">// </span><span class="org-comment">Random sequence generator</span>
+<span class="org-keyword">function</span> <span class="org-function-name">rseq</span> <span class="org-rainbow-delimiters-depth-1">(</span><span class="org-variable-name">n</span><span class="org-rainbow-delimiters-depth-1">)</span> <span class="org-rainbow-delimiters-depth-1">{</span>
+  <span class="org-keyword">let</span> <span class="org-variable-name">seq</span> = <span class="org-rainbow-delimiters-depth-2">[</span>Math.random<span class="org-rainbow-delimiters-depth-3">()</span><span class="org-rainbow-delimiters-depth-2">]</span>
+  <span class="org-keyword">for</span> <span class="org-rainbow-delimiters-depth-2">(</span><span class="org-keyword">let</span> <span class="org-variable-name">i</span> = <span class="org-highlight-numbers-number">1</span>; i &lt; n; i++<span class="org-rainbow-delimiters-depth-2">)</span> <span class="org-rainbow-delimiters-depth-2">{</span>
+    seq.push<span class="org-rainbow-delimiters-depth-3">(</span>Math.random<span class="org-rainbow-delimiters-depth-4">()</span> * <span class="org-rainbow-delimiters-depth-4">(</span><span class="org-highlight-numbers-number">1</span> + seq<span class="org-rainbow-delimiters-depth-5">[</span>i - <span class="org-highlight-numbers-number">1</span><span class="org-rainbow-delimiters-depth-5">]</span><span class="org-rainbow-delimiters-depth-4">)</span><span class="org-rainbow-delimiters-depth-3">)</span>
+  <span class="org-rainbow-delimiters-depth-2">}</span>
+  <span class="org-keyword">return</span> seq
+<span class="org-rainbow-delimiters-depth-1">}</span>
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">Predictions look like [{ series: [{ point: 0.5 }, { point: 1.2 } ...] }, ..., null, null]</span>
+<span class="org-keyword">let</span> <span class="org-variable-name">predictions</span> = timePoints.map<span class="org-rainbow-delimiters-depth-1">(</span>tp =&gt; <span class="org-rainbow-delimiters-depth-2">{</span>
+  <span class="org-keyword">if</span> <span class="org-rainbow-delimiters-depth-3">(</span>tp.week &gt; <span class="org-highlight-numbers-number">30</span><span class="org-rainbow-delimiters-depth-3">)</span> <span class="org-rainbow-delimiters-depth-3">{</span>
+    <span class="org-comment-delimiter">// </span><span class="org-comment">We only predict upto week 30</span>
+    <span class="org-keyword">return</span> <span class="org-constant">null</span>
+  <span class="org-rainbow-delimiters-depth-3">}</span> <span class="org-keyword">else</span> <span class="org-rainbow-delimiters-depth-3">{</span>
+    <span class="org-comment-delimiter">// </span><span class="org-comment">Provide 10 week ahead predictions</span>
+    <span class="org-keyword">return</span> <span class="org-rainbow-delimiters-depth-4">{</span>
+      series: rseq<span class="org-rainbow-delimiters-depth-5">(</span><span class="org-highlight-numbers-number">10</span><span class="org-rainbow-delimiters-depth-5">)</span>.map<span class="org-rainbow-delimiters-depth-5">(</span>r =&gt; <span class="org-rainbow-delimiters-depth-6">{</span> <span class="org-keyword">return</span> <span class="org-rainbow-delimiters-depth-7">{</span> point: r <span class="org-rainbow-delimiters-depth-7">}</span> <span class="org-rainbow-delimiters-depth-6">}</span><span class="org-rainbow-delimiters-depth-5">)</span>
+    <span class="org-rainbow-delimiters-depth-4">}</span>
+  <span class="org-rainbow-delimiters-depth-3">}</span>
+<span class="org-rainbow-delimiters-depth-2">}</span><span class="org-rainbow-delimiters-depth-1">)</span>
+</pre>
+</div>
+
+<p>
+Finally we put everything together in a single object. Notice the extra metadata
+involved in putting together the values for the model:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">let</span> <span class="org-variable-name">data</span> = <span class="org-rainbow-delimiters-depth-1">{</span>
+  timePoints,
+  models: <span class="org-rainbow-delimiters-depth-2">[</span>
+    <span class="org-rainbow-delimiters-depth-3">{</span>
+      id: <span class="org-string">'mod'</span>,
+      meta: <span class="org-rainbow-delimiters-depth-4">{</span>
+        name: <span class="org-string">'Name'</span>,
+        description: <span class="org-string">'Model description here'</span>,
+        url: <span class="org-string">'http://github.com'</span>
+      <span class="org-rainbow-delimiters-depth-4">}</span>,
+      predictions
+    <span class="org-rainbow-delimiters-depth-3">}</span>
+  <span class="org-rainbow-delimiters-depth-2">]</span>
+<span class="org-rainbow-delimiters-depth-1">}</span>
+</pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgf1edc63" class="outline-2">
-<h2 id="orgf1edc63"><span class="todo TODO">TODO</span> DistributionChart</h2>
+<div id="outline-container-orgc8d0768" class="outline-4">
+<h4 id="orgc8d0768">Plotting</h4>
+<div class="outline-text-4" id="text-orgc8d0768">
+<p>
+The life cycle of <code>TimeChart</code> involves the following stages:
+</p>
+
+<ol class="org-ol">
+<li>Initialization</li>
+<li>Plotting</li>
+<li>Updating</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-comment-delimiter">// </span><span class="org-comment">1. Initialize</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">Setup the id of div where we are going to plot</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">Also pass in config options</span>
+<span class="org-keyword">let</span> <span class="org-variable-name">timeChart</span> = <span class="org-keyword">new</span> <span class="org-type">d3Foresight.TimeChart</span><span class="org-rainbow-delimiters-depth-1">(</span><span class="org-string">'#timechart'</span>, config<span class="org-rainbow-delimiters-depth-1">)</span>
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">2. Plot</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">Provide the data for the complete year</span>
+timeChart.plot<span class="org-rainbow-delimiters-depth-1">(</span>data<span class="org-rainbow-delimiters-depth-1">)</span>
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">3. Update</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">Move to the given index in the set of timePoints</span>
+timeChart.update<span class="org-rainbow-delimiters-depth-1">(</span><span class="org-highlight-numbers-number">0</span><span class="org-rainbow-delimiters-depth-1">)</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">Or simply use</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">timeChart.moveForward()</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">timeChart.moveBackward()</span>
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">Lets also save the timechart object in global namespace</span>
+window.timeChart = timeChart
+</pre>
 </div>
-<div id="outline-container-org085f010" class="outline-2">
-<h2 id="org085f010">Hooks</h2>
-<div class="outline-text-2" id="text-org085f010">
+
+<br><br>
+<div><div id="timechart"></div></div>
+
+<p>
+If you are able to see the plot above (which you should be, else file an <a href="https://github.com/reichlab/d3-foresight/issues">issue</a>),
+you should be able to move around by clicking the arrow buttons in legend. You
+might also be noticing that nothing happens when you <i>click</i> on the chart. This is
+because we need to register hook functions for events like clicks. To add the
+<i>on click interactivity</i>, we need to register a function which calls
+<code>timeChart.update</code> on a mouse click event. Press execute button below to set up
+the required hook:
+</p>
+
+<textarea id="mouse-code">
+timeChart.addHook(
+  d3Foresight.events.JUMP_TO_INDEX,
+  idx => timeChart.update(idx)
+)
+</textarea>
+<div class="btn" id="mouse-btn">execute</div>
+
+<p>
+Now, you should be able to use mouse clicks to move in the plot above. See the
+section on <a href="#org9cf7ad3">Hooks</a> for more description.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga34e9f6" class="outline-3">
+<h3 id="orga34e9f6"><span class="todo TODO">TODO</span> Advanced plots</h3>
+</div>
+</div>
+
+<div id="outline-container-orgd8a2401" class="outline-2">
+<h2 id="orgd8a2401"><span class="todo TODO">TODO</span> DistributionChart</h2>
+</div>
+<div id="outline-container-org9cf7ad3" class="outline-2">
+<h2 id="org9cf7ad3">Hooks</h2>
+<div class="outline-text-2" id="text-org9cf7ad3">
 <p>
 Charts can call user defined functions when movement events are triggered inside
 (e.g. by clicking on movement buttons or clicking on the overlay). To register
@@ -423,6 +576,9 @@ hook using <code>removeHook</code>.
 timeChart.removeHook<span class="org-rainbow-delimiters-depth-1">(</span>token<span class="org-rainbow-delimiters-depth-1">)</span>
 </pre>
 </div>
+
+
+<br><br>
 </div>
 </div>
 </div>

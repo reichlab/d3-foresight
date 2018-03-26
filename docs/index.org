@@ -29,22 +29,22 @@
 
 {{{badge(https://github.com/feross/standard,https://cdn.rawgit.com/feross/standard/master/badge.svg)}}}
 
-D3 Foresight is a [[https://github.com/d3/d3][d3]] based library for visualizing time series forecasts. At a
-/time point/, a general time series model trying to predict a single variable
-series (like temperature) makes forecasts for some time points in the future
-with some uncertainty described by probability distributions. Other than these
-predictions, it might also provide an estimate of /peak/ and some /onset/outbreak/
-point (as defined by a baseline). This visualizations in this library try to
-cover these cases. See [[http://reichlab.io/flusight][reichlab/flusight]] for a demo.
+D3 Foresight is a [[https://github.com/d3/d3][d3]] based library for visualizing time series forecasts
+interactively. At a /time point/, a general time series model trying to predict a
+single variable series (like temperature) makes forecasts for some time points
+in the future with some uncertainty described by probability distributions.
+Other than these predictions, it might also provide an estimate of /peak/ and some
+/onset/outbreak/ point (as defined by a baseline). This visualizations in this
+library try to cover these cases. See [[http://reichlab.io/flusight][reichlab/flusight]] for a demo.
 
 #+TOC: headlines 2
 
 * Setting up
 
-~d3-foresight~ requires [[https://d3js.org/][d3]] and [[https://momentjs.com][momentjs]] as external dependencies. To build
-d3-foresight itself, use ~npm compile~ (for ~./dist/d3-foresight.js~) or ~npm build~
-(for ~./dist/d3-foresight.min.js~). The library is also available on npm as
-[[https://www.npmjs.com/package/d3-foresight][d3-foresight]]. In browser, include these in your html:
+The library requires [[https://d3js.org/][d3]] and [[https://momentjs.com][momentjs]] as external dependencies. To build
+foresight itself, use ~npm compile~ (for ~./dist/d3-foresight.js~) or ~npm build~ (for
+~./dist/d3-foresight.min.js~). The library is also available on npm as
+[[https://www.npmjs.com/package/d3-foresight][d3-foresight]]. For browser, include these in your html:
 
 #+BEGIN_EXAMPLE
 <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -59,70 +59,182 @@ for that can be added using:
 <link rel="stylesheet" href="./assets/fontello/fontello.css" />
 #+END_EXAMPLE
 
+#+BEGIN_SRC js :tangle ./assets/script.js :exports none
+  document.addEventListener("DOMContentLoaded", function () {
+#+END_SRC
+
 * TimeChart
 
-This visualizes prediction of time series by some models upto a provided number
-of time steps in future at each step of time. Basic usage instruction follows:
+A ~TimeChart~ displays the time series to be predicted and the models'
+predictions. Beyond the very minimal plots involving only model forecasts, it
+can show the following items:
 
-#+BEGIN_SRC js :tangle script.js
-  document.addEventListener("DOMContentLoaded", function (event) {
-    let timeChartOptions = {
-      pointType: 'mmwr-week'
+- The actual time series to be predicted.
+- The /observed/ time series. This might be different from the actual series if
+  the truth is revised (e.g. due to reporting delays in the incident count for
+  certain disease).
+- Baseline value for the year/season.
+- History of the series over some past years/seasons.
+- Additional prediction information from models like
+  + Confidence intervals
+  + Peak and onset prediction
+
+** Basic plot
+In this section, we will plot a very basic visualization involving one model
+providing random numbers as forecasts for a year.
+
+*** Configuration
+Time in foresight is represented using ~timePoints~ which is an array mapping to
+discrete date/time values. As of now, foresight supports the following two type
+of time points:
+
+1. ~regular-week~
+2. ~mmwr-week~ based on [[https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf][MMWR definitions]]
+
+Both are /week/ based points and are represented as objects like shown:
+
+#+BEGIN_SRC json
+  {
+    week: 20,
+    year: 2016
+  }
+#+END_SRC
+
+Lets work on regular weeks for the year 2016. Our week choice can be passed to
+foresight charts using a config object which is the following in our case:
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  let config = {
+    pointType: 'regular-week', // This is optional since regular-week is default
+    axes: {
+      y: {
+        title: 'Random numbers' // Title for the y axis
+      }
     }
+  }
+#+END_SRC
 
-    let timeChart = new d3Foresight.TimeChart('#timechart', timeChartOptions)
+*** Data
+At minimum, ~TimeChart~ expects an array of time points and an array of model
+data. The time points in our case go from week 1 to week 52 of 2016 and can be
+represented as:
 
-    let data = {
-      timePoints: [
-        { week: 20, year: 2016 },
-        { week: 21, year: 2016 },
-        { week: 22, year: 2016 },
-        { week: 23, year: 2016 },
-        { week: 24, year: 2016 },
-      ],
-      actual: [1.1, 1.3, 1.4, 1.3, 1.1],
-      models: [
-        {
-          id: 'mod',
-          meta: {
-            name: 'Name',
-            description: 'Model description here',
-            url: 'http://github.com'
-          },
-          predictions: [
-            null,
-            {
-              series: [
-                { point: 1.5 },
-                { point: 1.5 },
-              ]
-            },
-            {
-              series: [
-                { point: 1.5 },
-                { point: 1.5 },
-              ]
-            },
-            null,
-            null
-          ]
-        }
-      ]
-    }
-    timeChart.plot(data)
-
-    window.tc = timeChart
-    // For updating the current position of displayed predictions
-    // timeChart.update(0)
-    // Or simply
-    // timeChart.moveForward()
-    // timeChart.moveBackward()
+#+BEGIN_SRC js :tangle ./assets/script.js
+  let timePoints = [...Array(51).keys()].map(w => {
+    return { week: w + 1, year: 2016 }
   })
 #+END_SRC
 
-#+HTML: <div>
-#+HTML:   <div id="timechart"></div>
-#+HTML: </div>
+At each time point, our model provides predictions for the next 10 time points.
+These predictions are represented in an array of same size as the time points.
+For when the model has no predictions, we put in ~null~.
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  // Random sequence generator
+  function rseq (n) {
+    let seq = [Math.random()]
+    for (let i = 1; i < n; i++) {
+      seq.push(Math.random() * (1 + seq[i - 1]))
+    }
+    return seq
+  }
+
+  // Predictions look like [{ series: [{ point: 0.5 }, { point: 1.2 } ...] }, ..., null, null]
+  let predictions = timePoints.map(tp => {
+    if (tp.week > 30) {
+      // We only predict upto week 30
+      return null
+    } else {
+      // Provide 10 week ahead predictions
+      return {
+        series: rseq(10).map(r => { return { point: r } })
+      }
+    }
+  })
+#+END_SRC
+
+Finally we put everything together in a single object. Notice the extra metadata
+involved in putting together the values for the model:
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  let data = {
+    timePoints,
+    models: [
+      {
+        id: 'mod',
+        meta: {
+          name: 'Name',
+          description: 'Model description here',
+          url: 'http://github.com'
+        },
+        predictions
+      }
+    ]
+  }
+#+END_SRC
+
+*** Plotting
+The life cycle of ~TimeChart~ involves the following stages:
+
+1. Initialization
+2. Plotting
+3. Updating
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  // 1. Initialize
+  // Setup the id of div where we are going to plot
+  // Also pass in config options
+  let timeChart = new d3Foresight.TimeChart('#timechart', config)
+
+  // 2. Plot
+  // Provide the data for the complete year
+  timeChart.plot(data)
+
+  // 3. Update
+  // Move to the given index in the set of timePoints
+  timeChart.update(0)
+  // Or simply use
+  // timeChart.moveForward()
+  // timeChart.moveBackward()
+
+  // Lets also save the timechart object in global namespace
+  window.timeChart = timeChart
+#+END_SRC
+
+#+HTML: <br><br>
+#+HTML: <div><div id="timechart"></div></div>
+
+If you are able to see the plot above (which you should be, else file an [[https://github.com/reichlab/d3-foresight/issues][issue]]),
+you should be able to move around by clicking the arrow buttons in legend. You
+might also be noticing that nothing happens when you /click/ on the chart. This is
+because we need to register hook functions for events like clicks. To add the
+/on click interactivity/, we need to register a function which calls
+~timeChart.update~ on a mouse click event. Press execute button below to set up
+the required hook:
+
+#+BEGIN_EXPORT html
+<textarea id="mouse-code">
+timeChart.addHook(
+  d3Foresight.events.JUMP_TO_INDEX,
+  idx => timeChart.update(idx)
+)
+</textarea>
+<div class="btn" id="mouse-btn">execute</div>
+#+END_EXPORT
+
+#+BEGIN_SRC js :exports none :tangle ./assets/script.js
+  d3.select('#mouse-btn').on('click', function () {
+    eval(d3.select('#mouse-code').text())
+    d3.select(this)
+      .classed('disabled', true)
+      .text('✓ Done')
+  })
+#+END_SRC
+
+Now, you should be able to use mouse clicks to move in the plot above. See the
+section on [[Hooks]] for more description.
+
+** TODO Advanced plots
 
 * TODO DistributionChart
 * Hooks
@@ -161,3 +273,10 @@ hook using ~removeHook~.
   )
   timeChart.removeHook(token)
 #+END_SRC
+
+
+#+BEGIN_SRC js :tangle ./assets/script.js :exports none
+}) // Closing the documentation loaded function
+#+END_SRC
+
+#+HTML: <br><br>
