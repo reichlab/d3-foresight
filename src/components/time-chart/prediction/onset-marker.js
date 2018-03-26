@@ -1,4 +1,3 @@
-import * as d3 from 'd3'
 import * as tt from '../../../utilities/tooltip'
 import * as colors from '../../../utilities/colors'
 import { selectUncle } from '../../../utilities/misc'

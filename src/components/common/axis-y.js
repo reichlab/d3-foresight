@@ -27,8 +27,8 @@ export class YAxis extends SComponent {
       yText
         .style('cursor', 'pointer')
         .on('click', () => {
-        window.open(url, '_blank')
-      })
+          window.open(url, '_blank')
+        })
     }
   }
 

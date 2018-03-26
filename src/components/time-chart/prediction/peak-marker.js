@@ -1,4 +1,3 @@
-import * as d3 from 'd3'
 import * as tt from '../../../utilities/tooltip'
 import * as colors from '../../../utilities/colors'
 import { selectUncle } from '../../../utilities/misc'
@@ -68,7 +67,6 @@ export default class PeakMarker extends SComponent {
   }
 
   move (cfg, peakTime, peakValue) {
-    let colorHover = colors.hexToRgba(cfg.color, 0.3)
     let leftW = cfg.scales.xScale(peakTime.point)
     let leftP = cfg.scales.yScale(peakValue.point)
 

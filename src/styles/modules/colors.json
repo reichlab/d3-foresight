@@ -3,7 +3,7 @@
   "actual": "#66d600",
   "observed": "#18817f",
   "history": "#ddd",
-  "history-highlight": "#ddd",
+  "history-highlight": "#ccc",
 
   "axis-ticks": "#bbb",
   "hover-line": "#bbb",
