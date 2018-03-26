@@ -216,19 +216,8 @@ export default class TimeChart extends Chart {
       predMarker.plot(this.scales, m.predictions, initPoints)
     })
 
-    // Update models shown in control panel
     this.controlPanel.plot(this.predictions, this.dataConfig)
-
-    // Check if it is live data
-    let showNowLine = false
-    if (this.dataConfig.actual) {
-      let actualIndices = data.actual.map((d, idx) => {
-        return (d ? idx : null)
-      }).filter(d => d !== null)
-
-      showNowLine = actualIndices.length < data.timePoints.length
-    }
-    this.overlay.plot(this.scales, showNowLine, [this.actual, this.observed, ...this.predictions])
+    this.overlay.plot(this.scales, [this.actual, this.observed, ...this.predictions])
 
     // Hot start the chart
     this.currentIdx = 0
