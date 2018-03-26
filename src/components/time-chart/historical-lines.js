@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import * as tt from '../../utilities/tooltip'
+import { selectUncle } from '../../utilities/misc'
 import SComponent from '../s-component'
 
 /**
@@ -50,7 +51,7 @@ export default class HistoricalLines extends SComponent {
         tooltip.hidden = true
       }).on('mousemove', function (event) {
         tooltip.render(tt.parseText({ text: hd.id }))
-        tt.moveTooltip(tooltip, d3.select('.overlay'))
+        tt.moveTooltip(tooltip, selectUncle(this, '.overlay'))
       })
     })
 

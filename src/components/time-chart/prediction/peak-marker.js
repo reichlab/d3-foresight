@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 import * as tt from '../../../utilities/tooltip'
 import * as colors from '../../../utilities/colors'
+import { selectUncle } from '../../../utilities/misc'
 import SComponent from '../../s-component'
 
 export default class PeakMarker extends SComponent {
@@ -80,7 +81,7 @@ export default class PeakMarker extends SComponent {
         cfg.tooltip.hidden = true
       })
       .on('mousemove', function () {
-        tt.moveTooltip(cfg.tooltip, d3.select('.overlay'))
+        tt.moveTooltip(cfg.tooltip, selectUncle(this, '.overlay'))
       })
 
     if (cfg.cid === -1) {

@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 import textures from 'textures'
 import * as tt from '../../utilities/tooltip'
+import { selectUncle } from '../../utilities/misc'
 import SComponent from '../s-component'
 
 /**
@@ -38,9 +39,9 @@ export class XAxis extends SComponent {
     xText.style('cursor', 'pointer')
       .on('mouseover', () => { tooltip.hidden = false })
       .on('mouseout', () => { tooltip.hidden = true })
-      .on('mousemove', () => {
+      .on('mousemove', function () {
         tooltip.render(tt.parseText({ text: description }))
-        tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')
+        tt.moveTooltip(tooltip, selectUncle(this, '.overlay'), 'left')
       })
       .on('click', () => {
         window.open(url, '_blank')
@@ -102,9 +103,9 @@ export class XAxisDate extends SComponent {
     xText.style('cursor', 'pointer')
       .on('mouseover', () => { tooltip.hidden = false })
       .on('mouseout', () => { tooltip.hidden = true })
-      .on('mousemove', () => {
+      .on('mousemove', function () {
         tooltip.render(tt.parseText({ text: description }))
-        tt.moveTooltip(tooltip, d3.select('.overlay'), 'left')
+        tt.moveTooltip(tooltip, selectUncle(this, '.overlay'), 'left')
       })
       .on('click', () => {
         window.open(url, '_blank')

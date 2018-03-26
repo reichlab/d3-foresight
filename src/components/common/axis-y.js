@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 import * as tt from '../../utilities/tooltip'
 import SComponent from '../s-component'
+import { selectUncle } from '../../utilities/misc'
 
 /**
  * Simple linear Y axis with informative label
@@ -20,7 +21,7 @@ export class YAxis extends SComponent {
       .on('mouseout', () => { tooltip.hidden = true })
       .on('mousemove', function () {
         tooltip.render(tt.parseText({ text: description }))
-        tt.moveTooltip(tooltip, d3.select('.overlay'))
+        tt.moveTooltip(tooltip, selectUncle(this, '.overlay'))
       })
       .on('click', () => {
         window.open(url, '_blank')

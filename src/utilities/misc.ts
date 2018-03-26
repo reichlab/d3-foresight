@@ -7,6 +7,7 @@
  */
 import * as d3 from 'd3'
 import { Position } from '../interfaces'
+import { DocumentError } from './errors'
 
 /**
  * Return mouse position as absolute value for current view using the provided
@@ -34,4 +35,27 @@ export function filterActivePredictions (predictions, modelsData) {
       return true
     }
   })
+}
+
+/**
+ * Return uncle d3 selection
+ */
+export function selectUncle (currentSelector, uncleSelector: string) {
+  let currentNode = d3.select(currentSelector).node()
+
+  let walkUp = (cNode, pNode) => {
+    if (pNode === null) {
+      // We have reached the top level
+      throw new DocumentError(`Selector ${uncleSelector} not found`)
+    } else {
+      let selection = d3.select(pNode).select(uncleSelector)
+      if (selection.node() === null) {
+        return walkUp(pNode, pNode.parentNode)
+      } else {
+        return selection
+      }
+    }
+  }
+
+  return walkUp(currentNode, currentNode.parentNode)
 }
