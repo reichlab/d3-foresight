@@ -16,7 +16,7 @@ export default class DistributionChart extends Chart {
       confidenceIntervals: [],
       margin: {
         top: 5,
-        right: 50,
+        right: 60,
         bottom: 80,
         left: 5
       }
