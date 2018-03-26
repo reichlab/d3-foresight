@@ -1,6 +1,8 @@
 #+TITLE: D3-foresight documentation
 
 #+OPTIONS: toc:nil title:nil num:nil html-postamble:nil
+#+OPTIONS: html5-fancy:t
+#+HTML_DOCTYPE: html5
 #+MACRO: js #+HTML_HEAD: <script src="$1"></script>
 #+MACRO: css #+HTML_HEAD: <link rel="stylesheet" href="$1" />
 #+MACRO: badge @@html:<a href="$1" class="image-link"><img src="$2" /></a>@@
@@ -34,7 +36,7 @@ interactively. At a /time point/, a general time series model trying to predict 
 single variable series (like temperature) makes forecasts for some time points
 in the future with some uncertainty described by probability distributions.
 Other than these predictions, it might also provide an estimate of /peak/ and some
-/onset/outbreak/ point (as defined by a baseline). This visualizations in this
+/onset/outbreak/ point (as defined by a baseline). The visualizations in this
 library try to cover these cases. See [[http://reichlab.io/flusight][reichlab/flusight]] for a demo.
 
 #+TOC: headlines 2
@@ -79,8 +81,11 @@ can show the following items:
   + Confidence intervals
   + Peak and onset prediction
 
+#+CAPTION: ~TimeChart~ shows model predictions and the actual time series
+[[file:./timechart.png]]
+
 ** Basic plot
-In this section, we will plot a very basic visualization involving one model
+In this section, we will create a very basic visualization involving one model
 providing random numbers as forecasts for a year.
 
 *** Configuration
@@ -202,7 +207,7 @@ The life cycle of ~TimeChart~ involves the following stages:
 #+END_SRC
 
 #+HTML: <br><br>
-#+HTML: <div><div id="timechart"></div></div>
+#+HTML: <div id="timechart"></div>
 
 If you are able to see the plot above (which you should be, else file an [[https://github.com/reichlab/d3-foresight/issues][issue]]),
 you should be able to move around by clicking the arrow buttons in legend. You
@@ -237,6 +242,11 @@ section on [[Hooks]] for more description.
 ** TODO Advanced plots
 
 * TODO DistributionChart
+
+#+CAPTION: ~DistributionChart~ displays probability distributions for the
+#+CAPTION: prediction targets
+[[file:./distchart.png]]
+
 * Hooks
 
 Charts can call user defined functions when movement events are triggered inside

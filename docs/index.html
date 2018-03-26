@@ -1,14 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<!-- 2018-03-26 Mon 00:06 -->
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 2018-03-26 Mon 00:37 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>D3-foresight documentation</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="Abhinav Tushar" />
+<meta name="generator" content="Org mode">
+<meta name="author" content="Abhinav Tushar">
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -241,7 +239,7 @@ for the JavaScript code in this tag.
 <div id="content">
 <div class="page-header">
 <p>
-   <div class="page-meta small">Document last updated 2018-03-26 Mon 00:06</div>
+   <div class="page-meta small">Document last updated 2018-03-26 Mon 00:37</div>
 </p>
 <h1>D3 <em>Foresight</em></h1>
 </div>
@@ -263,30 +261,30 @@ interactively. At a <i>time point</i>, a general time series model trying to pre
 single variable series (like temperature) makes forecasts for some time points
 in the future with some uncertainty described by probability distributions.
 Other than these predictions, it might also provide an estimate of <i>peak</i> and some
-<i>onset/outbreak</i> point (as defined by a baseline). This visualizations in this
+<i>onset/outbreak</i> point (as defined by a baseline). The visualizations in this
 library try to cover these cases. See <a href="http://reichlab.io/flusight">reichlab/flusight</a> for a demo.
 </p>
 
-<div id="table-of-contents">
+<nav id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgde1d48a">Setting up</a></li>
-<li><a href="#org274b299">TimeChart</a>
+<li><a href="#org6848b6c">Setting up</a></li>
+<li><a href="#orgbd77510">TimeChart</a>
 <ul>
-<li><a href="#org8508bec">Basic plot</a></li>
-<li><a href="#org884dc29"><span class="todo TODO">TODO</span> Advanced plots</a></li>
+<li><a href="#org6deb884">Basic plot</a></li>
+<li><a href="#orgb245ab1"><span class="todo TODO">TODO</span> Advanced plots</a></li>
 </ul>
 </li>
-<li><a href="#org93497a9"><span class="todo TODO">TODO</span> DistributionChart</a></li>
-<li><a href="#org329c9f8">Hooks</a></li>
+<li><a href="#orgc45bece"><span class="todo TODO">TODO</span> DistributionChart</a></li>
+<li><a href="#orge32cb46">Hooks</a></li>
 </ul>
 </div>
-</div>
+</nav>
 
-<div id="outline-container-orgde1d48a" class="outline-2">
-<h2 id="orgde1d48a">Setting up</h2>
-<div class="outline-text-2" id="text-orgde1d48a">
+<div id="outline-container-org6848b6c" class="outline-2">
+<h2 id="org6848b6c">Setting up</h2>
+<div class="outline-text-2" id="text-org6848b6c">
 <p>
 The library requires <a href="https://d3js.org/">d3</a> and <a href="https://momentjs.com">momentjs</a> as external dependencies. To build
 foresight itself, use <code>npm compile</code> (for <code>./dist/d3-foresight.js</code>) or <code>npm build</code> (for
@@ -311,9 +309,9 @@ for that can be added using:
 </div>
 </div>
 
-<div id="outline-container-org274b299" class="outline-2">
-<h2 id="org274b299">TimeChart</h2>
-<div class="outline-text-2" id="text-org274b299">
+<div id="outline-container-orgbd77510" class="outline-2">
+<h2 id="orgbd77510">TimeChart</h2>
+<div class="outline-text-2" id="text-orgbd77510">
 <p>
 A <code>TimeChart</code> displays the time series to be predicted and the models'
 predictions. Beyond the very minimal plots involving only model forecasts, it
@@ -333,20 +331,27 @@ certain disease).</li>
 <li>Peak and onset prediction</li>
 </ul></li>
 </ul>
+
+
+<figure>
+<img src="./timechart.png" alt="timechart.png">
+
+<figcaption><span class="figure-number">Figure 1: </span><code>TimeChart</code> shows model predictions and the actual time series</figcaption>
+</figure>
 </div>
 
-<div id="outline-container-org8508bec" class="outline-3">
-<h3 id="org8508bec">Basic plot</h3>
-<div class="outline-text-3" id="text-org8508bec">
+<div id="outline-container-org6deb884" class="outline-3">
+<h3 id="org6deb884">Basic plot</h3>
+<div class="outline-text-3" id="text-org6deb884">
 <p>
-In this section, we will plot a very basic visualization involving one model
+In this section, we will create a very basic visualization involving one model
 providing random numbers as forecasts for a year.
 </p>
 </div>
 
-<div id="outline-container-orgcb8b480" class="outline-4">
-<h4 id="orgcb8b480">Configuration</h4>
-<div class="outline-text-4" id="text-orgcb8b480">
+<div id="outline-container-org2f6456e" class="outline-4">
+<h4 id="org2f6456e">Configuration</h4>
+<div class="outline-text-4" id="text-org2f6456e">
 <p>
 Time in foresight is represented using <code>timePoints</code> which is an array mapping to
 discrete date/time values. As of now, foresight supports the following two type
@@ -389,9 +394,9 @@ foresight charts using a config object which is the following in our case:
 </div>
 </div>
 
-<div id="outline-container-org73b8614" class="outline-4">
-<h4 id="org73b8614">Data</h4>
-<div class="outline-text-4" id="text-org73b8614">
+<div id="outline-container-orgc65f09e" class="outline-4">
+<h4 id="orgc65f09e">Data</h4>
+<div class="outline-text-4" id="text-orgc65f09e">
 <p>
 At minimum, <code>TimeChart</code> expects an array of time points and an array of model
 data. The time points in our case go from week 1 to week 52 of 2016 and can be
@@ -461,9 +466,9 @@ involved in putting together the values for the model:
 </div>
 </div>
 
-<div id="outline-container-orgdef872e" class="outline-4">
-<h4 id="orgdef872e">Plotting</h4>
-<div class="outline-text-4" id="text-orgdef872e">
+<div id="outline-container-orga175a0f" class="outline-4">
+<h4 id="orga175a0f">Plotting</h4>
+<div class="outline-text-4" id="text-orga175a0f">
 <p>
 The life cycle of <code>TimeChart</code> involves the following stages:
 </p>
@@ -497,7 +502,7 @@ window.timeChart = timeChart
 </div>
 
 <br><br>
-<div><div id="timechart"></div></div>
+<div id="timechart"></div>
 
 <p>
 If you are able to see the plot above (which you should be, else file an <a href="https://github.com/reichlab/d3-foresight/issues">issue</a>),
@@ -519,23 +524,32 @@ timeChart.addHook(
 
 <p>
 Now, you should be able to use mouse clicks to move in the plot above. See the
-section on <a href="#org329c9f8">Hooks</a> for more description.
+section on <a href="#orge32cb46">Hooks</a> for more description.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org884dc29" class="outline-3">
-<h3 id="org884dc29"><span class="todo TODO">TODO</span> Advanced plots</h3>
+<div id="outline-container-orgb245ab1" class="outline-3">
+<h3 id="orgb245ab1"><span class="todo TODO">TODO</span> Advanced plots</h3>
 </div>
 </div>
 
-<div id="outline-container-org93497a9" class="outline-2">
-<h2 id="org93497a9"><span class="todo TODO">TODO</span> DistributionChart</h2>
+<div id="outline-container-orgc45bece" class="outline-2">
+<h2 id="orgc45bece"><span class="todo TODO">TODO</span> DistributionChart</h2>
+<div class="outline-text-2" id="text-orgc45bece">
+
+<figure>
+<img src="./distchart.png" alt="distchart.png">
+
+<figcaption><span class="figure-number">Figure 2: </span><code>DistributionChart</code> displays probability distributions for the prediction targets</figcaption>
+</figure>
 </div>
-<div id="outline-container-org329c9f8" class="outline-2">
-<h2 id="org329c9f8">Hooks</h2>
-<div class="outline-text-2" id="text-org329c9f8">
+</div>
+
+<div id="outline-container-orge32cb46" class="outline-2">
+<h2 id="orge32cb46">Hooks</h2>
+<div class="outline-text-2" id="text-orge32cb46">
 <p>
 Charts can call user defined functions when movement events are triggered inside
 (e.g. by clicking on movement buttons or clicking on the overlay). To register
