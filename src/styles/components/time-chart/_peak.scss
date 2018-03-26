@@ -1,15 +1,14 @@
 .peak-group {
   .peak-mark {
     opacity: .9;
-    stroke-width: 10px;
+    stroke-width: 8px;
 
     &:hover {
       opacity: 1;
     }
   }
 
-  .range {
-    stroke-dasharray: 5, 5;
-    stroke-width: .5px;
+  line {
+    stroke-width: 0.5px;
   }
 }

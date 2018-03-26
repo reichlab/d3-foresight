@@ -18,10 +18,12 @@ export default class PeakMarker extends SComponent {
     this.selection.append('line')
       .attr('class', 'range peak-range peak-range-x')
       .style('stroke', colorRange)
+      .style('stroke-dasharray', '5, 5')
 
     this.selection.append('line')
       .attr('class', 'range peak-range peak-range-y')
       .style('stroke', colorRange)
+      .style('stroke-dasharray', '5, 5')
 
     this.selection.append('line')
       .attr('class', 'stopper peak-stopper peak-low-x')
@@ -44,6 +46,25 @@ export default class PeakMarker extends SComponent {
       .attr('class', 'peak-mark')
       .style('stroke', 'transparent')
       .style('fill', colorPoint)
+
+    this.color = color
+  }
+
+  set highlight (state) {
+    let colorHover = colors.hexToRgba(this.color, 0.3)
+
+    this.point
+      .transition()
+      .duration(200)
+      .style('stroke', state ? colorHover : 'transparent')
+
+    this.selection.selectAll('line')
+      .transition()
+      .duration(200)
+      .style('stroke-width', state ? '2px' : '0.5px')
+
+    this.selection.selectAll('.range')
+      .style('stroke-dasharray', state ? null : '5, 5')
   }
 
   move (cfg, peakTime, peakValue) {
@@ -58,11 +79,8 @@ export default class PeakMarker extends SComponent {
       .attr('cy', leftP)
 
     this.point
-      .on('mouseover', function () {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .style('stroke', colorHover)
+      .on('mouseover', () => {
+        this.highlight = true
         cfg.tooltip.hidden = false
         cfg.tooltip.render(tt.parsePoint({
           title: cfg.id,
@@ -73,11 +91,8 @@ export default class PeakMarker extends SComponent {
           color: cfg.color
         }))
       })
-      .on('mouseout', function () {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .style('stroke', 'transparent')
+      .on('mouseout', () => {
+        this.highlight = false
         cfg.tooltip.hidden = true
       })
       .on('mousemove', function () {
@@ -85,15 +100,12 @@ export default class PeakMarker extends SComponent {
       })
 
     if (cfg.cid === -1) {
-      ['.range', '.stopper'].forEach(cls => {
-        this.selection.selectAll(cls)
-          .attr('visibility', 'hidden')
-      })
+      this.selection.selectAll('line')
+        .attr('visibility', 'hidden')
     } else {
-      ['.range', '.stopper'].forEach(cls => {
-        this.selection.selectAll(cls)
-          .attr('visibility', null)
-      })
+      this.selection.selectAll('line')
+        .attr('visibility', null)
+
       this.selection.select('.peak-range-x')
         .transition()
         .duration(200)

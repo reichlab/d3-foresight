@@ -39,22 +39,33 @@ export default class OnsetMarker extends SComponent {
       .attr('class', 'onset-mark')
       .style('stroke', 'transparent')
       .style('fill', colorPoint)
+
+    this.color = color
+  }
+
+  set highlight (state) {
+    let colorHover = colors.hexToRgba(this.color, 0.3)
+
+    this.point
+      .transition()
+      .duration(200)
+      .style('stroke', state ? colorHover : 'transparent')
+
+    this.selection.selectAll('line')
+      .transition()
+      .duration(200)
+      .style('stroke-width', state ? '2px' : '1px')
   }
 
   move (cfg, onset) {
-    let colorHover = colors.hexToRgba(cfg.color, 0.3)
-
     this.point
       .transition()
       .duration(200)
       .attr('cx', cfg.scales.xScale(onset.point))
 
     this.point
-      .on('mouseover', function () {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .style('stroke', colorHover)
+      .on('mouseover', () => {
+        this.highlight = true
         cfg.tooltip.hidden = false
         cfg.tooltip.render(tt.parsePoint({
           title: cfg.id,
@@ -62,11 +73,8 @@ export default class OnsetMarker extends SComponent {
           color: cfg.color
         }))
       })
-      .on('mouseout', function () {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .style('stroke', 'transparent')
+      .on('mouseout', () => {
+        this.highlight = false
         cfg.tooltip.hidden = true
       })
       .on('mousemove', function () {
@@ -74,15 +82,11 @@ export default class OnsetMarker extends SComponent {
       })
 
     if (cfg.cid === -1) {
-      ['.range', '.stopper'].forEach(cls => {
-        this.selection.selectAll(cls)
-          .attr('display', 'none')
-      })
+      this.selection.selectAll('line')
+        .attr('display', 'none')
     } else {
-      ['.range', '.stopper'].forEach(cls => {
-        this.selection.selectAll(cls)
-          .attr('display', null)
-      })
+      this.selection.selectAll('line')
+        .attr('display', null)
 
       this.selection.select('.onset-range')
         .transition()
