@@ -1,6 +1,6 @@
 #+TITLE: D3-foresight documentation
 
-#+OPTIONS: toc:nil title:nil
+#+OPTIONS: toc:nil title:nil num:nil html-postamble:nil
 #+MACRO: js #+HTML_HEAD: <script src="$1"></script>
 #+MACRO: css #+HTML_HEAD: <link rel="stylesheet" href="$1" />
 #+MACRO: badge @@html:<a href="$1" class="image-link"><img src="$2" /></a>@@
@@ -29,33 +29,37 @@
 
 {{{badge(https://github.com/feross/standard,https://cdn.rawgit.com/feross/standard/master/badge.svg)}}}
 
-Pellentesque dapibus suscipit ligula.  Donec posuere augue in quam.  Etiam vel
-tortor sodales tellus ultricies commodo.  Suspendisse potenti.  Aenean in sem ac
-leo mollis blandit.  Donec neque quam, dignissim in, mollis nec, sagittis eu,
-wisi.  Phasellus lacus.  Etiam laoreet quam sed arcu.  Phasellus at dui in
-ligula mollis ultricies.  Integer placerat tristique nisl.  Praesent augue.
-Fusce commodo.  Vestibulum convallis, lorem a tempus semper, dui dui euismod
-elit, vitae placerat urna tortor vitae lacus.  Nullam libero mauris, consequat
-quis, varius et, dictum id, arcu.  Mauris mollis tincidunt felis.  Aliquam
-feugiat tellus ut neque.  Nulla facilisis, risus a rhoncus fermentum, tellus
-tellus lacinia purus, et dictum nunc justo sit amet elit
+D3 Foresight is a [[https://github.com/d3/d3][d3]] based library for visualizing time series forecasts. At a
+/time point/, a general time series model trying to predict a single variable
+series (like temperature) makes forecasts for some time points in the future
+with some uncertainty described by probability distributions. Other than these
+predictions, it might also provide an estimate of /peak/ and some /onset/outbreak/
+point (as defined by a baseline). This visualizations in this library try to
+cover these cases. See [[http://reichlab.io/flusight][reichlab/flusight]] for a demo.
 
 #+TOC: headlines 2
 
-* Quickstart
+* Setting up
 
-~d3-foresight~ needs [[https://d3js.org/][d3]] and [[https://momentjs.com][momentjs]]. Include these in your html:
+~d3-foresight~ requires [[https://d3js.org/][d3]] and [[https://momentjs.com][momentjs]] as external dependencies. To build
+d3-foresight itself, use ~npm compile~ (for ~./dist/d3-foresight.js~) or ~npm build~
+(for ~./dist/d3-foresight.min.js~). The library is also available on npm as
+[[https://www.npmjs.com/package/d3-foresight][d3-foresight]]. In browser, include these in your html:
 
 #+BEGIN_EXAMPLE
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-
-<!-- Get the js file from ./dist/d3-foresight.min.js. The package is also -->
-<!-- available in npm -->
-<script src="./d3-foresight.min.js"></script>
+<script src="./dist/d3-foresight.min.js"></script>
 #+END_EXAMPLE
 
-** TimeChart
+Additionally, a few icons (in the legend) have an icon font dependency. The css
+for that can be added using:
+
+#+BEGIN_EXAMPLE
+<link rel="stylesheet" href="./assets/fontello/fontello.css" />
+#+END_EXAMPLE
+
+* TimeChart
 
 This visualizes prediction of time series by some models upto a provided number
 of time steps in future at each step of time. Basic usage instruction follows:
@@ -120,37 +124,40 @@ of time steps in future at each step of time. Basic usage instruction follows:
 #+HTML:   <div id="timechart"></div>
 #+HTML: </div>
 
-** DistributionChart
-
-This visualizes probability distribution of the model outputs.
-
-```js
-let distributionChart = new DistributionChart('#target-div')
-  
-// TODO: Description of data
-distributionChart.plot(data)
-```
-
+* TODO DistributionChart
 * Hooks
 
-The charts can call user defined hooks when movement events are triggered inside
+Charts can call user defined functions when movement events are triggered inside
 (e.g. by clicking on movement buttons or clicking on the overlay). To register
-your custom functions to be called on these events, you can `addHook` (this
-doesn't overwrite already added hooks, so its safe in that sense).
+your functions to be called on these events, you can use ~addHook~.
 
-```js
-timeChart.addHook('forward-index', () => {
-  // This is triggered when an event moved the visualization forward in time
-  console.log('chart moved forward')
-})
+#+BEGIN_SRC js
+  timeChart.addHook(d3Foresight.events.FORWARD_INDEX, () => {
+    // This is triggered when an event moves the
+    // visualization forward in time one tick
+    console.log('chart moved forward')
+  })
 
-timeChart.addHook('backward-index', () => {
-  // This is triggered when an event moved the visualization backward in time
-  console.log('chart moved backward')
-})
+  timeChart.addHook(d3Foresight.events.BACKWARD_INDEX, () => {
+    // This is triggered when an event moves the
+    // visualization backward in time one tick
+    console.log('chart moved backward')
+  })
 
-timeChart.addHook('jump-to-index', (index) => {
-  // This is triggered when an event moved the visualization to certain discrete `index` in time
-  console.log('chart moved to ' + index)
-})
-```
+  timeChart.addHook(d3Foresight.events.JUMP_TO_INDEX, (index) => {
+    // This is triggered when an event moves the
+    // visualization to certain `index` in `timePoints`
+    console.log('chart moved to ' + index)
+  })
+#+END_SRC
+
+~addHook~ returns a subscription token which can then be used to revoke that
+hook using ~removeHook~.
+
+#+BEGIN_SRC js
+  let token = timeChart.addHook(
+    d3Foresight.events.BACKWARD_INDEX,
+    () => console.log('went back')
+  )
+  timeChart.removeHook(token)
+#+END_SRC

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-03-25 Sun 21:25 -->
+<!-- 2018-03-25 Sun 22:17 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>D3-foresight documentation</title>
@@ -241,7 +241,7 @@ for the JavaScript code in this tag.
 <div id="content">
 <div class="page-header">
 <p>
-   <div class="page-meta small">Last updated 2018-03-25 Sun 21:25</div>
+   <div class="page-meta small">Document last updated 2018-03-25 Sun 22:17</div>
 </p>
 <h1>D3 <em>Foresight</em></h1>
 </div>
@@ -258,53 +258,57 @@ for the JavaScript code in this tag.
 </p>
 
 <p>
-Pellentesque dapibus suscipit ligula.  Donec posuere augue in quam.  Etiam vel
-tortor sodales tellus ultricies commodo.  Suspendisse potenti.  Aenean in sem ac
-leo mollis blandit.  Donec neque quam, dignissim in, mollis nec, sagittis eu,
-wisi.  Phasellus lacus.  Etiam laoreet quam sed arcu.  Phasellus at dui in
-ligula mollis ultricies.  Integer placerat tristique nisl.  Praesent augue.
-Fusce commodo.  Vestibulum convallis, lorem a tempus semper, dui dui euismod
-elit, vitae placerat urna tortor vitae lacus.  Nullam libero mauris, consequat
-quis, varius et, dictum id, arcu.  Mauris mollis tincidunt felis.  Aliquam
-feugiat tellus ut neque.  Nulla facilisis, risus a rhoncus fermentum, tellus
-tellus lacinia purus, et dictum nunc justo sit amet elit
+D3 Foresight is a <a href="https://github.com/d3/d3">d3</a> based library for visualizing time series forecasts. At a
+<i>time point</i>, a general time series model trying to predict a single variable
+series (like temperature) makes forecasts for some time points in the future
+with some uncertainty described by probability distributions. Other than these
+predictions, it might also provide an estimate of <i>peak</i> and some <i>onset/outbreak</i>
+point (as defined by a baseline). This visualizations in this library try to
+cover these cases. See <a href="http://reichlab.io/flusight">reichlab/flusight</a> for a demo.
 </p>
 
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6f2553b">1. Quickstart</a>
-<ul>
-<li><a href="#orgad86bbf">1.1. TimeChart</a></li>
-<li><a href="#org4bdc18b">1.2. DistributionChart</a></li>
-</ul>
-</li>
-<li><a href="#org21ebc52">2. Hooks</a></li>
+<li><a href="#org08ccaac">Setting up</a></li>
+<li><a href="#org30f3c75">TimeChart</a></li>
+<li><a href="#orgf1edc63"><span class="todo TODO">TODO</span> DistributionChart</a></li>
+<li><a href="#org085f010">Hooks</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6f2553b" class="outline-2">
-<h2 id="org6f2553b"><span class="section-number-2">1</span> Quickstart</h2>
-<div class="outline-text-2" id="text-1">
+<div id="outline-container-org08ccaac" class="outline-2">
+<h2 id="org08ccaac">Setting up</h2>
+<div class="outline-text-2" id="text-org08ccaac">
 <p>
-<code>d3-foresight</code> needs <a href="https://d3js.org/">d3</a> and <a href="https://momentjs.com">momentjs</a>. Include these in your html:
+<code>d3-foresight</code> requires <a href="https://d3js.org/">d3</a> and <a href="https://momentjs.com">momentjs</a> as external dependencies. To build
+d3-foresight itself, use <code>npm compile</code> (for <code>./dist/d3-foresight.js</code>) or <code>npm build</code>
+(for <code>./dist/d3-foresight.min.js</code>). The library is also available on npm as
+<a href="https://www.npmjs.com/package/d3-foresight">d3-foresight</a>. In browser, include these in your html:
 </p>
 
 <pre class="example">
 &lt;script src="https://d3js.org/d3.v4.min.js"&gt;&lt;/script&gt;
 &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"&gt;&lt;/script&gt;
+&lt;script src="./dist/d3-foresight.min.js"&gt;&lt;/script&gt;
+</pre>
 
-&lt;!-- Get the js file from ./dist/d3-foresight.min.js. The package is also --&gt;
-&lt;!-- available in npm --&gt;
-&lt;script src="./d3-foresight.min.js"&gt;&lt;/script&gt;
+<p>
+Additionally, a few icons (in the legend) have an icon font dependency. The css
+for that can be added using:
+</p>
+
+<pre class="example">
+&lt;link rel="stylesheet" href="./assets/fontello/fontello.css" /&gt;
 </pre>
 </div>
+</div>
 
-<div id="outline-container-orgad86bbf" class="outline-3">
-<h3 id="orgad86bbf"><span class="section-number-3">1.1</span> TimeChart</h3>
-<div class="outline-text-3" id="text-1-1">
+<div id="outline-container-org30f3c75" class="outline-2">
+<h2 id="org30f3c75">TimeChart</h2>
+<div class="outline-text-2" id="text-org30f3c75">
 <p>
 This visualizes prediction of time series by some models upto a provided number
 of time steps in future at each step of time. Basic usage instruction follows:
@@ -373,66 +377,54 @@ of time steps in future at each step of time. Basic usage instruction follows:
 </div>
 </div>
 
-<div id="outline-container-org4bdc18b" class="outline-3">
-<h3 id="org4bdc18b"><span class="section-number-3">1.2</span> DistributionChart</h3>
-<div class="outline-text-3" id="text-1-2">
-<p>
-This visualizes probability distribution of the model outputs.
-</p>
-
-<p>
-```js
-let distributionChart = new DistributionChart('#target-div')
-</p>
-
-<p>
-// TODO: Description of data
-distributionChart.plot(data)
-```
-</p>
+<div id="outline-container-orgf1edc63" class="outline-2">
+<h2 id="orgf1edc63"><span class="todo TODO">TODO</span> DistributionChart</h2>
 </div>
-</div>
-</div>
-
-<div id="outline-container-org21ebc52" class="outline-2">
-<h2 id="org21ebc52"><span class="section-number-2">2</span> Hooks</h2>
-<div class="outline-text-2" id="text-2">
+<div id="outline-container-org085f010" class="outline-2">
+<h2 id="org085f010">Hooks</h2>
+<div class="outline-text-2" id="text-org085f010">
 <p>
-The charts can call user defined hooks when movement events are triggered inside
+Charts can call user defined functions when movement events are triggered inside
 (e.g. by clicking on movement buttons or clicking on the overlay). To register
-your custom functions to be called on these events, you can `addHook` (this
-doesn't overwrite already added hooks, so its safe in that sense).
+your functions to be called on these events, you can use <code>addHook</code>.
 </p>
 
-<p>
-```js
-timeChart.addHook('forward-index', () =&gt; {
-  // This is triggered when an event moved the visualization forward in time
-  console.log('chart moved forward')
-})
-</p>
+<div class="org-src-container">
+<pre class="src src-js">timeChart.addHook<span class="org-rainbow-delimiters-depth-1">(</span>d3Foresight.events.FORWARD_INDEX, <span class="org-rainbow-delimiters-depth-2">()</span> =&gt; <span class="org-rainbow-delimiters-depth-2">{</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">This is triggered when an event moves the</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">visualization forward in time one tick</span>
+  console.log<span class="org-rainbow-delimiters-depth-3">(</span><span class="org-string">'chart moved forward'</span><span class="org-rainbow-delimiters-depth-3">)</span>
+<span class="org-rainbow-delimiters-depth-2">}</span><span class="org-rainbow-delimiters-depth-1">)</span>
+
+timeChart.addHook<span class="org-rainbow-delimiters-depth-1">(</span>d3Foresight.events.BACKWARD_INDEX, <span class="org-rainbow-delimiters-depth-2">()</span> =&gt; <span class="org-rainbow-delimiters-depth-2">{</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">This is triggered when an event moves the</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">visualization backward in time one tick</span>
+  console.log<span class="org-rainbow-delimiters-depth-3">(</span><span class="org-string">'chart moved backward'</span><span class="org-rainbow-delimiters-depth-3">)</span>
+<span class="org-rainbow-delimiters-depth-2">}</span><span class="org-rainbow-delimiters-depth-1">)</span>
+
+timeChart.addHook<span class="org-rainbow-delimiters-depth-1">(</span>d3Foresight.events.JUMP_TO_INDEX, <span class="org-rainbow-delimiters-depth-2">(</span>index<span class="org-rainbow-delimiters-depth-2">)</span> =&gt; <span class="org-rainbow-delimiters-depth-2">{</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">This is triggered when an event moves the</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">visualization to certain `index` in `timePoints`</span>
+  console.log<span class="org-rainbow-delimiters-depth-3">(</span><span class="org-string">'chart moved to '</span> + index<span class="org-rainbow-delimiters-depth-3">)</span>
+<span class="org-rainbow-delimiters-depth-2">}</span><span class="org-rainbow-delimiters-depth-1">)</span>
+</pre>
+</div>
 
 <p>
-timeChart.addHook('backward-index', () =&gt; {
-  // This is triggered when an event moved the visualization backward in time
-  console.log('chart moved backward')
-})
+<code>addHook</code> returns a subscription token which can then be used to revoke that
+hook using <code>removeHook</code>.
 </p>
 
-<p>
-timeChart.addHook('jump-to-index', (index) =&gt; {
-  // This is triggered when an event moved the visualization to certain discrete `index` in time
-  console.log('chart moved to ' + index)
-})
-```
-</p>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">let</span> <span class="org-variable-name">token</span> = timeChart.addHook<span class="org-rainbow-delimiters-depth-1">(</span>
+  d3Foresight.events.BACKWARD_INDEX,
+  <span class="org-rainbow-delimiters-depth-2">()</span> =&gt; console.log<span class="org-rainbow-delimiters-depth-2">(</span><span class="org-string">'went back'</span><span class="org-rainbow-delimiters-depth-2">)</span>
+<span class="org-rainbow-delimiters-depth-1">)</span>
+timeChart.removeHook<span class="org-rainbow-delimiters-depth-1">(</span>token<span class="org-rainbow-delimiters-depth-1">)</span>
+</pre>
 </div>
 </div>
 </div>
-<div id="postamble" class="status">
-<p class="author">Author: Abhinav Tushar</p>
-<p class="date">Created: 2018-03-25 Sun 21:25</p>
-<p class="validation"></p>
 </div>
 </body>
 </html>
