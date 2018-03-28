@@ -168,15 +168,12 @@ export default class TimeChart extends Chart {
     if (this.dataConfig.baseline) {
       this.baseline.plot(this.scales, data.baseline)
     }
-    this.actual.hidden = !this.dataConfig.actual
     if (this.dataConfig.actual) {
       this.actual.plot(this.scales, data.actual)
     }
-    this.observed.hidden = !this.dataConfig.observed
     if (this.dataConfig.observed) {
       this.observed.plot(this.scales, data.observed)
     }
-    this.history.hidden = !this.dataConfig.history
     if (this.dataConfig.history) {
       this.history.plot(this.scales, data.history)
     }
