@@ -3,10 +3,10 @@ import Component from '../../component'
 export default class SearchBox extends Component {
   constructor () {
     super()
-    this.selection.classed('item', true)
+    this.selection.classed('row', true)
 
     this.input = this.selection.append('input')
-      .attr('class', 'input is-small search-input')
+      .attr('class', 'search-input')
       .attr('type', 'text')
       .attr('placeholder', 'Filter models')
 
