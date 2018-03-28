@@ -15,19 +15,19 @@ export default class ControlButtons extends Component {
     let buttonData = [
       {
         name: 'legendBtn',
-        iconText: '☰',
+        iconClass: 'icon-menu',
         tooltipText: 'Toggle Legend',
         event: ev.TOGGLE_LEGEND
       },
       {
         name: 'backBtn',
-        iconText: '🡸',
+        iconClass: 'icon-left-big',
         tooltipText: 'Move backward',
         event: ev.MOVE_PREV
       },
       {
         name: 'nextBtn',
-        iconText: '🡺',
+        iconClass: 'icon-right-big',
         tooltipText: 'Move forward',
         event: ev.MOVE_NEXT
       }
@@ -35,16 +35,19 @@ export default class ControlButtons extends Component {
 
     // Save all the buttons for toggling state and stuff
     let buttons = buttonData.map(data => {
-      return this.selection.append('div')
-        .classed('btn', true)
-        .text(data.iconText)
-        .on('mouseover', () => { tooltip.hidden = false })
-        .on('mouseout', () => { tooltip.hidden = true })
-        .on('mousemove', function () {
-          tooltip.render(tt.parseText({ text: data.tooltipText }))
-          tt.moveTooltip(tooltip, d3.select(this), 'left')
-        })
-        .on('click', () => ev.publish(uuid, data.event, {}))
+      let btnDiv = this.selection.append('div')
+          .classed('btn', true)
+          .on('mouseover', () => { tooltip.hidden = false })
+          .on('mouseout', () => { tooltip.hidden = true })
+          .on('mousemove', function () {
+            tooltip.render(tt.parseText({ text: data.tooltipText }))
+            tt.moveTooltip(tooltip, d3.select(this), 'left')
+          })
+          .on('click', () => ev.publish(uuid, data.event, {}))
+
+      btnDiv.append('i')
+        .classed(data.iconClass, true)
+      return btnDiv
     })
 
     this.legendBtn = buttons[0]

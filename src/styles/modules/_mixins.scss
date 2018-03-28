@@ -42,5 +42,10 @@
   stroke-width: 2.5px;
 }
 
-@mixin ci() {
+@mixin icon() {
+  display: inline-block;
+  font-size: 9px;
+  font-style: normal;
+  vertical-align: middle;
+  text-decoration: none;
 }

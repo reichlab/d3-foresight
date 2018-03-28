@@ -47,11 +47,11 @@
     padding: 4px 10px;
 
     i {
-      display: inline-block;
-      font-size: 9px;
-      font-style: normal;
-      margin-right: 10px;
-      vertical-align: middle;
+      @include icon();
+    }
+
+    .item-icon {
+      margin-right: 3px;
     }
 
     .item-title {
@@ -61,12 +61,11 @@
     }
 
     .item-url {
-      font-size: 9px;
-      margin-left: 10px;
-      margin-right: 5px;
       float: right;
       color: $gray-light;
-      text-decoration: none;
+      i {
+        margin: 0;
+      }
     }
 
     &.na {

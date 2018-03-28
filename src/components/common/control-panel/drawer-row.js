@@ -21,7 +21,7 @@ export default class DrawerRow extends Component {
 
     this.icon = this.selection.append('i')
       .style('color', color)
-      .style('margin-right', '3px')
+      .classed('item-icon', true)
 
     this.selection.append('span')
       .attr('class', 'item-title')
@@ -53,13 +53,15 @@ export default class DrawerRow extends Component {
   }
 
   addLink (url, tooltip) {
-    this.urlIcon = this.selection.append('a')
-      .attr('href', url)
-      .attr('target', '_blank')
-      .classed('item-url', true)
+    let urlAnchor = this.selection.append('a')
+        .attr('href', url)
+        .attr('target', '_blank')
+        .classed('item-url', true)
+
+    urlAnchor.append('i')
       .classed('icon-link-ext', true)
 
-    this.urlIcon
+    urlAnchor
       .on('mousemove', function () {
         d3.event.stopPropagation()
         tooltip.render(tt.parseText({ text: 'Show details' }))
