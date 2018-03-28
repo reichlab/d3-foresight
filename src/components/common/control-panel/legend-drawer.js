@@ -13,11 +13,10 @@ export default class LegendDrawer extends Component {
   constructor (config) {
     super()
 
-    this.selection.classed('legend nav-drawer', true)
+    this.selection.classed('legend-drawer', true)
 
     // Items above the controls (actual, observed, history)
     let actualContainer = this.selection.append('div')
-        .attr('class', 'legend-actual-container')
 
     let actualItems = [
       {
@@ -64,9 +63,9 @@ export default class LegendDrawer extends Component {
         .attr('class', 'legend-control-container')
 
     if (config.ci) {
-      let ciItem = controlContainer.append('div')
-          .attr('class', 'item control-item')
-      ciItem.append('span').text('CI')
+      let ciRow = controlContainer.append('div')
+          .attr('class', 'row control-row')
+      ciRow.append('span').text('CI')
 
       let ciValues = [...config.ci.values, 'none']
       this.ciButtons = new ToggleButtons(ciValues)
@@ -81,13 +80,13 @@ export default class LegendDrawer extends Component {
         ev.publish(config.uuid, ev.LEGEND_CI, { idx: (ciValues.length - 1) === idx ? -1 : idx })
       })
       this.ciButtons.set(config.ci.idx)
-      ciItem.append(() => this.ciButtons.node)
+      ciRow.append(() => this.ciButtons.node)
     }
 
     // Show / hide all
-    let showHideItem = controlContainer.append('div')
-        .attr('class', 'item control-item')
-    showHideItem.append('span').text('Show')
+    let showHideRow = controlContainer.append('div')
+        .attr('class', 'row control-row')
+    showHideRow.append('span').text('Show')
 
     this.showHideButtons = new ToggleButtons(['all', 'none'])
     this.showHideButtons.addTooltip(
@@ -100,15 +99,15 @@ export default class LegendDrawer extends Component {
     this.showHideButtons.addOnClick(({ idx }) => {
       this.showHideAllItems(idx === 0)
     })
-    showHideItem.append(() => this.showHideButtons.node)
+    showHideRow.append(() => this.showHideButtons.node)
 
     // Add search box
     this.searchBox = new SearchBox()
     controlContainer.append(() => this.searchBox.node)
 
-    // Prediction items
-    this.predictionContainer = this.selection.append('div')
-      .attr('class', 'legend-prediction-container')
+    // Model rows
+    this.modelContainer = this.selection.append('div')
+      .attr('class', 'legend-model-container')
 
     this.tooltip = config.tooltip
     this.uuid = config.uuid
@@ -153,7 +152,7 @@ export default class LegendDrawer extends Component {
     }
 
     // Add prediction items
-    this.predictionContainer.selectAll('*').remove()
+    this.modelContainer.selectAll('*').remove()
     this.rows = predictions.map(p => {
       let drawerRow = new DrawerRow(p.id, p.color)
       if (p.meta.url) {
@@ -173,7 +172,7 @@ export default class LegendDrawer extends Component {
         }), 'left')
 
       drawerRow.active = !p.hidden
-      this.predictionContainer.append(() => drawerRow.node)
+      this.modelContainer.append(() => drawerRow.node)
       return drawerRow
     })
   }

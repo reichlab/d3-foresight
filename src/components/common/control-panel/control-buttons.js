@@ -10,7 +10,7 @@ export default class ControlButtons extends Component {
   constructor (tooltip, uuid) {
     super()
 
-    this.selection.classed('nav-controls', true)
+    this.selection.classed('control-btns', true)
 
     let buttonData = [
       {

@@ -17,14 +17,14 @@ export default class DrawerRow extends Component {
     super()
 
     this.id = name
-    this.selection.attr('class', `item legend-item-${this.id}`)
+    this.selection.attr('class', `row`)
 
     this.icon = this.selection.append('i')
       .style('color', color)
-      .classed('item-icon', true)
+      .classed('row-icon', true)
 
     this.selection.append('span')
-      .attr('class', 'item-title')
+      .attr('class', 'row-title')
       .text(name)
   }
 
@@ -56,7 +56,7 @@ export default class DrawerRow extends Component {
     let urlAnchor = this.selection.append('a')
         .attr('href', url)
         .attr('target', '_blank')
-        .classed('item-url', true)
+        .classed('row-url', true)
 
     urlAnchor.append('i')
       .classed('icon-link-ext', true)

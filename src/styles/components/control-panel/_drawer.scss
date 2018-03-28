@@ -1,4 +1,4 @@
-.nav-drawer {
+.legend-drawer {
   @include no-select();
   @include shadow();
   @include border($shadow);
@@ -9,24 +9,18 @@
   right: 60px;
   top: 10px;
 
-  .legend-prediction-container {
-    max-height: 200px;
-    overflow-y: auto;
-  }
-
-  // Control buttons item
   .legend-control-container {
     background-color: $white-shade;
     padding: 5px 0;
 
-    .control-item {
+    .control-row {
       align-items: center;
       display: flex;
       justify-content: space-between;
       margin: 5px 0;
     }
 
-    .control-item > span:first-child {
+    .control-row > span:first-child {
       margin-right: 5px;
     }
 
@@ -43,24 +37,29 @@
     }
   }
 
-  .item {
+  .legend-model-container {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .row {
     padding: 4px 10px;
 
     i {
       @include icon();
     }
 
-    .item-icon {
+    .row-icon {
       margin-right: 3px;
     }
 
-    .item-title {
+    .row-title {
       display: inline-block;
       font-size: 11px;
       vertical-align: middle;
     }
 
-    .item-url {
+    .row-url {
       float: right;
       color: $gray-light;
       i {
