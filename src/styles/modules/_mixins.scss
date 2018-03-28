@@ -15,7 +15,7 @@
   cursor: pointer;
   @include no-select();
   letter-spacing: normal;
-  line-height: 1;
+  line-height: normal;
 }
 
 @mixin shadow() {
