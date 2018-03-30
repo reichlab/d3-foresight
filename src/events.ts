@@ -15,10 +15,8 @@ export const LEGEND_ITEM : Event = 'LEGEND_ITEM'
 export const LEGEND_CI : Event = 'LEGEND_CI'
 export const LEGEND_ALL : Event = 'LEGEND_ALL'
 
-// Exposed hooks
+// Exposed events
 export const JUMP_TO_INDEX : Event = 'JUMP_TO_INDEX'
-export const FORWARD_INDEX : Event = 'FORWARD_INDEX'
-export const BACKWARD_INDEX : Event = 'BACKWARD_INDEX'
 
 /**
  * Reset all subscriptions for an event

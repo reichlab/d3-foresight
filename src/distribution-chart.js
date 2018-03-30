@@ -89,11 +89,20 @@ export default class DistributionChart extends Chart {
     this.selection.append(() => this.controlPanel.node)
 
     ev.addSub(this.uuid, ev.PANEL_MOVE_NEXT, (msg, data) => {
-      ev.publish(this.uuid, ev.FORWARD_INDEX)
+      // Since we can't do anything for the next index, we just send a notification
+      let oldIdx = this.currentIdx
+      let newIdx = this.deltaIndex(1)
+      if (newIdx !== oldIdx) {
+        ev.publish(this.uuid, ev.JUMP_TO_INDEX, newIdx)
+      }
     })
 
     ev.addSub(this.uuid, ev.PANEL_MOVE_PREV, (msg, data) => {
-      ev.publish(this.uuid, ev.BACKWARD_INDEX)
+      let oldIdx = this.currentIdx
+      let newIdx = this.deltaIndex(-1)
+      if (newIdx !== oldIdx) {
+        ev.publish(this.uuid, ev.JUMP_TO_INDEX, newIdx)
+      }
     })
 
     ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id, state }) => {
@@ -106,29 +115,12 @@ export default class DistributionChart extends Chart {
     })
   }
 
-  get layout () {
-    return {
-      width: this.width,
-      height: this.height,
-      totalHeight: this.height
-    }
-  }
-
-  get scales () {
-    return {
-      xScale: this.xScale,
-      xScaleDate: this.xScaleDate,
-      xScalePoint: this.xScalePoint,
-      ticks: this.ticks,
-      yScale: this.yScale
-    }
-  }
-
   // plot data
   plot (data) {
     verifyDistChartData(data)
     let dataConfig = getDistChartDataConfig(data, this.config)
     this.ticks = dataConfig.ticks
+    this.currentIdx = data.currentIdx
 
     this.dropdowns.forEach(dd => {
       dd.selectAll('*').remove()
@@ -144,7 +136,7 @@ export default class DistributionChart extends Chart {
     this.xScale.domain(domains.x(data, dataConfig))
 
     this.xAxis.plot(this.scales)
-    this.pointer.plot(this.scales, data.currentIdx)
+    this.pointer.plot(this.scales, this.currentIdx)
 
     let yMaxima = domains.yCurveMaxima(data)
 

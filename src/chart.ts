@@ -15,6 +15,12 @@ export default class Chart {
   tooltip: Tooltip
   selection: any
   onsetHeight: number
+  xScale: any
+  xScaleDate: any
+  xScalePoint: any
+  yScale: any
+  currentIdx: number
+  ticks: number[]
   uuid: string
   hooks: { [name: string]: any[] }
 
@@ -71,6 +77,34 @@ export default class Chart {
 
     // Current position in the time series
     this.currentIdx = -1
+  }
+
+  /**
+   * Return layout related parameters
+   */
+  get layout () {
+    return {
+      width: this.width,
+      height: this.height,
+      totalHeight: this.height + this.onsetHeight
+    }
+  }
+
+  get scales () {
+    return {
+      xScale: this.xScale,
+      xScaleDate: this.xScaleDate,
+      xScalePoint: this.xScalePoint,
+      ticks: this.ticks,
+      yScale: this.yScale
+    }
+  }
+
+  /**
+   * Return the value of currentIdx + delta as defined by the ticks
+   */
+  deltaIndex (delta) {
+    return Math.max(Math.min(this.currentIdx + delta, this.scales.ticks.length - 1), 0)
   }
 
   plot (data) {}

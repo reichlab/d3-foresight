@@ -92,13 +92,19 @@ export default class TimeChart extends Chart {
 
     // Event subscriptions for control panel
     ev.addSub(this.uuid, ev.PANEL_MOVE_NEXT, (msg, data) => {
+      let oldIdx = this.currentIdx
       this.moveForward()
-      ev.publish(this.uuid, ev.FORWARD_INDEX)
+      if (this.currentIdx !== oldIdx) {
+        ev.publish(this.uuid, ev.JUMP_TO_INDEX, this.currentIdx)
+      }
     })
 
     ev.addSub(this.uuid, ev.PANEL_MOVE_PREV, (msg, data) => {
+      let oldIdx = this.currentIdx
       this.moveBackward()
-      ev.publish(this.uuid, ev.BACKWARD_INDEX)
+      if (this.currentIdx !== oldIdx) {
+        ev.publish(this.uuid, ev.JUMP_TO_INDEX, this.currentIdx)
+      }
     })
 
     ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id, state }) => {
@@ -122,27 +128,6 @@ export default class TimeChart extends Chart {
         p.update(this.currentIdx)
       })
     })
-  }
-
-  /**
-   * Return layout related parameters
-   */
-  get layout () {
-    return {
-      width: this.width,
-      height: this.height,
-      totalHeight: this.height + this.onsetHeight
-    }
-  }
-
-  get scales () {
-    return {
-      xScale: this.xScale,
-      xScaleDate: this.xScaleDate,
-      xScalePoint: this.xScalePoint,
-      ticks: this.ticks,
-      yScale: this.yScale
-    }
   }
 
   // plot data
@@ -241,13 +226,13 @@ export default class TimeChart extends Chart {
    * Move chart one step ahead
    */
   moveForward () {
-    this.update(Math.min(this.currentIdx + 1, this.dataConfig.ticks.length - 1))
+    this.update(this.deltaIndex(1))
   }
 
   /**
    * Move chart one step back
    */
   moveBackward () {
-    this.update(Math.max(this.currentIdx - 1, 0))
+    this.update(this.deltaIndex(-1))
   }
 }
