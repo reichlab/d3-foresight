@@ -8,23 +8,3 @@
   text-decoration: none;
   color: gray;
 }
-
-#mouse-code {
-  font-family: 'Fira Code';
-  font-size: 15px;
-  padding: 10px;
-  color: black;
-  min-width: 90%;
-  min-height: 90px;
-}
-
-#mouse-btn {
-  cursor: pointer;
-  width: 80px;
-  text-align: center;
-  margin-top: 10px;
-}
-
-#mouse-btn.disabled {
-  cursor: default;
-}
