@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2018-03-29 Thu 23:07 -->
+<!-- 2018-03-29 Thu 23:12 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>D3-foresight documentation</title>
@@ -179,6 +179,7 @@
   /*]]>*/-->
 </style>
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <script src="./assets/d3-foresight.min.js"></script>
 <script src="./assets/script.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic" />
@@ -238,7 +239,7 @@ for the JavaScript code in this tag.
 <div id="content">
 <div class="page-header">
 <p>
-   <div class="page-meta small">Document last updated 2018-03-29 Thu 23:07</div>
+   <div class="page-meta small">Document last updated 2018-03-29 Thu 23:12</div>
 </p>
 <h1>D3 <em>Foresight</em></h1>
 </div>
@@ -268,31 +269,32 @@ library try to cover these cases. See <a href="http://reichlab.io/flusight">reic
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4425fbd">Setting up</a></li>
-<li><a href="#org5683da3">TimeChart</a>
+<li><a href="#org89c658c">Setting up</a></li>
+<li><a href="#orgc6d4d2b">TimeChart</a>
 <ul>
-<li><a href="#org1ff7e5e">Basic plot</a></li>
-<li><a href="#org75a2216"><span class="todo TODO">TODO</span> Advanced plots</a></li>
+<li><a href="#org9807892">Basic plot</a></li>
+<li><a href="#orgf5e272a"><span class="todo TODO">TODO</span> Advanced plots</a></li>
 </ul>
 </li>
-<li><a href="#orgd375cba"><span class="todo TODO">TODO</span> DistributionChart</a></li>
-<li><a href="#org18de12d">Hooks</a></li>
+<li><a href="#org42e72f9"><span class="todo TODO">TODO</span> DistributionChart</a></li>
+<li><a href="#org20ca6b7">Hooks</a></li>
 </ul>
 </div>
 </nav>
 
-<div id="outline-container-org4425fbd" class="outline-2">
-<h2 id="org4425fbd">Setting up</h2>
-<div class="outline-text-2" id="text-org4425fbd">
+<div id="outline-container-org89c658c" class="outline-2">
+<h2 id="org89c658c">Setting up</h2>
+<div class="outline-text-2" id="text-org89c658c">
 <p>
-The library requires <a href="https://d3js.org/">d3</a> as external dependency. To build foresight itself, use
-<code>npm compile</code> (for <code>./dist/d3-foresight.js</code>) or <code>npm build</code> (for
+The library requires <a href="https://d3js.org/">d3</a> and <a href="https://momentjs.com">momentjs</a> as external dependencies. To build
+foresight itself, use <code>npm compile</code> (for <code>./dist/d3-foresight.js</code>) or <code>npm build</code> (for
 <code>./dist/d3-foresight.min.js</code>). The library is also available on npm as
 <a href="https://www.npmjs.com/package/d3-foresight">d3-foresight</a>. For browser, include these in your html:
 </p>
 
 <pre class="example">
 &lt;script src="https://d3js.org/d3.v4.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"&gt;&lt;/script&gt;
 &lt;script src="./dist/d3-foresight.min.js"&gt;&lt;/script&gt;
 </pre>
 
@@ -307,9 +309,9 @@ for that can be added using:
 </div>
 </div>
 
-<div id="outline-container-org5683da3" class="outline-2">
-<h2 id="org5683da3">TimeChart</h2>
-<div class="outline-text-2" id="text-org5683da3">
+<div id="outline-container-orgc6d4d2b" class="outline-2">
+<h2 id="orgc6d4d2b">TimeChart</h2>
+<div class="outline-text-2" id="text-orgc6d4d2b">
 <p>
 A <code>TimeChart</code> displays the time series to be predicted and the models'
 predictions. Beyond the very minimal plots involving only model forecasts, it
@@ -338,18 +340,18 @@ certain disease).</li>
 </figure>
 </div>
 
-<div id="outline-container-org1ff7e5e" class="outline-3">
-<h3 id="org1ff7e5e">Basic plot</h3>
-<div class="outline-text-3" id="text-org1ff7e5e">
+<div id="outline-container-org9807892" class="outline-3">
+<h3 id="org9807892">Basic plot</h3>
+<div class="outline-text-3" id="text-org9807892">
 <p>
 In this section, we will create a very basic visualization involving one model
 providing random numbers as forecasts for a year.
 </p>
 </div>
 
-<div id="outline-container-org51a0c97" class="outline-4">
-<h4 id="org51a0c97">Configuration</h4>
-<div class="outline-text-4" id="text-org51a0c97">
+<div id="outline-container-org3bbe0e1" class="outline-4">
+<h4 id="org3bbe0e1">Configuration</h4>
+<div class="outline-text-4" id="text-org3bbe0e1">
 <p>
 Time in foresight is represented using <code>timePoints</code> which is an array mapping to
 discrete date/time values. As of now, foresight supports the following two type
@@ -392,9 +394,9 @@ foresight charts using a config object which is the following in our case:
 </div>
 </div>
 
-<div id="outline-container-org1d6c79f" class="outline-4">
-<h4 id="org1d6c79f">Data</h4>
-<div class="outline-text-4" id="text-org1d6c79f">
+<div id="outline-container-org9db2c00" class="outline-4">
+<h4 id="org9db2c00">Data</h4>
+<div class="outline-text-4" id="text-org9db2c00">
 <p>
 At minimum, <code>TimeChart</code> expects an array of time points and an array of model
 data. The time points in our case go from week 1 to week 52 of 2016 and can be
@@ -464,9 +466,9 @@ involved in putting together the values for the model:
 </div>
 </div>
 
-<div id="outline-container-org666ce67" class="outline-4">
-<h4 id="org666ce67">Plotting</h4>
-<div class="outline-text-4" id="text-org666ce67">
+<div id="outline-container-org05c9cee" class="outline-4">
+<h4 id="org05c9cee">Plotting</h4>
+<div class="outline-text-4" id="text-org05c9cee">
 <p>
 The life cycle of <code>TimeChart</code> involves the following stages:
 </p>
@@ -504,22 +506,22 @@ window.timeChart = timeChart
 
 <p>
 If you are able to see the plot above (which you should be, else file an <a href="https://github.com/reichlab/d3-foresight/issues">issue</a>),
-you should be able to move around by clicking the arrow buttons in legend.
-Events like mouse clicks and movement arrows can call user defined functions
-too. See the section on <a href="#org18de12d">Hooks</a> for more description.
+you should be able to move around by clicking the arrow buttons in legend or
+clicking on the chart itself. These mouse click events can trigger user defined
+functions too. See the section on <a href="#org20ca6b7">Hooks</a> for more description.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org75a2216" class="outline-3">
-<h3 id="org75a2216"><span class="todo TODO">TODO</span> Advanced plots</h3>
+<div id="outline-container-orgf5e272a" class="outline-3">
+<h3 id="orgf5e272a"><span class="todo TODO">TODO</span> Advanced plots</h3>
 </div>
 </div>
 
-<div id="outline-container-orgd375cba" class="outline-2">
-<h2 id="orgd375cba"><span class="todo TODO">TODO</span> DistributionChart</h2>
-<div class="outline-text-2" id="text-orgd375cba">
+<div id="outline-container-org42e72f9" class="outline-2">
+<h2 id="org42e72f9"><span class="todo TODO">TODO</span> DistributionChart</h2>
+<div class="outline-text-2" id="text-org42e72f9">
 
 <figure>
 <img src="./distchart.png" alt="distchart.png">
@@ -529,9 +531,9 @@ too. See the section on <a href="#org18de12d">Hooks</a> for more description.
 </div>
 </div>
 
-<div id="outline-container-org18de12d" class="outline-2">
-<h2 id="org18de12d">Hooks</h2>
-<div class="outline-text-2" id="text-org18de12d">
+<div id="outline-container-org20ca6b7" class="outline-2">
+<h2 id="org20ca6b7">Hooks</h2>
+<div class="outline-text-2" id="text-org20ca6b7">
 <p>
 Charts can call user defined functions when movement events are triggered inside
 (e.g. by clicking on movement buttons or clicking on the overlay). To register

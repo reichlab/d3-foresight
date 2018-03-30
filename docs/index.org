@@ -8,6 +8,7 @@
 #+MACRO: badge @@html:<a href="$1" class="image-link"><img src="$2" /></a>@@
 
 {{{js(https://d3js.org/d3.v4.min.js)}}}
+{{{js(https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js)}}}
 {{{js(./assets/d3-foresight.min.js)}}}
 {{{js(./assets/script.js)}}}
 
@@ -42,13 +43,14 @@ library try to cover these cases. See [[http://reichlab.io/flusight][reichlab/fl
 
 * Setting up
 
-The library requires [[https://d3js.org/][d3]] as external dependency. To build foresight itself, use
-~npm compile~ (for ~./dist/d3-foresight.js~) or ~npm build~ (for
+The library requires [[https://d3js.org/][d3]] and [[https://momentjs.com][momentjs]] as external dependencies. To build
+foresight itself, use ~npm compile~ (for ~./dist/d3-foresight.js~) or ~npm build~ (for
 ~./dist/d3-foresight.min.js~). The library is also available on npm as
 [[https://www.npmjs.com/package/d3-foresight][d3-foresight]]. For browser, include these in your html:
 
 #+BEGIN_EXAMPLE
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <script src="./dist/d3-foresight.min.js"></script>
 #+END_EXAMPLE
 
@@ -208,9 +210,9 @@ The life cycle of ~TimeChart~ involves the following stages:
 #+HTML: <div id="timechart"></div>
 
 If you are able to see the plot above (which you should be, else file an [[https://github.com/reichlab/d3-foresight/issues][issue]]),
-you should be able to move around by clicking the arrow buttons in legend.
-Events like mouse clicks and movement arrows can call user defined functions
-too. See the section on [[Hooks]] for more description.
+you should be able to move around by clicking the arrow buttons in legend or
+clicking on the chart itself. These mouse click events can trigger user defined
+functions too. See the section on [[Hooks]] for more description.
 
 ** TODO Advanced plots
 
@@ -249,7 +251,7 @@ hook using ~removeHook~.
 
 
 #+BEGIN_SRC js :tangle ./assets/script.js :exports none
-}) // Closing the documentation loaded function
+})
 #+END_SRC
 
 #+HTML: <br><br>

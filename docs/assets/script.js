@@ -69,4 +69,4 @@ timeChart.update(10)
 // Lets also save the timechart object in global namespace
 window.timeChart = timeChart
 
-}) // Closing the documentation loaded function
+})
