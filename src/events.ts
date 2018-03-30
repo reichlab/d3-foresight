@@ -6,9 +6,9 @@ import * as PubSub from 'pubsub-js'
 import { Event } from './interfaces'
 
 // Control panel button events
-export const MOVE_NEXT : Event = 'MOVE_NEXT'
-export const MOVE_PREV : Event = 'MOVE_PREV'
-export const TOGGLE_LEGEND : Event = 'TOGGLE_LEGEND'
+export const PANEL_MOVE_NEXT : Event = 'PANEL_MOVE_NEXT'
+export const PANEL_MOVE_PREV : Event = 'PANEL_MOVE_PREV'
+export const PANEL_TOGGLE : Event = 'PANEL_TOGGLE'
 
 // Legend toggles
 export const LEGEND_ITEM : Event = 'LEGEND_ITEM'

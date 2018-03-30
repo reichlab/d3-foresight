@@ -17,19 +17,19 @@ export default class ControlButtons extends Component {
         name: 'legendBtn',
         iconClass: 'icon-menu',
         tooltipText: 'Toggle Legend',
-        event: ev.TOGGLE_LEGEND
+        event: ev.PANEL_TOGGLE
       },
       {
         name: 'backBtn',
         iconClass: 'icon-left-big',
         tooltipText: 'Move backward',
-        event: ev.MOVE_PREV
+        event: ev.PANEL_MOVE_PREV
       },
       {
         name: 'nextBtn',
         iconClass: 'icon-right-big',
         tooltipText: 'Move forward',
-        event: ev.MOVE_NEXT
+        event: ev.PANEL_MOVE_NEXT
       }
     ]
 

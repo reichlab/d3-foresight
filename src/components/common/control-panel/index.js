@@ -19,7 +19,7 @@ export default class ControlPanel extends Component {
     // Buttons on the side of panel
     let sideButtons = this.append(new ControlButtons(config.tooltip, config.uuid))
 
-    ev.addSub(config.uuid, ev.TOGGLE_LEGEND, (msg, data) => {
+    ev.addSub(config.uuid, ev.PANEL_TOGGLE, (msg, data) => {
       this.legendDrawer.hidden = !this.legendDrawer.hidden
       sideButtons.legendBtnState = !sideButtons.legendBtnState
     })

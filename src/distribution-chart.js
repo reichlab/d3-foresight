@@ -88,11 +88,11 @@ export default class DistributionChart extends Chart {
     this.controlPanel = new ControlPanel({ ci: false, tooltip: this.tooltip, uuid: this.uuid })
     this.selection.append(() => this.controlPanel.node)
 
-    ev.addSub(this.uuid, ev.MOVE_NEXT, (msg, data) => {
+    ev.addSub(this.uuid, ev.PANEL_MOVE_NEXT, (msg, data) => {
       ev.publish(this.uuid, ev.FORWARD_INDEX)
     })
 
-    ev.addSub(this.uuid, ev.MOVE_PREV, (msg, data) => {
+    ev.addSub(this.uuid, ev.PANEL_MOVE_PREV, (msg, data) => {
       ev.publish(this.uuid, ev.BACKWARD_INDEX)
     })
 
