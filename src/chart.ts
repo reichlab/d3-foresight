@@ -68,6 +68,9 @@ export default class Chart {
 
     // Create a uuid for this instance
     this.uuid = uuid()
+
+    // Current position in the time series
+    this.currentIdx = -1
   }
 
   plot (data) {}
