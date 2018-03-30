@@ -225,14 +225,16 @@ export default class TimeChart extends Chart {
    * Update marker position
    */
   update (idx) {
-    this.currentIdx = idx
-    this.timerect.update(idx)
-    this.predictions.forEach(p => { p.update(idx) })
-    this.overlay.update(this.predictions)
-    if (this.dataConfig.observed) {
-      this.observed.update(idx)
+    if (idx !== this.currentIdx) {
+      this.currentIdx = idx
+      this.timerect.update(idx)
+      this.predictions.forEach(p => { p.update(idx) })
+      this.overlay.update(this.predictions)
+      if (this.dataConfig.observed) {
+        this.observed.update(idx)
+      }
+      this.controlPanel.update(this.predictions)
     }
-    this.controlPanel.update(this.predictions)
   }
 
   /**
