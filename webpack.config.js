@@ -16,8 +16,7 @@ module.exports = {
   },
 
   externals: {
-    'd3': 'd3',
-    'moment': 'moment'
+    'd3': 'd3'
   },
 
   resolve: {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2018-03-26 Mon 00:37 -->
+<!-- 2018-03-29 Thu 23:07 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>D3-foresight documentation</title>
@@ -179,7 +179,6 @@
   /*]]>*/-->
 </style>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <script src="./assets/d3-foresight.min.js"></script>
 <script src="./assets/script.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic" />
@@ -239,7 +238,7 @@ for the JavaScript code in this tag.
 <div id="content">
 <div class="page-header">
 <p>
-   <div class="page-meta small">Document last updated 2018-03-26 Mon 00:37</div>
+   <div class="page-meta small">Document last updated 2018-03-29 Thu 23:07</div>
 </p>
 <h1>D3 <em>Foresight</em></h1>
 </div>
@@ -269,32 +268,31 @@ library try to cover these cases. See <a href="http://reichlab.io/flusight">reic
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org6848b6c">Setting up</a></li>
-<li><a href="#orgbd77510">TimeChart</a>
+<li><a href="#org4425fbd">Setting up</a></li>
+<li><a href="#org5683da3">TimeChart</a>
 <ul>
-<li><a href="#org6deb884">Basic plot</a></li>
-<li><a href="#orgb245ab1"><span class="todo TODO">TODO</span> Advanced plots</a></li>
+<li><a href="#org1ff7e5e">Basic plot</a></li>
+<li><a href="#org75a2216"><span class="todo TODO">TODO</span> Advanced plots</a></li>
 </ul>
 </li>
-<li><a href="#orgc45bece"><span class="todo TODO">TODO</span> DistributionChart</a></li>
-<li><a href="#orge32cb46">Hooks</a></li>
+<li><a href="#orgd375cba"><span class="todo TODO">TODO</span> DistributionChart</a></li>
+<li><a href="#org18de12d">Hooks</a></li>
 </ul>
 </div>
 </nav>
 
-<div id="outline-container-org6848b6c" class="outline-2">
-<h2 id="org6848b6c">Setting up</h2>
-<div class="outline-text-2" id="text-org6848b6c">
+<div id="outline-container-org4425fbd" class="outline-2">
+<h2 id="org4425fbd">Setting up</h2>
+<div class="outline-text-2" id="text-org4425fbd">
 <p>
-The library requires <a href="https://d3js.org/">d3</a> and <a href="https://momentjs.com">momentjs</a> as external dependencies. To build
-foresight itself, use <code>npm compile</code> (for <code>./dist/d3-foresight.js</code>) or <code>npm build</code> (for
+The library requires <a href="https://d3js.org/">d3</a> as external dependency. To build foresight itself, use
+<code>npm compile</code> (for <code>./dist/d3-foresight.js</code>) or <code>npm build</code> (for
 <code>./dist/d3-foresight.min.js</code>). The library is also available on npm as
 <a href="https://www.npmjs.com/package/d3-foresight">d3-foresight</a>. For browser, include these in your html:
 </p>
 
 <pre class="example">
 &lt;script src="https://d3js.org/d3.v4.min.js"&gt;&lt;/script&gt;
-&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"&gt;&lt;/script&gt;
 &lt;script src="./dist/d3-foresight.min.js"&gt;&lt;/script&gt;
 </pre>
 
@@ -309,9 +307,9 @@ for that can be added using:
 </div>
 </div>
 
-<div id="outline-container-orgbd77510" class="outline-2">
-<h2 id="orgbd77510">TimeChart</h2>
-<div class="outline-text-2" id="text-orgbd77510">
+<div id="outline-container-org5683da3" class="outline-2">
+<h2 id="org5683da3">TimeChart</h2>
+<div class="outline-text-2" id="text-org5683da3">
 <p>
 A <code>TimeChart</code> displays the time series to be predicted and the models'
 predictions. Beyond the very minimal plots involving only model forecasts, it
@@ -340,18 +338,18 @@ certain disease).</li>
 </figure>
 </div>
 
-<div id="outline-container-org6deb884" class="outline-3">
-<h3 id="org6deb884">Basic plot</h3>
-<div class="outline-text-3" id="text-org6deb884">
+<div id="outline-container-org1ff7e5e" class="outline-3">
+<h3 id="org1ff7e5e">Basic plot</h3>
+<div class="outline-text-3" id="text-org1ff7e5e">
 <p>
 In this section, we will create a very basic visualization involving one model
 providing random numbers as forecasts for a year.
 </p>
 </div>
 
-<div id="outline-container-org2f6456e" class="outline-4">
-<h4 id="org2f6456e">Configuration</h4>
-<div class="outline-text-4" id="text-org2f6456e">
+<div id="outline-container-org51a0c97" class="outline-4">
+<h4 id="org51a0c97">Configuration</h4>
+<div class="outline-text-4" id="text-org51a0c97">
 <p>
 Time in foresight is represented using <code>timePoints</code> which is an array mapping to
 discrete date/time values. As of now, foresight supports the following two type
@@ -376,13 +374,13 @@ Both are <i>week</i> based points and are represented as objects like shown:
 </div>
 
 <p>
-Lets work on regular weeks for the year 2016. Our week choice can be passed to
+Lets work on mmwr weeks for the year 2016. Our week choice can be passed to
 foresight charts using a config object which is the following in our case:
 </p>
 
 <div class="org-src-container">
 <pre class="src src-js"><span class="org-keyword">let</span> <span class="org-variable-name">config</span> = <span class="org-rainbow-delimiters-depth-1">{</span>
-  pointType: <span class="org-string">'regular-week'</span>, <span class="org-comment-delimiter">// </span><span class="org-comment">This is optional since regular-week is default</span>
+  pointType: <span class="org-string">'mmwr-week'</span>, <span class="org-comment-delimiter">// </span><span class="org-comment">Default is regular-week</span>
   axes: <span class="org-rainbow-delimiters-depth-2">{</span>
     y: <span class="org-rainbow-delimiters-depth-3">{</span>
       title: <span class="org-string">'Random numbers'</span> <span class="org-comment-delimiter">// </span><span class="org-comment">Title for the y axis</span>
@@ -394,9 +392,9 @@ foresight charts using a config object which is the following in our case:
 </div>
 </div>
 
-<div id="outline-container-orgc65f09e" class="outline-4">
-<h4 id="orgc65f09e">Data</h4>
-<div class="outline-text-4" id="text-orgc65f09e">
+<div id="outline-container-org1d6c79f" class="outline-4">
+<h4 id="org1d6c79f">Data</h4>
+<div class="outline-text-4" id="text-org1d6c79f">
 <p>
 At minimum, <code>TimeChart</code> expects an array of time points and an array of model
 data. The time points in our case go from week 1 to week 52 of 2016 and can be
@@ -466,9 +464,9 @@ involved in putting together the values for the model:
 </div>
 </div>
 
-<div id="outline-container-orga175a0f" class="outline-4">
-<h4 id="orga175a0f">Plotting</h4>
-<div class="outline-text-4" id="text-orga175a0f">
+<div id="outline-container-org666ce67" class="outline-4">
+<h4 id="org666ce67">Plotting</h4>
+<div class="outline-text-4" id="text-org666ce67">
 <p>
 The life cycle of <code>TimeChart</code> involves the following stages:
 </p>
@@ -506,38 +504,22 @@ window.timeChart = timeChart
 
 <p>
 If you are able to see the plot above (which you should be, else file an <a href="https://github.com/reichlab/d3-foresight/issues">issue</a>),
-you should be able to move around by clicking the arrow buttons in legend. You
-might also be noticing that nothing happens when you <i>click</i> on the chart. This is
-because we need to register hook functions for events like clicks. To add the
-<i>on click interactivity</i>, we need to register a function which calls
-<code>timeChart.update</code> on a mouse click event. Press execute button below to set up
-the required hook:
-</p>
-
-<textarea id="mouse-code">
-timeChart.addHook(
-  d3Foresight.events.JUMP_TO_INDEX,
-  idx => timeChart.update(idx)
-)
-</textarea>
-<div class="btn" id="mouse-btn">execute</div>
-
-<p>
-Now, you should be able to use mouse clicks to move in the plot above. See the
-section on <a href="#orge32cb46">Hooks</a> for more description.
+you should be able to move around by clicking the arrow buttons in legend.
+Events like mouse clicks and movement arrows can call user defined functions
+too. See the section on <a href="#org18de12d">Hooks</a> for more description.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgb245ab1" class="outline-3">
-<h3 id="orgb245ab1"><span class="todo TODO">TODO</span> Advanced plots</h3>
+<div id="outline-container-org75a2216" class="outline-3">
+<h3 id="org75a2216"><span class="todo TODO">TODO</span> Advanced plots</h3>
 </div>
 </div>
 
-<div id="outline-container-orgc45bece" class="outline-2">
-<h2 id="orgc45bece"><span class="todo TODO">TODO</span> DistributionChart</h2>
-<div class="outline-text-2" id="text-orgc45bece">
+<div id="outline-container-orgd375cba" class="outline-2">
+<h2 id="orgd375cba"><span class="todo TODO">TODO</span> DistributionChart</h2>
+<div class="outline-text-2" id="text-orgd375cba">
 
 <figure>
 <img src="./distchart.png" alt="distchart.png">
@@ -547,9 +529,9 @@ section on <a href="#orge32cb46">Hooks</a> for more description.
 </div>
 </div>
 
-<div id="outline-container-orge32cb46" class="outline-2">
-<h2 id="orge32cb46">Hooks</h2>
-<div class="outline-text-2" id="text-orge32cb46">
+<div id="outline-container-org18de12d" class="outline-2">
+<h2 id="org18de12d">Hooks</h2>
+<div class="outline-text-2" id="text-org18de12d">
 <p>
 Charts can call user defined functions when movement events are triggered inside
 (e.g. by clicking on movement buttons or clicking on the overlay). To register
@@ -557,21 +539,11 @@ your functions to be called on these events, you can use <code>addHook</code>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-js">timeChart.addHook<span class="org-rainbow-delimiters-depth-1">(</span>d3Foresight.events.FORWARD_INDEX, <span class="org-rainbow-delimiters-depth-2">()</span> =&gt; <span class="org-rainbow-delimiters-depth-2">{</span>
-  <span class="org-comment-delimiter">// </span><span class="org-comment">This is triggered when an event moves the</span>
-  <span class="org-comment-delimiter">// </span><span class="org-comment">visualization forward in time one tick</span>
-  console.log<span class="org-rainbow-delimiters-depth-3">(</span><span class="org-string">'chart moved forward'</span><span class="org-rainbow-delimiters-depth-3">)</span>
-<span class="org-rainbow-delimiters-depth-2">}</span><span class="org-rainbow-delimiters-depth-1">)</span>
-
-timeChart.addHook<span class="org-rainbow-delimiters-depth-1">(</span>d3Foresight.events.BACKWARD_INDEX, <span class="org-rainbow-delimiters-depth-2">()</span> =&gt; <span class="org-rainbow-delimiters-depth-2">{</span>
-  <span class="org-comment-delimiter">// </span><span class="org-comment">This is triggered when an event moves the</span>
-  <span class="org-comment-delimiter">// </span><span class="org-comment">visualization backward in time one tick</span>
-  console.log<span class="org-rainbow-delimiters-depth-3">(</span><span class="org-string">'chart moved backward'</span><span class="org-rainbow-delimiters-depth-3">)</span>
-<span class="org-rainbow-delimiters-depth-2">}</span><span class="org-rainbow-delimiters-depth-1">)</span>
-
-timeChart.addHook<span class="org-rainbow-delimiters-depth-1">(</span>d3Foresight.events.JUMP_TO_INDEX, <span class="org-rainbow-delimiters-depth-2">(</span>index<span class="org-rainbow-delimiters-depth-2">)</span> =&gt; <span class="org-rainbow-delimiters-depth-2">{</span>
+<pre class="src src-js">timeChart.addHook<span class="org-rainbow-delimiters-depth-1">(</span>d3Foresight.events.JUMP_TO_INDEX, index =&gt; <span class="org-rainbow-delimiters-depth-2">{</span>
   <span class="org-comment-delimiter">// </span><span class="org-comment">This is triggered when an event moves the</span>
   <span class="org-comment-delimiter">// </span><span class="org-comment">visualization to certain `index` in `timePoints`</span>
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">Current index is `timeChart.currentIdx`</span>
   console.log<span class="org-rainbow-delimiters-depth-3">(</span><span class="org-string">'chart moved to '</span> + index<span class="org-rainbow-delimiters-depth-3">)</span>
 <span class="org-rainbow-delimiters-depth-2">}</span><span class="org-rainbow-delimiters-depth-1">)</span>
 </pre>
@@ -584,8 +556,8 @@ hook using <code>removeHook</code>.
 
 <div class="org-src-container">
 <pre class="src src-js"><span class="org-keyword">let</span> <span class="org-variable-name">token</span> = timeChart.addHook<span class="org-rainbow-delimiters-depth-1">(</span>
-  d3Foresight.events.BACKWARD_INDEX,
-  <span class="org-rainbow-delimiters-depth-2">()</span> =&gt; console.log<span class="org-rainbow-delimiters-depth-2">(</span><span class="org-string">'went back'</span><span class="org-rainbow-delimiters-depth-2">)</span>
+  d3Foresight.events.JUMP_TO_INDEX,
+  index =&gt; console.log<span class="org-rainbow-delimiters-depth-2">(</span><span class="org-string">`Now at ${index}`</span><span class="org-rainbow-delimiters-depth-2">)</span>
 <span class="org-rainbow-delimiters-depth-1">)</span>
 timeChart.removeHook<span class="org-rainbow-delimiters-depth-1">(</span>token<span class="org-rainbow-delimiters-depth-1">)</span>
 </pre>

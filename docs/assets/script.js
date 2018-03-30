@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
 let config = {
-  pointType: 'regular-week', // This is optional since regular-week is default
+  pointType: 'mmwr-week', // Default is regular-week
   axes: {
     y: {
       title: 'Random numbers' // Title for the y axis
@@ -68,12 +68,5 @@ timeChart.update(10)
 
 // Lets also save the timechart object in global namespace
 window.timeChart = timeChart
-
-d3.select('#mouse-btn').on('click', function () {
-  eval(d3.select('#mouse-code').text())
-  d3.select(this)
-    .classed('disabled', true)
-    .text('✓ Done')
-})
 
 }) // Closing the documentation loaded function

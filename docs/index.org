@@ -8,7 +8,6 @@
 #+MACRO: badge @@html:<a href="$1" class="image-link"><img src="$2" /></a>@@
 
 {{{js(https://d3js.org/d3.v4.min.js)}}}
-{{{js(https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js)}}}
 {{{js(./assets/d3-foresight.min.js)}}}
 {{{js(./assets/script.js)}}}
 
@@ -43,14 +42,13 @@ library try to cover these cases. See [[http://reichlab.io/flusight][reichlab/fl
 
 * Setting up
 
-The library requires [[https://d3js.org/][d3]] and [[https://momentjs.com][momentjs]] as external dependencies. To build
-foresight itself, use ~npm compile~ (for ~./dist/d3-foresight.js~) or ~npm build~ (for
+The library requires [[https://d3js.org/][d3]] as external dependency. To build foresight itself, use
+~npm compile~ (for ~./dist/d3-foresight.js~) or ~npm build~ (for
 ~./dist/d3-foresight.min.js~). The library is also available on npm as
 [[https://www.npmjs.com/package/d3-foresight][d3-foresight]]. For browser, include these in your html:
 
 #+BEGIN_EXAMPLE
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <script src="./dist/d3-foresight.min.js"></script>
 #+END_EXAMPLE
 
@@ -105,12 +103,12 @@ Both are /week/ based points and are represented as objects like shown:
   }
 #+END_SRC
 
-Lets work on regular weeks for the year 2016. Our week choice can be passed to
+Lets work on mmwr weeks for the year 2016. Our week choice can be passed to
 foresight charts using a config object which is the following in our case:
 
 #+BEGIN_SRC js :tangle ./assets/script.js
   let config = {
-    pointType: 'regular-week', // This is optional since regular-week is default
+    pointType: 'mmwr-week', // Default is regular-week
     axes: {
       y: {
         title: 'Random numbers' // Title for the y axis
@@ -210,34 +208,9 @@ The life cycle of ~TimeChart~ involves the following stages:
 #+HTML: <div id="timechart"></div>
 
 If you are able to see the plot above (which you should be, else file an [[https://github.com/reichlab/d3-foresight/issues][issue]]),
-you should be able to move around by clicking the arrow buttons in legend. You
-might also be noticing that nothing happens when you /click/ on the chart. This is
-because we need to register hook functions for events like clicks. To add the
-/on click interactivity/, we need to register a function which calls
-~timeChart.update~ on a mouse click event. Press execute button below to set up
-the required hook:
-
-#+BEGIN_EXPORT html
-<textarea id="mouse-code">
-timeChart.addHook(
-  d3Foresight.events.JUMP_TO_INDEX,
-  idx => timeChart.update(idx)
-)
-</textarea>
-<div class="btn" id="mouse-btn">execute</div>
-#+END_EXPORT
-
-#+BEGIN_SRC js :exports none :tangle ./assets/script.js
-  d3.select('#mouse-btn').on('click', function () {
-    eval(d3.select('#mouse-code').text())
-    d3.select(this)
-      .classed('disabled', true)
-      .text('✓ Done')
-  })
-#+END_SRC
-
-Now, you should be able to use mouse clicks to move in the plot above. See the
-section on [[Hooks]] for more description.
+you should be able to move around by clicking the arrow buttons in legend.
+Events like mouse clicks and movement arrows can call user defined functions
+too. See the section on [[Hooks]] for more description.
 
 ** TODO Advanced plots
 
@@ -254,21 +227,11 @@ Charts can call user defined functions when movement events are triggered inside
 your functions to be called on these events, you can use ~addHook~.
 
 #+BEGIN_SRC js
-  timeChart.addHook(d3Foresight.events.FORWARD_INDEX, () => {
-    // This is triggered when an event moves the
-    // visualization forward in time one tick
-    console.log('chart moved forward')
-  })
-
-  timeChart.addHook(d3Foresight.events.BACKWARD_INDEX, () => {
-    // This is triggered when an event moves the
-    // visualization backward in time one tick
-    console.log('chart moved backward')
-  })
-
-  timeChart.addHook(d3Foresight.events.JUMP_TO_INDEX, (index) => {
+  timeChart.addHook(d3Foresight.events.JUMP_TO_INDEX, index => {
     // This is triggered when an event moves the
     // visualization to certain `index` in `timePoints`
+
+    // Current index is `timeChart.currentIdx`
     console.log('chart moved to ' + index)
   })
 #+END_SRC
@@ -278,8 +241,8 @@ hook using ~removeHook~.
 
 #+BEGIN_SRC js
   let token = timeChart.addHook(
-    d3Foresight.events.BACKWARD_INDEX,
-    () => console.log('went back')
+    d3Foresight.events.JUMP_TO_INDEX,
+    index => console.log(`Now at ${index}`)
   )
   timeChart.removeHook(token)
 #+END_SRC
