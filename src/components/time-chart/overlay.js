@@ -136,7 +136,7 @@ export default class Overlay extends SComponent {
         tt.moveTooltip(that.tooltip, d3.select(this))
       })
       .on('click', function () {
-        ev.publish(that.uuid, ev.JUMP_TO_INDEX, Math.round(scales.xScale.invert(d3.mouse(this)[0])))
+        ev.publish(that.uuid, ev.JUMP_TO_INDEX_INTERNAL, Math.round(scales.xScale.invert(d3.mouse(this)[0])))
       })
   }
 

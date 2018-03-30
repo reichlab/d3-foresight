@@ -107,6 +107,14 @@ export default class TimeChart extends Chart {
       }
     })
 
+    ev.addSub(this.uuid, ev.JUMP_TO_INDEX_INTERNAL, (msg, idx) => {
+      let oldIdx = this.currentIdx
+      this.update(idx)
+      if (this.currentIdx !== oldIdx) {
+        ev.publish(this.uuid, ev.JUMP_TO_INDEX, idx)
+      }
+    })
+
     ev.addSub(this.uuid, ev.LEGEND_ITEM, (msg, { id, state }) => {
       if (id === 'History') {
         this.history.hidden = !this.history.hidden
