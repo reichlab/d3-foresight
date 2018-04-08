@@ -38,6 +38,7 @@
 
     .search-input {
       border: 1px solid $shadow;
+      font-size: 11px;
       padding: 5px;
       box-shadow: inset 0 0 1px $shadow;
       min-width: 90%;
@@ -51,6 +52,11 @@
 
   .row {
     padding: 4px 10px;
+    margin: 0;
+
+    &::before, &::after {
+      content: none;
+    }
 
     i {
       @include icon();
