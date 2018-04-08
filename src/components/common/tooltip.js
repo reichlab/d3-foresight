@@ -25,6 +25,11 @@ export default class Tooltip extends Component {
   }
 
   render (html) {
-    this.selection.html(html)
+    if (html === '') {
+      this.hidden = true
+    } else {
+      this.hidden = false
+      this.selection.html(html)
+    }
   }
 }
