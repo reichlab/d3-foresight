@@ -49,9 +49,11 @@ foresight itself, use ~npm compile~ (for ~./dist/d3-foresight.js~) or ~npm build
 [[https://www.npmjs.com/package/d3-foresight][d3-foresight]]. For browser, include these in your html:
 
 #+BEGIN_EXAMPLE
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-<script src="./dist/d3-foresight.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script src="./dist/d3-foresight.min.js"></script>
+  ;; Or use the unpkg url
+  <script src="https://unpkg.com/d3-foresight"></script>
 #+END_EXAMPLE
 
 Additionally, a few icons (in the legend) have an icon font dependency. The css

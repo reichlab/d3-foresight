@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2018-03-29 Thu 23:12 -->
+<!-- 2018-04-08 Sun 18:04 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>D3-foresight documentation</title>
@@ -239,7 +239,7 @@ for the JavaScript code in this tag.
 <div id="content">
 <div class="page-header">
 <p>
-   <div class="page-meta small">Document last updated 2018-03-29 Thu 23:12</div>
+   <div class="page-meta small">Document last updated 2018-04-08 Sun 18:04</div>
 </p>
 <h1>D3 <em>Foresight</em></h1>
 </div>
@@ -269,22 +269,22 @@ library try to cover these cases. See <a href="http://reichlab.io/flusight">reic
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org89c658c">Setting up</a></li>
-<li><a href="#orgc6d4d2b">TimeChart</a>
+<li><a href="#orgcbe7759">Setting up</a></li>
+<li><a href="#org1dce6ff">TimeChart</a>
 <ul>
-<li><a href="#org9807892">Basic plot</a></li>
-<li><a href="#orgf5e272a"><span class="todo TODO">TODO</span> Advanced plots</a></li>
+<li><a href="#org0565fb9">Basic plot</a></li>
+<li><a href="#org948382b"><span class="todo TODO">TODO</span> Advanced plots</a></li>
 </ul>
 </li>
-<li><a href="#org42e72f9"><span class="todo TODO">TODO</span> DistributionChart</a></li>
-<li><a href="#org20ca6b7">Hooks</a></li>
+<li><a href="#org7489523"><span class="todo TODO">TODO</span> DistributionChart</a></li>
+<li><a href="#org6ad211c">Hooks</a></li>
 </ul>
 </div>
 </nav>
 
-<div id="outline-container-org89c658c" class="outline-2">
-<h2 id="org89c658c">Setting up</h2>
-<div class="outline-text-2" id="text-org89c658c">
+<div id="outline-container-orgcbe7759" class="outline-2">
+<h2 id="orgcbe7759">Setting up</h2>
+<div class="outline-text-2" id="text-orgcbe7759">
 <p>
 The library requires <a href="https://d3js.org/">d3</a> and <a href="https://momentjs.com">momentjs</a> as external dependencies. To build
 foresight itself, use <code>npm compile</code> (for <code>./dist/d3-foresight.js</code>) or <code>npm build</code> (for
@@ -296,6 +296,8 @@ foresight itself, use <code>npm compile</code> (for <code>./dist/d3-foresight.js
 &lt;script src="https://d3js.org/d3.v4.min.js"&gt;&lt;/script&gt;
 &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"&gt;&lt;/script&gt;
 &lt;script src="./dist/d3-foresight.min.js"&gt;&lt;/script&gt;
+;; Or use the unpkg url
+&lt;script src="https://unpkg.com/d3-foresight"&gt;&lt;/script&gt;
 </pre>
 
 <p>
@@ -309,9 +311,9 @@ for that can be added using:
 </div>
 </div>
 
-<div id="outline-container-orgc6d4d2b" class="outline-2">
-<h2 id="orgc6d4d2b">TimeChart</h2>
-<div class="outline-text-2" id="text-orgc6d4d2b">
+<div id="outline-container-org1dce6ff" class="outline-2">
+<h2 id="org1dce6ff">TimeChart</h2>
+<div class="outline-text-2" id="text-org1dce6ff">
 <p>
 A <code>TimeChart</code> displays the time series to be predicted and the models'
 predictions. Beyond the very minimal plots involving only model forecasts, it
@@ -340,18 +342,18 @@ certain disease).</li>
 </figure>
 </div>
 
-<div id="outline-container-org9807892" class="outline-3">
-<h3 id="org9807892">Basic plot</h3>
-<div class="outline-text-3" id="text-org9807892">
+<div id="outline-container-org0565fb9" class="outline-3">
+<h3 id="org0565fb9">Basic plot</h3>
+<div class="outline-text-3" id="text-org0565fb9">
 <p>
 In this section, we will create a very basic visualization involving one model
 providing random numbers as forecasts for a year.
 </p>
 </div>
 
-<div id="outline-container-org3bbe0e1" class="outline-4">
-<h4 id="org3bbe0e1">Configuration</h4>
-<div class="outline-text-4" id="text-org3bbe0e1">
+<div id="outline-container-org919a77d" class="outline-4">
+<h4 id="org919a77d">Configuration</h4>
+<div class="outline-text-4" id="text-org919a77d">
 <p>
 Time in foresight is represented using <code>timePoints</code> which is an array mapping to
 discrete date/time values. As of now, foresight supports the following two type
@@ -394,9 +396,9 @@ foresight charts using a config object which is the following in our case:
 </div>
 </div>
 
-<div id="outline-container-org9db2c00" class="outline-4">
-<h4 id="org9db2c00">Data</h4>
-<div class="outline-text-4" id="text-org9db2c00">
+<div id="outline-container-org87c104e" class="outline-4">
+<h4 id="org87c104e">Data</h4>
+<div class="outline-text-4" id="text-org87c104e">
 <p>
 At minimum, <code>TimeChart</code> expects an array of time points and an array of model
 data. The time points in our case go from week 1 to week 52 of 2016 and can be
@@ -466,9 +468,9 @@ involved in putting together the values for the model:
 </div>
 </div>
 
-<div id="outline-container-org05c9cee" class="outline-4">
-<h4 id="org05c9cee">Plotting</h4>
-<div class="outline-text-4" id="text-org05c9cee">
+<div id="outline-container-org6c19af1" class="outline-4">
+<h4 id="org6c19af1">Plotting</h4>
+<div class="outline-text-4" id="text-org6c19af1">
 <p>
 The life cycle of <code>TimeChart</code> involves the following stages:
 </p>
@@ -508,20 +510,20 @@ window.timeChart = timeChart
 If you are able to see the plot above (which you should be, else file an <a href="https://github.com/reichlab/d3-foresight/issues">issue</a>),
 you should be able to move around by clicking the arrow buttons in legend or
 clicking on the chart itself. These mouse click events can trigger user defined
-functions too. See the section on <a href="#org20ca6b7">Hooks</a> for more description.
+functions too. See the section on <a href="#org6ad211c">Hooks</a> for more description.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgf5e272a" class="outline-3">
-<h3 id="orgf5e272a"><span class="todo TODO">TODO</span> Advanced plots</h3>
+<div id="outline-container-org948382b" class="outline-3">
+<h3 id="org948382b"><span class="todo TODO">TODO</span> Advanced plots</h3>
 </div>
 </div>
 
-<div id="outline-container-org42e72f9" class="outline-2">
-<h2 id="org42e72f9"><span class="todo TODO">TODO</span> DistributionChart</h2>
-<div class="outline-text-2" id="text-org42e72f9">
+<div id="outline-container-org7489523" class="outline-2">
+<h2 id="org7489523"><span class="todo TODO">TODO</span> DistributionChart</h2>
+<div class="outline-text-2" id="text-org7489523">
 
 <figure>
 <img src="./distchart.png" alt="distchart.png">
@@ -531,9 +533,9 @@ functions too. See the section on <a href="#org20ca6b7">Hooks</a> for more descr
 </div>
 </div>
 
-<div id="outline-container-org20ca6b7" class="outline-2">
-<h2 id="org20ca6b7">Hooks</h2>
-<div class="outline-text-2" id="text-org20ca6b7">
+<div id="outline-container-org6ad211c" class="outline-2">
+<h2 id="org6ad211c">Hooks</h2>
+<div class="outline-text-2" id="text-org6ad211c">
 <p>
 Charts can call user defined functions when movement events are triggered inside
 (e.g. by clicking on movement buttons or clicking on the overlay). To register
