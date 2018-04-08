@@ -732,7 +732,7 @@ blockquote {
   padding-left: 15px; }
   blockquote p {
     display: inline;
-    font-style: italic; }
+    font-size: 13px; }
   blockquote footer {
     font-family: "Open Sans";
     font-weight: normal;
@@ -740,7 +740,8 @@ blockquote {
     font-size: 12px;
     line-height: 1.9;
     color: #7b7b7b;
-    text-transform: uppercase; }
+    text-transform: uppercase;
+    text-transform: none; }
 
 .org-ref-bib-h1 {
   margin-top: 70px;
@@ -762,8 +763,25 @@ blockquote {
   font-size: 15px;
   line-height: 1.6;
   color: #444; }
-  .org-ref-bib li > b {
-    font-weight: normal; }
+  .org-ref-bib li > a:nth-child(2) {
+    background: none;
+    text-shadow: none;
+    text-decoration: none; }
+    .org-ref-bib li > a:nth-child(2):hover {
+      background: none;
+      text-shadow: none;
+      text-decoration: none; }
+  .org-ref-bib .bib-link {
+    font-family: "Open Sans";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 1.9;
+    color: #7b7b7b;
+    text-transform: uppercase;
+    background: none;
+    text-shadow: none;
+    text-decoration: none; }
 
 pre.src, pre.example {
   border-width: 0;
@@ -784,6 +802,11 @@ code {
   color: #2c3e50;
   font-size: 15px;
   padding: 0 5px; }
+
+li code {
+  font-size: 14px; }
+li p code {
+  font-size: 15px; }
 
 .example,
 .src {
@@ -1091,9 +1114,9 @@ li a {
   color: #7b7b7b; }
 
 .image-link, .image-link:hover {
-  text-decoration: none;
   background: none;
-  text-shadow: none; }
+  text-shadow: none;
+  text-decoration: none; }
 
 ul, ol, dl {
   list-style: none;
@@ -1107,6 +1130,11 @@ ul, ol, dl {
     font-size: 15px;
     line-height: 1.6;
     color: #444; }
+  ul li, ol li, dl li {
+    margin: 5px 0;
+    font-size: 14px; }
+    ul li p, ol li p, dl li p {
+      font-size: 15px; }
 
 ul li::before {
   content: "•";
@@ -1127,7 +1155,7 @@ ul ul, ol ol {
   padding-left: 20px; }
 
 ul ul ul, ol ol ol {
-  padding-left: 40px; }
+  padding-left: 30px; }
 
 li p:first-child {
   display: inline-block;
@@ -1255,6 +1283,73 @@ table {
       color: #7b7b7b;
       text-transform: uppercase; }
 
+nav#table-of-contents {
+  background-color: #efefef;
+  border-radius: 5px;
+  font-family: "Open Sans";
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #444;
+  margin: 20px 0;
+  padding: 20px;
+  padding-left: 50px;
+  line-height: 1.6 !important; }
+  nav#table-of-contents #text-table-of-contents {
+    background-color: #efefef; }
+  nav#table-of-contents h2 {
+    font-family: "Open Sans";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 1.9;
+    color: #7b7b7b;
+    text-transform: uppercase;
+    margin-top: 10px; }
+  nav#table-of-contents li a {
+    text-shadow: 0.03em 0 #efefef, -0.03em 0 #efefef, 0 0.03em #efefef, 0 -0.03em #efefef, 0.06em 0 #efefef, -0.06em 0 #efefef, 0.09em 0 #efefef, -0.09em 0 #efefef, 0.12em 0 #efefef, -0.12em 0 #efefef, 0.15em 0 #efefef, -0.15em 0 #efefef;
+    background-image: linear-gradient(#444, #444);
+    background-size: 1px 1px;
+    background-repeat: repeat-x;
+    background-position: 0% 95%;
+    border-radius: 1px;
+    background-color: #efefef;
+    color: #444;
+    text-decoration: none; }
+    nav#table-of-contents li a::selection {
+      text-shadow: 0.03em 0 #c8c8c8, -0.03em 0 #c8c8c8, 0 0.03em #c8c8c8, 0 -0.03em #c8c8c8, 0.06em 0 #c8c8c8, -0.06em 0 #c8c8c8, 0.09em 0 #c8c8c8, -0.09em 0 #c8c8c8, 0.12em 0 #c8c8c8, -0.12em 0 #c8c8c8, 0.15em 0 #c8c8c8, -0.15em 0 #c8c8c8;
+      background: #c8c8c8; }
+    nav#table-of-contents li a::-moz-selection {
+      text-shadow: 0.03em 0 #c8c8c8, -0.03em 0 #c8c8c8, 0 0.03em #c8c8c8, 0 -0.03em #c8c8c8, 0.06em 0 #c8c8c8, -0.06em 0 #c8c8c8, 0.09em 0 #c8c8c8, -0.09em 0 #c8c8c8, 0.12em 0 #c8c8c8, -0.12em 0 #c8c8c8, 0.15em 0 #c8c8c8, -0.15em 0 #c8c8c8;
+      background: #c8c8c8; }
+    nav#table-of-contents li a *,
+    nav#table-of-contents li a *:after, nav#table-of-contents li a:after,
+    nav#table-of-contents li a *:before, nav#table-of-contents li a:before {
+      text-shadow: none; }
+    nav#table-of-contents li a:visited {
+      color: #444; }
+    nav#table-of-contents li a:hover {
+      text-shadow: 0.03em 0 #efefef, -0.03em 0 #efefef, 0 0.03em #efefef, 0 -0.03em #efefef, 0.06em 0 #efefef, -0.06em 0 #efefef, 0.09em 0 #efefef, -0.09em 0 #efefef, 0.12em 0 #efefef, -0.12em 0 #efefef, 0.15em 0 #efefef, -0.15em 0 #efefef;
+      background-image: linear-gradient(#444, #444);
+      background-size: 1px 1px;
+      background-repeat: repeat-x;
+      background-position: 0% 95%;
+      border-radius: 1px;
+      background-color: #efefef;
+      color: #444;
+      text-decoration: none; }
+      nav#table-of-contents li a:hover::selection {
+        text-shadow: 0.03em 0 #c8c8c8, -0.03em 0 #c8c8c8, 0 0.03em #c8c8c8, 0 -0.03em #c8c8c8, 0.06em 0 #c8c8c8, -0.06em 0 #c8c8c8, 0.09em 0 #c8c8c8, -0.09em 0 #c8c8c8, 0.12em 0 #c8c8c8, -0.12em 0 #c8c8c8, 0.15em 0 #c8c8c8, -0.15em 0 #c8c8c8;
+        background: #c8c8c8; }
+      nav#table-of-contents li a:hover::-moz-selection {
+        text-shadow: 0.03em 0 #c8c8c8, -0.03em 0 #c8c8c8, 0 0.03em #c8c8c8, 0 -0.03em #c8c8c8, 0.06em 0 #c8c8c8, -0.06em 0 #c8c8c8, 0.09em 0 #c8c8c8, -0.09em 0 #c8c8c8, 0.12em 0 #c8c8c8, -0.12em 0 #c8c8c8, 0.15em 0 #c8c8c8, -0.15em 0 #c8c8c8;
+        background: #c8c8c8; }
+      nav#table-of-contents li a:hover *,
+      nav#table-of-contents li a:hover *:after, nav#table-of-contents li a:hover:after,
+      nav#table-of-contents li a:hover *:before, nav#table-of-contents li a:hover:before {
+        text-shadow: none; }
+      nav#table-of-contents li a:hover:visited {
+        color: #444; }
 #breadcrumbs {
   font-family: "Open Sans";
   font-weight: normal;
