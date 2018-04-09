@@ -224,15 +224,19 @@ A baseline is a horizontal line specifying some sort of baseline. To plot it,
 pass a ~baseline~ item in data. Optionally, set a label for the baseline by
 providing it in the ~config~.
 
+#+BEGIN_SRC js :tangle ./assets/script.js :exports none
+  let copy = it => Object.assign({}, it)
+#+END_SRC
+
 #+BEGIN_SRC js :tangle ./assets/script.js
-  let tcBaseline = new d3Foresight.TimeChart('#tc-baseline', Object.assign(config, {
+  let tcBaseline = new d3Foresight.TimeChart('#tc-baseline', Object.assign(copy(config), {
     baseline: {
       text: 'Baseline', // To show multiline text, pass an array of strings,
       description: 'This is a sample baseline',
       url: 'https://github.com'
     }
   }))
-  tcBaseline.plot(Object.assign(data, {
+  tcBaseline.plot(Object.assign(copy(data), {
     baseline: 0.3
   }))
   tcBaseline.update(10)
@@ -240,6 +244,33 @@ providing it in the ~config~.
 
 #+HTML: <br><br>
 #+HTML: <div id="tc-baseline"></div>
+
+*** Actual
+Another important component to show is the actual line that we are trying to
+predict. The ~actual~ series is an array of the same length as the ~timePoints~ and
+can be something like this
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  // Suppose we have actual data for 20 time steps only. We give null for other points
+  let actual = rseq(20).concat(timePoints.slice(20).map(tp => null))
+#+END_SRC
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  let tcActual = new d3Foresight.TimeChart('#tc-actual', config)
+  tcActual.plot(Object.assign(copy(data), { actual: actual }))
+  tcActual.update(10)
+#+END_SRC
+
+#+HTML: <br><br>
+#+HTML: <div id="tc-actual"></div>
+
+*** TODO Observed
+
+*** TODO History
+
+*** TODO Confidence Intervals
+
+*** TODO Peak and Onset
 
 * TODO DistributionChart
 

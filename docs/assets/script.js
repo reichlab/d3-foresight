@@ -69,16 +69,25 @@ timeChart.update(10)
 // Lets also save the timechart object in global namespace
 window.timeChart = timeChart
 
-let tcBaseline = new d3Foresight.TimeChart('#tc-baseline', Object.assign(config, {
+let copy = it => Object.assign({}, it)
+
+let tcBaseline = new d3Foresight.TimeChart('#tc-baseline', Object.assign(copy(config), {
   baseline: {
     text: 'Baseline', // To show multiline text, pass an array of strings,
     description: 'This is a sample baseline',
     url: 'https://github.com'
   }
 }))
-tcBaseline.plot(Object.assign(data, {
+tcBaseline.plot(Object.assign(copy(data), {
   baseline: 0.3
 }))
 tcBaseline.update(10)
+
+// Suppose we have actual data for 20 time steps only. We give null for other points
+let actual = rseq(20).concat(timePoints.slice(20).map(tp => null))
+
+let tcActual = new d3Foresight.TimeChart('#tc-actual', config)
+tcActual.plot(Object.assign(copy(data), { actual: actual }))
+tcActual.update(10)
 
 })
