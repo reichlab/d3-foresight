@@ -216,7 +216,7 @@ you should be able to move around by clicking the arrow buttons in legend or
 clicking on the chart itself. These mouse click events can trigger user defined
 functions too. See the section on [[Hooks]] for more description.
 
-** Adding more components
+** Adding components
 This section builds up on the chart above to add more information
 
 *** Baseline
@@ -271,6 +271,8 @@ can be something like this
 *** TODO Confidence Intervals
 
 *** TODO Peak and Onset
+
+** TODO All config and data options
 
 * TODO DistributionChart
 
