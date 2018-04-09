@@ -216,7 +216,30 @@ you should be able to move around by clicking the arrow buttons in legend or
 clicking on the chart itself. These mouse click events can trigger user defined
 functions too. See the section on [[Hooks]] for more description.
 
-** TODO Advanced plots
+** Adding more components
+This section builds up on the chart above to add more information
+
+*** Baseline
+A baseline is a horizontal line specifying some sort of baseline. To plot it,
+pass a ~baseline~ item in data. Optionally, set a label for the baseline by
+providing it in the ~config~.
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  let tcBaseline = new d3Foresight.TimeChart('#tc-baseline', Object.assign(config, {
+    baseline: {
+      text: 'Baseline', // To show multiline text, pass an array of strings,
+      description: 'This is a sample baseline',
+      url: 'https://github.com'
+    }
+  }))
+  tcBaseline.plot(Object.assign(data, {
+    baseline: 0.3
+  }))
+  tcBaseline.update(10)
+#+END_SRC
+
+#+HTML: <br><br>
+#+HTML: <div id="tc-baseline"></div>
 
 * TODO DistributionChart
 

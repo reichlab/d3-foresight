@@ -69,4 +69,16 @@ timeChart.update(10)
 // Lets also save the timechart object in global namespace
 window.timeChart = timeChart
 
+let tcBaseline = new d3Foresight.TimeChart('#tc-baseline', Object.assign(config, {
+  baseline: {
+    text: 'Baseline', // To show multiline text, pass an array of strings,
+    description: 'This is a sample baseline',
+    url: 'https://github.com'
+  }
+}))
+tcBaseline.plot(Object.assign(data, {
+  baseline: 0.3
+}))
+tcBaseline.update(10)
+
 })
