@@ -90,4 +90,32 @@ let tcActual = new d3Foresight.TimeChart('#tc-actual', config)
 tcActual.plot(Object.assign(copy(data), { actual: actual }))
 tcActual.update(10)
 
+let options = {
+  baseline: {
+    text: ['CDC', 'Baseline'], // A list of strings creates multiline text
+    description: `Baseline ILI value as defined by CDC.
+                    <br><br><em>Click to know more</em>`,
+    url: 'http://www.cdc.gov/flu/weekly/overview.htm' // url is optional
+  },
+  axes: {
+    x: {
+      title: ['Epidemic', 'Week'],
+      description: `Week of the calendar year, as measured by the CDC.
+                      <br><br><em>Click to know more</em>`,
+      url: 'https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf'
+    },
+    y: {
+      title: 'Weighted ILI (%)',
+      description: `Percentage of outpatient doctor visits for
+                      influenza-like illness, weighted by state population.
+                      <br><br><em>Click to know more</em>`,
+      url: 'http://www.cdc.gov/flu/weekly/overview.htm',
+      domain: [0, 13] // For explicitly clipping the y values
+    }
+  },
+  pointType: 'mmwr-week',
+  confidenceIntervals: ['90%', '50%'], // List of ci labels
+  onset: true // Whether to show onset panel or not
+}
+
 })
