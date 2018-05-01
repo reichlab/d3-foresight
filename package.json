@@ -51,8 +51,5 @@
     "textures": "^1.2.0",
     "tinycolor2": "^1.4.1",
     "uuid": "^3.2.1"
-  },
-  "engines": {
-    "node": "9.*"
   }
 }
