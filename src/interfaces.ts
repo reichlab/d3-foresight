@@ -13,7 +13,8 @@ import * as d3 from 'd3'
  */
 export type Timepoint = {
   year: number
-  week: number
+  week?: number,
+  biweek?: number
 }
 
 /**
