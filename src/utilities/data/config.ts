@@ -7,6 +7,7 @@
  */
 import { Timepoint } from '../../interfaces'
 import * as errors from '../errors'
+import { getTick } from './timepoints'
 
 /**
  * Tell if onset predictions are present in the data
@@ -37,18 +38,6 @@ function isPeakPresent (modelsData): boolean {
 }
 
 /**
- * Return ticks to show for given timepoints
- */
-function getTicks (timePoints: Timepoint[], pointType: string): number[] {
-  // @ts-ignore
-  if (pointType.endsWith('-week')) {
-    return timePoints.map(tp => tp.week)
-  } else {
-    throw new errors.UnknownPointType()
-  }
-}
-
-/**
  * Parse time chart data and provide information about it
  */
 export function getTimeChartDataConfig (data, config) {
@@ -61,7 +50,7 @@ export function getTimeChartDataConfig (data, config) {
       peak: isPeakPresent(data.models),
       onset: config.onset && isOnsetPresent(data.models)
     },
-    ticks: getTicks(data.timePoints, config.pointType),
+    ticks: data.timePoints.map(tp => getTick(tp, config.pointType)),
     pointType: config.pointType
   }
 }
@@ -74,7 +63,7 @@ export function getDistChartDataConfig (data, config) {
     actual: false,
     observed: false,
     history: false,
-    ticks: getTicks(data.timePoints, config.pointType),
+    ticks: data.timePoints.map(tp => getTick(tp, config.pointType)),
     pointType: config.pointType,
     curveNames: data.models[0].curves.map(c => c.name)
   }

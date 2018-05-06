@@ -5,10 +5,10 @@
 /**
  * Doc guard
  */
-import * as mmwr from 'mmwr-week'
 import * as d3 from 'd3'
 import * as errors from '../errors'
 import { Range } from '../../interfaces'
+import { getDateTime } from './timepoints'
 
 /**
  * Return max of a pred object { point, high?, low? }
@@ -70,13 +70,7 @@ export function x (data, dataConfig): Range {
  */
 export function xDate (data, dataConfig): Range {
   return d3.extent(data.timePoints.map(tp => {
-    if (dataConfig.pointType === 'mmwr-week') {
-      return (new mmwr.MMWRDate(tp.year, tp.week)).toMomentDate()
-    } else if (dataConfig.pointType === 'regular-week') {
-      return d3.timeParse('%Y-%W')(tp.year + '-' + tp.week)
-    } else {
-      throw new errors.UnknownPointType()
-    }
+    return getDateTime(tp, dataConfig.pointType)
   }))
 }
 
