@@ -95,9 +95,9 @@ Time in foresight is represented using ~timePoints~ which is an array mapping to
 discrete date/time values. As of now, foresight supports the following three
 types of time points:
 
-1. ~regular-week~
+1. ~week~
 2. ~mmwr-week~ based on [[https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf][MMWR definitions]]
-3. ~biweek~ denoting a unit of two regular weeks
+3. ~biweek~ denoting a unit of two weeks
 
 All points can be represented using either standard JS Date objects or using
 simple objects like shown:
@@ -114,7 +114,7 @@ foresight charts using a config object which is the following in our case:
 
 #+BEGIN_SRC js :tangle ./assets/script.js
   let config = {
-    pointType: 'mmwr-week', // Default is regular-week
+    pointType: 'mmwr-week', // Default is week
     axes: {
       y: {
         title: 'Random numbers' // Title for the y axis

@@ -20,7 +20,7 @@ export type Timepoint = {
 /**
  * Type of time point
  */
-export type Point = 'regular-week' | 'mmwr-week' | 'biweek'
+export type Point = 'week' | 'mmwr-week' | 'biweek'
 
 /**
  * Range of numbers

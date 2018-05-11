@@ -44,7 +44,7 @@ export default class TimeChart extends Chart {
         description: 'Baseline value',
         url: '#'
       },
-      pointType: 'regular-week',
+      pointType: 'week',
       confidenceIntervals: []
     }
 

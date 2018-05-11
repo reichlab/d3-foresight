@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
 let config = {
-  pointType: 'mmwr-week', // Default is regular-week
+  pointType: 'mmwr-week', // Default is week
   axes: {
     y: {
       title: 'Random numbers' // Title for the y axis

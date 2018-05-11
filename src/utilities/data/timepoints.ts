@@ -26,7 +26,7 @@ function parseTimepoint(tp: Timepoint | Date, pointType: string): Timepoint {
     // This is already in the correct form
     return <Timepoint>tp
   } else if (tp instanceof Date) {
-    if (pointType === 'regular-week') {
+    if (pointType === 'week') {
       return { year: tp.getFullYear(), week: parseWeek(tp) }
     } else if (pointType === 'mmwr-week') {
       let mdate = new mmwr.MMWRDate(0)
@@ -47,7 +47,7 @@ export function getTick(tp: Timepoint | Date, pointType: string): string | numbe
   tp = parseTimepoint(tp, pointType)
   // @ts-ignore
   if (pointType.endsWith('-week')) {
-    // This is either regular-week or mmwr-week. Both have the same structure.
+    // This is either week or mmwr-week. Both have the same structure.
     return tp.week
   } if (pointType === 'biweek') {
     return tp.biweek
@@ -63,7 +63,7 @@ export function getDateTime(tp: Timepoint | Date, pointType: string) {
   if (tp instanceof Date) {
     return tp
   } else {
-    if (pointType === 'regular-week') {
+    if (pointType === 'week') {
       return d3.timeParse('%Y-%W')(`${tp.year}-${tp.week}`)
     } else if (pointType === 'mmwr-week') {
       return (new mmwr.MMWRDate(tp.year, tp.week)).toMomentDate()

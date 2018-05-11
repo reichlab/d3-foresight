@@ -12,7 +12,7 @@ import * as ev from './events'
 export default class DistributionChart extends Chart {
   constructor (element, options = {}) {
     let defaultConfig = {
-      pointType: 'regular-week',
+      pointType: 'week',
       confidenceIntervals: [],
       margin: {
         top: 5,
