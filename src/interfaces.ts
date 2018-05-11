@@ -14,13 +14,14 @@ import * as d3 from 'd3'
 export type Timepoint = {
   year: number
   week?: number,
-  biweek?: number
+  biweek?: number,
+  month?: number
 }
 
 /**
  * Type of time point
  */
-export type Point = 'week' | 'mmwr-week' | 'biweek'
+export type TimepointId = 'week' | 'mmwr-week' | 'biweek' | 'month'
 
 /**
  * Range of numbers

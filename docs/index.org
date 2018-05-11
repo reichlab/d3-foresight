@@ -98,13 +98,14 @@ types of time points:
 1. ~week~
 2. ~mmwr-week~ based on [[https://wwwn.cdc.gov/nndss/document/MMWR_Week_overview.pdf][MMWR definitions]]
 3. ~biweek~ denoting a unit of two weeks
+4. ~month~ denoting a month
 
-All points can be represented using either standard JS Date objects or using
-simple objects like shown:
+All points can be represented using either standard JS Date objects, a string
+readable by momentjs (like ~YYYYMMDD~) or using simple objects like shown:
 
 #+BEGIN_SRC js
   {
-    week: 20, // Use biweek for biweek point type
+    week: 20, // biweek/month
     year: 2016
   }
 #+END_SRC
