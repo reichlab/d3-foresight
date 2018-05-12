@@ -143,10 +143,46 @@ let dataWithCI = {
   ]
 }
 
-let configCI = Object.assign(copy(config), {confidenceIntervals: ['90%', '50%']})
+let configCI = Object.assign(copy(config), { confidenceIntervals: ['90%', '50%'] })
 let tcCI = new d3Foresight.TimeChart('#tc-ci', configCI)
 tcCI.plot(dataWithCI)
 tcCI.update(10)
+
+let predictionsWithPeakOnset = timePoints.map(tp => {
+  if (tp.week > 30) {
+    // We only predict upto week 30
+    return null
+  } else {
+    // Provide 10 week ahead predictions adding a dummy 0.2 and 0.1 spacing
+    // to show the confidence interval
+    return {
+      series: rseq(10).map(r => { return { point: r } }),
+      peakTime: { point: 12 },
+      onsetTime: { point: 8 },
+      peakValue: { point: 0.3 }
+    }
+  }
+})
+
+let dataWithPeakOnset = {
+  timePoints,
+  models: [
+    {
+      id: 'mod',
+      meta: {
+        name: 'Name',
+        description: 'Model description here',
+        url: 'https://github.com'
+      },
+      predictions: predictionsWithPeakOnset
+    }
+  ]
+}
+
+let configOnset = Object.assign(copy(config), { onset: true })
+let tcPeakOnset = new d3Foresight.TimeChart('#tc-peak-onset', configOnset)
+tcPeakOnset.plot(dataWithPeakOnset)
+tcPeakOnset.update(10)
 
 let options = {
   baseline: {

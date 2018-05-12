@@ -365,7 +365,7 @@ Putting everything together now:
     ]
   }
 
-  let configCI = Object.assign(copy(config), {confidenceIntervals: ['90%', '50%']})
+  let configCI = Object.assign(copy(config), { confidenceIntervals: ['90%', '50%'] })
   let tcCI = new d3Foresight.TimeChart('#tc-ci', configCI)
   tcCI.plot(dataWithCI)
   tcCI.update(10)
@@ -374,7 +374,100 @@ Putting everything together now:
 #+HTML: <br><br>
 #+HTML: <div id="tc-ci"></div>
 
-*** TODO Peak and Onset
+*** Peak and Onset
+Just like a ~series~ key in predictions, we can also add ~onsetTime~, ~peakTime~ and
+~peakValue~ keys to show the respective predictions. Each of these have a
+/mandatory/ ~point~ key and can have ~low~ and ~high~ ranges to show confidence
+intervals. Here is an example for a model's prediction at a certain timepoint
+with the onset and peak values specified (along with a confidence interval):
+
+#+BEGIN_SRC js
+  // Consider the confidence intervals ['90%', '50%']
+  {
+    onsetTime: {
+      high: [15, 17],
+      low: [9, 11],
+      point: 13
+    },
+    peakTime: {
+      high: [25, 27],
+      low: [19, 21],
+      point: 23
+    },
+    peakValue: {
+      high: [3.6, 3.8],
+      low: [3.0, 3.2],
+      point: 3.4
+    },
+    series: [
+      {
+        high: [1.4, 1.6],
+        low: [0.8, 1.0],
+        point: 1.2
+      },
+      ...
+    ]
+  }
+#+END_SRC
+
+Note that the values for ~peakTime~ and ~onsetTime~ are indices for the time points
+instead of actual week values. For example, suppose the time points actually
+refer to weeks from 5 to 15 (inclusive) for a year. An ~onsetTime~ value of 3 will
+now refer to week 9 (0 based index starting at 5).
+
+By not using the actual week value here, we localize the /meaning/ of time point
+in a single place, the series ~timePoints~ itself.
+
+Lets recreate the season data now with added peak and onset predictions. We will
+not be adding confidence intervals here to keep things simple.
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  let predictionsWithPeakOnset = timePoints.map(tp => {
+    if (tp.week > 30) {
+      // We only predict upto week 30
+      return null
+    } else {
+      // Provide 10 week ahead predictions adding a dummy 0.2 and 0.1 spacing
+      // to show the confidence interval
+      return {
+        series: rseq(10).map(r => { return { point: r } }),
+        peakTime: { point: 12 },
+        onsetTime: { point: 8 },
+        peakValue: { point: 0.3 }
+      }
+    }
+  })
+
+#+END_SRC
+
+For showing the onset value, we also need to pass a config option ~{ onset: true
+}~ to the timeChart so that the onset panel is displayed just above the x axis.
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  let dataWithPeakOnset = {
+    timePoints,
+    models: [
+      {
+        id: 'mod',
+        meta: {
+          name: 'Name',
+          description: 'Model description here',
+          url: 'https://github.com'
+        },
+        predictions: predictionsWithPeakOnset
+      }
+    ]
+  }
+
+  let configOnset = Object.assign(copy(config), { onset: true })
+  let tcPeakOnset = new d3Foresight.TimeChart('#tc-peak-onset', configOnset)
+  tcPeakOnset.plot(dataWithPeakOnset)
+  tcPeakOnset.update(10)
+#+END_SRC
+
+#+HTML: <br><br>
+#+HTML: <div id="tc-peak-onset"></div>
+
 
 ** TODO All config and data options
 Possible options to the constructor are described below:
