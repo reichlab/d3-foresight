@@ -84,7 +84,7 @@ export default class PeakMarker extends SComponent {
           title: cfg.id,
           values: [
             { key: 'Peak Percent', value: peakValue.point },
-            { key: 'Peak Week', value: cfg.scales.ticks[peakTime.point] }
+            { key: 'Peak Time', value: cfg.scales.ticks[peakTime.point] }
           ],
           color: cfg.color
         }))
