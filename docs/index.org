@@ -229,6 +229,9 @@ providing it in the ~config~.
 
 #+BEGIN_SRC js :tangle ./assets/script.js :exports none
   let copy = it => Object.assign({}, it)
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max))
+  }
 #+END_SRC
 
 #+BEGIN_SRC js :tangle ./assets/script.js
@@ -431,9 +434,9 @@ not be adding confidence intervals here to keep things simple.
       // to show the confidence interval
       return {
         series: rseq(10).map(r => { return { point: r } }),
-        peakTime: { point: 12 },
-        onsetTime: { point: 8 },
-        peakValue: { point: 0.3 }
+        peakTime: { point: 12 + getRandomInt(5) },
+        onsetTime: { point: 8 + getRandomInt(5) },
+        peakValue: { point: Math.random() }
       }
     }
   })

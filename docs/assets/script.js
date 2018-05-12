@@ -70,6 +70,9 @@ timeChart.update(10)
 window.timeChart = timeChart
 
 let copy = it => Object.assign({}, it)
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max))
+}
 
 let tcBaseline = new d3Foresight.TimeChart('#tc-baseline', Object.assign(copy(config), {
   baseline: {
@@ -157,9 +160,9 @@ let predictionsWithPeakOnset = timePoints.map(tp => {
     // to show the confidence interval
     return {
       series: rseq(10).map(r => { return { point: r } }),
-      peakTime: { point: 12 },
-      onsetTime: { point: 8 },
-      peakValue: { point: 0.3 }
+      peakTime: { point: 12 + getRandomInt(5) },
+      onsetTime: { point: 8 + getRandomInt(5) },
+      peakValue: { point: Math.random() }
     }
   }
 })
