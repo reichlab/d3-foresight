@@ -90,6 +90,21 @@ let tcActual = new d3Foresight.TimeChart('#tc-actual', config)
 tcActual.plot(Object.assign(copy(data), { actual: actual }))
 tcActual.update(10)
 
+let historicalData = [
+  {
+    id: 'some-past-series',
+    actual: rseq(51)
+  },
+  {
+    id: 'another-past-series',
+    actual: rseq(51)
+  }
+]
+
+let tcHistory = new d3Foresight.TimeChart('#tc-history', config)
+tcHistory.plot(Object.assign(copy(data), { history: historicalData }))
+tcHistory.update(10)
+
 let options = {
   baseline: {
     text: ['CDC', 'Baseline'], // A list of strings creates multiline text

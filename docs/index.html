@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2018-05-10 Thu 21:55 -->
+<!-- 2018-05-11 Fri 23:49 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>D3-foresight documentation</title>
@@ -239,7 +239,7 @@ for the JavaScript code in this tag.
 <div id="content">
 <div class="page-header">
 <p>
-   <div class="page-meta small">Document last updated 2018-05-10 Thu 21:55</div>
+   <div class="page-meta small">Document last updated 2018-05-11 Fri 23:49</div>
 </p>
 <h1>D3 <em>Foresight</em></h1>
 </div>
@@ -269,23 +269,23 @@ library try to cover these cases. See <a href="http://reichlab.io/flusight">reic
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org0279ba2">Setting up</a></li>
-<li><a href="#org857c327">TimeChart</a>
+<li><a href="#org4f028a5">Setting up</a></li>
+<li><a href="#org3b435ca">TimeChart</a>
 <ul>
-<li><a href="#org7909d68">Basic plot</a></li>
-<li><a href="#org27cdd74">Adding components</a></li>
-<li><a href="#org32dd5d4"><span class="todo TODO">TODO</span> All config and data options</a></li>
+<li><a href="#org46f25b6">Basic plot</a></li>
+<li><a href="#orgd346577">Adding components</a></li>
+<li><a href="#orge6a4ee3"><span class="todo TODO">TODO</span> All config and data options</a></li>
 </ul>
 </li>
-<li><a href="#org52853df"><span class="todo TODO">TODO</span> DistributionChart</a></li>
-<li><a href="#org93e9ca7">Hooks</a></li>
+<li><a href="#org3f92445"><span class="todo TODO">TODO</span> DistributionChart</a></li>
+<li><a href="#org96525f2">Hooks</a></li>
 </ul>
 </div>
 </nav>
 
-<div id="outline-container-org0279ba2" class="outline-2">
-<h2 id="org0279ba2">Setting up</h2>
-<div class="outline-text-2" id="text-org0279ba2">
+<div id="outline-container-org4f028a5" class="outline-2">
+<h2 id="org4f028a5">Setting up</h2>
+<div class="outline-text-2" id="text-org4f028a5">
 <p>
 The library requires <a href="https://d3js.org/">d3</a> and <a href="https://momentjs.com">momentjs</a> as external dependencies. To build
 foresight itself, use <code>npm compile</code> (for <code>./dist/d3-foresight.js</code>) or <code>npm build</code> (for
@@ -312,9 +312,9 @@ for that can be added using:
 </div>
 </div>
 
-<div id="outline-container-org857c327" class="outline-2">
-<h2 id="org857c327">TimeChart</h2>
-<div class="outline-text-2" id="text-org857c327">
+<div id="outline-container-org3b435ca" class="outline-2">
+<h2 id="org3b435ca">TimeChart</h2>
+<div class="outline-text-2" id="text-org3b435ca">
 <p>
 A <code>TimeChart</code> displays the time series to be predicted and the models'
 predictions. Beyond the very minimal plots involving only model forecasts, it
@@ -343,18 +343,18 @@ certain disease).</li>
 </figure>
 </div>
 
-<div id="outline-container-org7909d68" class="outline-3">
-<h3 id="org7909d68">Basic plot</h3>
-<div class="outline-text-3" id="text-org7909d68">
+<div id="outline-container-org46f25b6" class="outline-3">
+<h3 id="org46f25b6">Basic plot</h3>
+<div class="outline-text-3" id="text-org46f25b6">
 <p>
 In this section, we will create a very basic visualization involving one model
 providing random numbers as forecasts for a year.
 </p>
 </div>
 
-<div id="outline-container-org46c593f" class="outline-4">
-<h4 id="org46c593f">Configuration</h4>
-<div class="outline-text-4" id="text-org46c593f">
+<div id="outline-container-org9a4e8e6" class="outline-4">
+<h4 id="org9a4e8e6">Configuration</h4>
+<div class="outline-text-4" id="text-org9a4e8e6">
 <p>
 Time in foresight is represented using <code>timePoints</code> which is an array mapping to
 discrete date/time values. As of now, foresight supports the following three
@@ -400,9 +400,9 @@ foresight charts using a config object which is the following in our case:
 </div>
 </div>
 
-<div id="outline-container-org77676e0" class="outline-4">
-<h4 id="org77676e0">Data</h4>
-<div class="outline-text-4" id="text-org77676e0">
+<div id="outline-container-org322d642" class="outline-4">
+<h4 id="org322d642">Data</h4>
+<div class="outline-text-4" id="text-org322d642">
 <p>
 At minimum, <code>TimeChart</code> expects an array of time points and an array of model
 data. The time points in our case go from week 1 to week 52 of 2016 and can be
@@ -472,9 +472,9 @@ involved in putting together the values for the model:
 </div>
 </div>
 
-<div id="outline-container-orgece6300" class="outline-4">
-<h4 id="orgece6300">Plotting</h4>
-<div class="outline-text-4" id="text-orgece6300">
+<div id="outline-container-org15f40b6" class="outline-4">
+<h4 id="org15f40b6">Plotting</h4>
+<div class="outline-text-4" id="text-org15f40b6">
 <p>
 The life cycle of <code>TimeChart</code> involves the following stages:
 </p>
@@ -514,23 +514,23 @@ window.timeChart = timeChart
 If you are able to see the plot above (which you should be, else file an <a href="https://github.com/reichlab/d3-foresight/issues">issue</a>),
 you should be able to move around by clicking the arrow buttons in legend or
 clicking on the chart itself. These mouse click events can trigger user defined
-functions too. See the section on <a href="#org93e9ca7">Hooks</a> for more description.
+functions too. See the section on <a href="#org96525f2">Hooks</a> for more description.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org27cdd74" class="outline-3">
-<h3 id="org27cdd74">Adding components</h3>
-<div class="outline-text-3" id="text-org27cdd74">
+<div id="outline-container-orgd346577" class="outline-3">
+<h3 id="orgd346577">Adding components</h3>
+<div class="outline-text-3" id="text-orgd346577">
 <p>
 This section builds up on the chart above to add more information
 </p>
 </div>
 
-<div id="outline-container-orgeb968f8" class="outline-4">
-<h4 id="orgeb968f8">Baseline</h4>
-<div class="outline-text-4" id="text-orgeb968f8">
+<div id="outline-container-org70949c7" class="outline-4">
+<h4 id="org70949c7">Baseline</h4>
+<div class="outline-text-4" id="text-org70949c7">
 <p>
 A baseline is a horizontal line specifying some sort of baseline. To plot it,
 pass a <code>baseline</code> item in data. Optionally, set a label for the baseline by
@@ -557,9 +557,9 @@ tcBaseline.update<span class="org-rainbow-delimiters-depth-1">(</span><span clas
 </div>
 </div>
 
-<div id="outline-container-orgeca4a2c" class="outline-4">
-<h4 id="orgeca4a2c">Actual</h4>
-<div class="outline-text-4" id="text-orgeca4a2c">
+<div id="outline-container-org4d4158e" class="outline-4">
+<h4 id="org4d4158e">Actual</h4>
+<div class="outline-text-4" id="text-org4d4158e">
 <p>
 Another important component to show is the actual line that we are trying to
 predict. The <code>actual</code> series is an array of the same length as the <code>timePoints</code> and
@@ -584,26 +584,64 @@ tcActual.update<span class="org-rainbow-delimiters-depth-1">(</span><span class=
 </div>
 </div>
 
-<div id="outline-container-orgf44d2f0" class="outline-4">
-<h4 id="orgf44d2f0"><span class="todo TODO">TODO</span> Observed</h4>
+<div id="outline-container-orgc8cd0b9" class="outline-4">
+<h4 id="orgc8cd0b9"><span class="todo TODO">TODO</span> Observed</h4>
 </div>
 
-<div id="outline-container-orgef07c8c" class="outline-4">
-<h4 id="orgef07c8c"><span class="todo TODO">TODO</span> History</h4>
+<div id="outline-container-org49241e7" class="outline-4">
+<h4 id="org49241e7">History</h4>
+<div class="outline-text-4" id="text-org49241e7">
+<p>
+Historical data lines (similar to <code>actual</code> series) can be shown by passing an
+array of historical actual serie like the following:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">let</span> <span class="org-variable-name">historicalData</span> = <span class="org-rainbow-delimiters-depth-1">[</span>
+  <span class="org-rainbow-delimiters-depth-2">{</span>
+    id: <span class="org-string">'some-past-series'</span>,
+    actual: rseq<span class="org-rainbow-delimiters-depth-3">(</span><span class="org-highlight-numbers-number">51</span><span class="org-rainbow-delimiters-depth-3">)</span>
+  <span class="org-rainbow-delimiters-depth-2">}</span>,
+  <span class="org-rainbow-delimiters-depth-2">{</span>
+    id: <span class="org-string">'another-past-series'</span>,
+    actual: rseq<span class="org-rainbow-delimiters-depth-3">(</span><span class="org-highlight-numbers-number">51</span><span class="org-rainbow-delimiters-depth-3">)</span>
+  <span class="org-rainbow-delimiters-depth-2">}</span>
+<span class="org-rainbow-delimiters-depth-1">]</span>
+</pre>
 </div>
 
-<div id="outline-container-org117030d" class="outline-4">
-<h4 id="org117030d"><span class="todo TODO">TODO</span> Confidence Intervals</h4>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">let</span> <span class="org-variable-name">tcHistory</span> = <span class="org-keyword">new</span> <span class="org-type">d3Foresight.TimeChart</span><span class="org-rainbow-delimiters-depth-1">(</span><span class="org-string">'#tc-history'</span>, config<span class="org-rainbow-delimiters-depth-1">)</span>
+tcHistory.plot<span class="org-rainbow-delimiters-depth-1">(</span>Object.assign<span class="org-rainbow-delimiters-depth-2">(</span>copy<span class="org-rainbow-delimiters-depth-3">(</span>data<span class="org-rainbow-delimiters-depth-3">)</span>, <span class="org-rainbow-delimiters-depth-3">{</span> history: historicalData <span class="org-rainbow-delimiters-depth-3">}</span><span class="org-rainbow-delimiters-depth-2">)</span><span class="org-rainbow-delimiters-depth-1">)</span>
+tcHistory.update<span class="org-rainbow-delimiters-depth-1">(</span><span class="org-highlight-numbers-number">10</span><span class="org-rainbow-delimiters-depth-1">)</span>
+</pre>
 </div>
 
-<div id="outline-container-orge46e4ce" class="outline-4">
-<h4 id="orge46e4ce"><span class="todo TODO">TODO</span> Peak and Onset</h4>
+<br><br>
+<div id="tc-history"></div>
+
+<p>
+One possible issue with showing history is that the number of time units might
+not line up perfectly. For example, the current year might have 52 weeks but
+some older year might have had 53 weeks. Since we expect all the actual series
+passed as history to have the same length, the user is supposed to pad/clip all
+the series to match the current season's length.
+</p>
 </div>
 </div>
 
-<div id="outline-container-org32dd5d4" class="outline-3">
-<h3 id="org32dd5d4"><span class="todo TODO">TODO</span> All config and data options</h3>
-<div class="outline-text-3" id="text-org32dd5d4">
+<div id="outline-container-org83db01d" class="outline-4">
+<h4 id="org83db01d"><span class="todo TODO">TODO</span> Confidence Intervals</h4>
+</div>
+
+<div id="outline-container-org4d3ca9f" class="outline-4">
+<h4 id="org4d3ca9f"><span class="todo TODO">TODO</span> Peak and Onset</h4>
+</div>
+</div>
+
+<div id="outline-container-orge6a4ee3" class="outline-3">
+<h3 id="orge6a4ee3"><span class="todo TODO">TODO</span> All config and data options</h3>
+<div class="outline-text-3" id="text-orge6a4ee3">
 <p>
 Possible options to the constructor are described below:
 </p>
@@ -646,9 +684,9 @@ Possible options to the constructor are described below:
 </div>
 </div>
 
-<div id="outline-container-org52853df" class="outline-2">
-<h2 id="org52853df"><span class="todo TODO">TODO</span> DistributionChart</h2>
-<div class="outline-text-2" id="text-org52853df">
+<div id="outline-container-org3f92445" class="outline-2">
+<h2 id="org3f92445"><span class="todo TODO">TODO</span> DistributionChart</h2>
+<div class="outline-text-2" id="text-org3f92445">
 
 <figure>
 <img src="./distchart.png" alt="distchart.png">
@@ -658,9 +696,9 @@ Possible options to the constructor are described below:
 </div>
 </div>
 
-<div id="outline-container-org93e9ca7" class="outline-2">
-<h2 id="org93e9ca7">Hooks</h2>
-<div class="outline-text-2" id="text-org93e9ca7">
+<div id="outline-container-org96525f2" class="outline-2">
+<h2 id="org96525f2">Hooks</h2>
+<div class="outline-text-2" id="text-org96525f2">
 <p>
 Charts can call user defined functions when movement events are triggered inside
 (e.g. by clicking on movement buttons or clicking on the overlay). To register

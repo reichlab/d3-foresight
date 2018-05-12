@@ -269,7 +269,37 @@ can be something like this
 
 *** TODO Observed
 
-*** TODO History
+*** History
+Historical data lines (similar to ~actual~ series) can be shown by passing an
+array of historical actual serie like the following:
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  let historicalData = [
+    {
+      id: 'some-past-series',
+      actual: rseq(51)
+    },
+    {
+      id: 'another-past-series',
+      actual: rseq(51)
+    }
+  ]
+#+END_SRC
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  let tcHistory = new d3Foresight.TimeChart('#tc-history', config)
+  tcHistory.plot(Object.assign(copy(data), { history: historicalData }))
+  tcHistory.update(10)
+#+END_SRC
+
+#+HTML: <br><br>
+#+HTML: <div id="tc-history"></div>
+
+One possible issue with showing history is that the number of time units might
+not line up perfectly. For example, the current year might have 52 weeks but
+some older year might have had 53 weeks. Since we expect all the actual series
+passed as history to have the same length, the user is supposed to pad/clip all
+the series to match the current season's length.
 
 *** TODO Confidence Intervals
 
