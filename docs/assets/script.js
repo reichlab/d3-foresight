@@ -105,6 +105,49 @@ let tcHistory = new d3Foresight.TimeChart('#tc-history', config)
 tcHistory.plot(Object.assign(copy(data), { history: historicalData }))
 tcHistory.update(10)
 
+// Predictions now look like [{ series: [
+// { point: 0.5, low: [0.3, 0.4], high: [0.7, 0.6] },
+// { point: 1.2, low: [1.0, 1.1], high: [1.4, 1.3] }
+// ...] }, ..., null, null]
+let predictionsWithCI = timePoints.map(tp => {
+  if (tp.week > 30) {
+    // We only predict upto week 30
+    return null
+  } else {
+    // Provide 10 week ahead predictions adding a dummy 0.2 and 0.1 spacing
+    // to show the confidence interval
+    return {
+      series: rseq(10).map(r => {
+        return {
+          point: r,
+          low: [Math.max(0, r - 0.2), Math.max(0, r - 0.1)],
+          high: [r + 0.2, r + 0.1]
+        }
+      })
+    }
+  }
+})
+
+let dataWithCI = {
+  timePoints,
+  models: [
+    {
+      id: 'mod',
+      meta: {
+        name: 'Name',
+        description: 'Model description here',
+        url: 'https://github.com'
+      },
+      predictions: predictionsWithCI
+    }
+  ]
+}
+
+let configCI = Object.assign(copy(config), {confidenceIntervals: ['90%', '50%']})
+let tcCI = new d3Foresight.TimeChart('#tc-ci', configCI)
+tcCI.plot(dataWithCI)
+tcCI.update(10)
+
 let options = {
   baseline: {
     text: ['CDC', 'Baseline'], // A list of strings creates multiline text

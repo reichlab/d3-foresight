@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2018-05-11 Fri 23:49 -->
+<!-- 2018-05-12 Sat 00:11 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>D3-foresight documentation</title>
@@ -239,7 +239,7 @@ for the JavaScript code in this tag.
 <div id="content">
 <div class="page-header">
 <p>
-   <div class="page-meta small">Document last updated 2018-05-11 Fri 23:49</div>
+   <div class="page-meta small">Document last updated 2018-05-12 Sat 00:11</div>
 </p>
 <h1>D3 <em>Foresight</em></h1>
 </div>
@@ -269,23 +269,23 @@ library try to cover these cases. See <a href="http://reichlab.io/flusight">reic
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4f028a5">Setting up</a></li>
-<li><a href="#org3b435ca">TimeChart</a>
+<li><a href="#orgbb64f8d">Setting up</a></li>
+<li><a href="#org59131a7">TimeChart</a>
 <ul>
-<li><a href="#org46f25b6">Basic plot</a></li>
-<li><a href="#orgd346577">Adding components</a></li>
-<li><a href="#orge6a4ee3"><span class="todo TODO">TODO</span> All config and data options</a></li>
+<li><a href="#org22115cf">Basic plot</a></li>
+<li><a href="#orgd6b715c">Adding components</a></li>
+<li><a href="#orgd7f832d"><span class="todo TODO">TODO</span> All config and data options</a></li>
 </ul>
 </li>
-<li><a href="#org3f92445"><span class="todo TODO">TODO</span> DistributionChart</a></li>
-<li><a href="#org96525f2">Hooks</a></li>
+<li><a href="#orgcc33b69"><span class="todo TODO">TODO</span> DistributionChart</a></li>
+<li><a href="#org2c5833d">Hooks</a></li>
 </ul>
 </div>
 </nav>
 
-<div id="outline-container-org4f028a5" class="outline-2">
-<h2 id="org4f028a5">Setting up</h2>
-<div class="outline-text-2" id="text-org4f028a5">
+<div id="outline-container-orgbb64f8d" class="outline-2">
+<h2 id="orgbb64f8d">Setting up</h2>
+<div class="outline-text-2" id="text-orgbb64f8d">
 <p>
 The library requires <a href="https://d3js.org/">d3</a> and <a href="https://momentjs.com">momentjs</a> as external dependencies. To build
 foresight itself, use <code>npm compile</code> (for <code>./dist/d3-foresight.js</code>) or <code>npm build</code> (for
@@ -312,9 +312,9 @@ for that can be added using:
 </div>
 </div>
 
-<div id="outline-container-org3b435ca" class="outline-2">
-<h2 id="org3b435ca">TimeChart</h2>
-<div class="outline-text-2" id="text-org3b435ca">
+<div id="outline-container-org59131a7" class="outline-2">
+<h2 id="org59131a7">TimeChart</h2>
+<div class="outline-text-2" id="text-org59131a7">
 <p>
 A <code>TimeChart</code> displays the time series to be predicted and the models'
 predictions. Beyond the very minimal plots involving only model forecasts, it
@@ -343,18 +343,18 @@ certain disease).</li>
 </figure>
 </div>
 
-<div id="outline-container-org46f25b6" class="outline-3">
-<h3 id="org46f25b6">Basic plot</h3>
-<div class="outline-text-3" id="text-org46f25b6">
+<div id="outline-container-org22115cf" class="outline-3">
+<h3 id="org22115cf">Basic plot</h3>
+<div class="outline-text-3" id="text-org22115cf">
 <p>
 In this section, we will create a very basic visualization involving one model
 providing random numbers as forecasts for a year.
 </p>
 </div>
 
-<div id="outline-container-org9a4e8e6" class="outline-4">
-<h4 id="org9a4e8e6">Configuration</h4>
-<div class="outline-text-4" id="text-org9a4e8e6">
+<div id="outline-container-orgac031be" class="outline-4">
+<h4 id="orgac031be">Configuration</h4>
+<div class="outline-text-4" id="text-orgac031be">
 <p>
 Time in foresight is represented using <code>timePoints</code> which is an array mapping to
 discrete date/time values. As of now, foresight supports the following three
@@ -400,9 +400,9 @@ foresight charts using a config object which is the following in our case:
 </div>
 </div>
 
-<div id="outline-container-org322d642" class="outline-4">
-<h4 id="org322d642">Data</h4>
-<div class="outline-text-4" id="text-org322d642">
+<div id="outline-container-orgffed1ca" class="outline-4">
+<h4 id="orgffed1ca">Data</h4>
+<div class="outline-text-4" id="text-orgffed1ca">
 <p>
 At minimum, <code>TimeChart</code> expects an array of time points and an array of model
 data. The time points in our case go from week 1 to week 52 of 2016 and can be
@@ -472,9 +472,9 @@ involved in putting together the values for the model:
 </div>
 </div>
 
-<div id="outline-container-org15f40b6" class="outline-4">
-<h4 id="org15f40b6">Plotting</h4>
-<div class="outline-text-4" id="text-org15f40b6">
+<div id="outline-container-org72f14a1" class="outline-4">
+<h4 id="org72f14a1">Plotting</h4>
+<div class="outline-text-4" id="text-org72f14a1">
 <p>
 The life cycle of <code>TimeChart</code> involves the following stages:
 </p>
@@ -514,23 +514,23 @@ window.timeChart = timeChart
 If you are able to see the plot above (which you should be, else file an <a href="https://github.com/reichlab/d3-foresight/issues">issue</a>),
 you should be able to move around by clicking the arrow buttons in legend or
 clicking on the chart itself. These mouse click events can trigger user defined
-functions too. See the section on <a href="#org96525f2">Hooks</a> for more description.
+functions too. See the section on <a href="#org2c5833d">Hooks</a> for more description.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgd346577" class="outline-3">
-<h3 id="orgd346577">Adding components</h3>
-<div class="outline-text-3" id="text-orgd346577">
+<div id="outline-container-orgd6b715c" class="outline-3">
+<h3 id="orgd6b715c">Adding components</h3>
+<div class="outline-text-3" id="text-orgd6b715c">
 <p>
 This section builds up on the chart above to add more information
 </p>
 </div>
 
-<div id="outline-container-org70949c7" class="outline-4">
-<h4 id="org70949c7">Baseline</h4>
-<div class="outline-text-4" id="text-org70949c7">
+<div id="outline-container-org47584ea" class="outline-4">
+<h4 id="org47584ea">Baseline</h4>
+<div class="outline-text-4" id="text-org47584ea">
 <p>
 A baseline is a horizontal line specifying some sort of baseline. To plot it,
 pass a <code>baseline</code> item in data. Optionally, set a label for the baseline by
@@ -557,9 +557,9 @@ tcBaseline.update<span class="org-rainbow-delimiters-depth-1">(</span><span clas
 </div>
 </div>
 
-<div id="outline-container-org4d4158e" class="outline-4">
-<h4 id="org4d4158e">Actual</h4>
-<div class="outline-text-4" id="text-org4d4158e">
+<div id="outline-container-orgfe3cbcb" class="outline-4">
+<h4 id="orgfe3cbcb">Actual</h4>
+<div class="outline-text-4" id="text-orgfe3cbcb">
 <p>
 Another important component to show is the actual line that we are trying to
 predict. The <code>actual</code> series is an array of the same length as the <code>timePoints</code> and
@@ -584,16 +584,16 @@ tcActual.update<span class="org-rainbow-delimiters-depth-1">(</span><span class=
 </div>
 </div>
 
-<div id="outline-container-orgc8cd0b9" class="outline-4">
-<h4 id="orgc8cd0b9"><span class="todo TODO">TODO</span> Observed</h4>
+<div id="outline-container-orgf2518c0" class="outline-4">
+<h4 id="orgf2518c0"><span class="todo TODO">TODO</span> Observed</h4>
 </div>
 
-<div id="outline-container-org49241e7" class="outline-4">
-<h4 id="org49241e7">History</h4>
-<div class="outline-text-4" id="text-org49241e7">
+<div id="outline-container-orgf13da8a" class="outline-4">
+<h4 id="orgf13da8a">History</h4>
+<div class="outline-text-4" id="text-orgf13da8a">
 <p>
 Historical data lines (similar to <code>actual</code> series) can be shown by passing an
-array of historical actual serie like the following:
+array of historical actual series like the following:
 </p>
 
 <div class="org-src-container">
@@ -630,18 +630,104 @@ the series to match the current season's length.
 </div>
 </div>
 
-<div id="outline-container-org83db01d" class="outline-4">
-<h4 id="org83db01d"><span class="todo TODO">TODO</span> Confidence Intervals</h4>
+<div id="outline-container-org6166edb" class="outline-4">
+<h4 id="org6166edb">Confidence Intervals</h4>
+<div class="outline-text-4" id="text-org6166edb">
+<p>
+Confidence intervals show a region of uncertainty around the model predictions
+(peak, onset and the regular time step predictions). These involve users to
+specify:
+</p>
+
+<ol class="org-ol">
+<li>Label for the confidence intervals to be shown in legend. For example `90%`
+etc.</li>
+<li>Additional <code>low</code> and <code>high</code> values along with <code>point</code> values in predictions.</li>
+</ol>
+
+<p>
+The legend label can be specified in the main chart option by passing the
+following key/value pair (say we want to show <code>90%</code> and <code>50%</code> CIs):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js">...
+  confidenceIntervals: <span class="org-rainbow-delimiters-depth-1">[</span><span class="org-string">'90%'</span>, <span class="org-string">'50%'</span><span class="org-rainbow-delimiters-depth-1">]</span>
+...
+</pre>
 </div>
 
-<div id="outline-container-org4d3ca9f" class="outline-4">
-<h4 id="org4d3ca9f"><span class="todo TODO">TODO</span> Peak and Onset</h4>
+<p>
+Corresponding to the values specified above (and in the same order), we now
+attach a list of <code>low</code> and <code>high</code> values as shown below:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-comment-delimiter">// </span><span class="org-comment">Predictions now look like [{ series: [</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">{ point: 0.5, low: [0.3, 0.4], high: [0.7, 0.6] },</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">{ point: 1.2, low: [1.0, 1.1], high: [1.4, 1.3] }</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">...] }, ..., null, null]</span>
+<span class="org-keyword">let</span> <span class="org-variable-name">predictionsWithCI</span> = timePoints.map<span class="org-rainbow-delimiters-depth-1">(</span>tp =&gt; <span class="org-rainbow-delimiters-depth-2">{</span>
+  <span class="org-keyword">if</span> <span class="org-rainbow-delimiters-depth-3">(</span>tp.week &gt; <span class="org-highlight-numbers-number">30</span><span class="org-rainbow-delimiters-depth-3">)</span> <span class="org-rainbow-delimiters-depth-3">{</span>
+    <span class="org-comment-delimiter">// </span><span class="org-comment">We only predict upto week 30</span>
+    <span class="org-keyword">return</span> <span class="org-constant">null</span>
+  <span class="org-rainbow-delimiters-depth-3">}</span> <span class="org-keyword">else</span> <span class="org-rainbow-delimiters-depth-3">{</span>
+    <span class="org-comment-delimiter">// </span><span class="org-comment">Provide 10 week ahead predictions adding a dummy 0.2 and 0.1 spacing</span>
+    <span class="org-comment-delimiter">// </span><span class="org-comment">to show the confidence interval</span>
+    <span class="org-keyword">return</span> <span class="org-rainbow-delimiters-depth-4">{</span>
+      series: rseq<span class="org-rainbow-delimiters-depth-5">(</span><span class="org-highlight-numbers-number">10</span><span class="org-rainbow-delimiters-depth-5">)</span>.map<span class="org-rainbow-delimiters-depth-5">(</span>r =&gt; <span class="org-rainbow-delimiters-depth-6">{</span>
+        <span class="org-keyword">return</span> <span class="org-rainbow-delimiters-depth-7">{</span>
+          point: r,
+          low: <span class="org-rainbow-delimiters-depth-8">[</span>Math.max<span class="org-rainbow-delimiters-depth-9">(</span><span class="org-highlight-numbers-number">0</span>, r - <span class="org-highlight-numbers-number">0</span>.<span class="org-highlight-numbers-number">2</span><span class="org-rainbow-delimiters-depth-9">)</span>, Math.max<span class="org-rainbow-delimiters-depth-9">(</span><span class="org-highlight-numbers-number">0</span>, r - <span class="org-highlight-numbers-number">0</span>.<span class="org-highlight-numbers-number">1</span><span class="org-rainbow-delimiters-depth-9">)</span><span class="org-rainbow-delimiters-depth-8">]</span>,
+          high: <span class="org-rainbow-delimiters-depth-8">[</span>r + <span class="org-highlight-numbers-number">0</span>.<span class="org-highlight-numbers-number">2</span>, r + <span class="org-highlight-numbers-number">0</span>.<span class="org-highlight-numbers-number">1</span><span class="org-rainbow-delimiters-depth-8">]</span>
+        <span class="org-rainbow-delimiters-depth-7">}</span>
+      <span class="org-rainbow-delimiters-depth-6">}</span><span class="org-rainbow-delimiters-depth-5">)</span>
+    <span class="org-rainbow-delimiters-depth-4">}</span>
+  <span class="org-rainbow-delimiters-depth-3">}</span>
+<span class="org-rainbow-delimiters-depth-2">}</span><span class="org-rainbow-delimiters-depth-1">)</span>
+</pre>
+</div>
+
+<p>
+Putting everything together now:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">let</span> <span class="org-variable-name">dataWithCI</span> = <span class="org-rainbow-delimiters-depth-1">{</span>
+  timePoints,
+  models: <span class="org-rainbow-delimiters-depth-2">[</span>
+    <span class="org-rainbow-delimiters-depth-3">{</span>
+      id: <span class="org-string">'mod'</span>,
+      meta: <span class="org-rainbow-delimiters-depth-4">{</span>
+        name: <span class="org-string">'Name'</span>,
+        description: <span class="org-string">'Model description here'</span>
+        <span class="org-comment-delimiter">// </span><span class="org-comment">url key is optional so lets skip it</span>
+      <span class="org-rainbow-delimiters-depth-4">}</span>,
+      predictionsWithCI
+    <span class="org-rainbow-delimiters-depth-3">}</span>
+  <span class="org-rainbow-delimiters-depth-2">]</span>
+<span class="org-rainbow-delimiters-depth-1">}</span>
+
+<span class="org-keyword">let</span> <span class="org-variable-name">configCI</span> = Object.assign<span class="org-rainbow-delimiters-depth-1">(</span>copy<span class="org-rainbow-delimiters-depth-2">(</span>config<span class="org-rainbow-delimiters-depth-2">)</span>, <span class="org-rainbow-delimiters-depth-2">{</span>confidenceIntervals: <span class="org-rainbow-delimiters-depth-3">[</span><span class="org-string">'90%'</span>, <span class="org-string">'50%'</span><span class="org-rainbow-delimiters-depth-3">]</span><span class="org-rainbow-delimiters-depth-2">}</span><span class="org-rainbow-delimiters-depth-1">)</span>
+<span class="org-keyword">let</span> <span class="org-variable-name">tcCI</span> = <span class="org-keyword">new</span> <span class="org-type">d3Foresight.TimeChart</span><span class="org-rainbow-delimiters-depth-1">(</span><span class="org-string">'#tc-ci'</span>, configCI<span class="org-rainbow-delimiters-depth-1">)</span>
+tcCI.plot<span class="org-rainbow-delimiters-depth-1">(</span>dataWithCI<span class="org-rainbow-delimiters-depth-1">)</span>
+tcCI.update<span class="org-rainbow-delimiters-depth-1">(</span><span class="org-highlight-numbers-number">10</span><span class="org-rainbow-delimiters-depth-1">)</span>
+</pre>
+</div>
+
+<br><br>
+<div id="tc-ci"></div>
 </div>
 </div>
 
-<div id="outline-container-orge6a4ee3" class="outline-3">
-<h3 id="orge6a4ee3"><span class="todo TODO">TODO</span> All config and data options</h3>
-<div class="outline-text-3" id="text-orge6a4ee3">
+<div id="outline-container-org23875a8" class="outline-4">
+<h4 id="org23875a8"><span class="todo TODO">TODO</span> Peak and Onset</h4>
+</div>
+</div>
+
+<div id="outline-container-orgd7f832d" class="outline-3">
+<h3 id="orgd7f832d"><span class="todo TODO">TODO</span> All config and data options</h3>
+<div class="outline-text-3" id="text-orgd7f832d">
 <p>
 Possible options to the constructor are described below:
 </p>
@@ -684,9 +770,9 @@ Possible options to the constructor are described below:
 </div>
 </div>
 
-<div id="outline-container-org3f92445" class="outline-2">
-<h2 id="org3f92445"><span class="todo TODO">TODO</span> DistributionChart</h2>
-<div class="outline-text-2" id="text-org3f92445">
+<div id="outline-container-orgcc33b69" class="outline-2">
+<h2 id="orgcc33b69"><span class="todo TODO">TODO</span> DistributionChart</h2>
+<div class="outline-text-2" id="text-orgcc33b69">
 
 <figure>
 <img src="./distchart.png" alt="distchart.png">
@@ -696,9 +782,9 @@ Possible options to the constructor are described below:
 </div>
 </div>
 
-<div id="outline-container-org96525f2" class="outline-2">
-<h2 id="org96525f2">Hooks</h2>
-<div class="outline-text-2" id="text-org96525f2">
+<div id="outline-container-org2c5833d" class="outline-2">
+<h2 id="org2c5833d">Hooks</h2>
+<div class="outline-text-2" id="text-org2c5833d">
 <p>
 Charts can call user defined functions when movement events are triggered inside
 (e.g. by clicking on movement buttons or clicking on the overlay). To register
