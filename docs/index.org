@@ -485,8 +485,6 @@ not be adding confidence intervals here to keep things simple.
       // We only predict upto week 30
       return null
     } else {
-      // Provide 10 week ahead predictions adding a dummy 0.2 and 0.1 spacing
-      // to show the confidence interval
       return {
         series: rseq(10).map(r => { return { point: r } }),
         peakTime: { point: 12 + getRandomInt(5) },
