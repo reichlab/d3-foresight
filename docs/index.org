@@ -315,7 +315,6 @@ purpose.
 
   // Add [] for other points
   observed = observed.concat(timePoints.slice(20).map(tp => []))
-  console.log(observed)
 #+END_SRC
 
 #+BEGIN_SRC js :tangle ./assets/script.js

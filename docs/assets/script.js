@@ -105,7 +105,6 @@ let observed = rseq(20).map((r, idx) => {
 
 // Add [] for other points
 observed = observed.concat(timePoints.slice(20).map(tp => []))
-console.log(observed)
 
 let tcObserved = new d3Foresight.TimeChart('#tc-observed', config)
 tcObserved.plot(Object.assign(copy(data), { observed: observed }))
