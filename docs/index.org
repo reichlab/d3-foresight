@@ -270,7 +270,62 @@ can be something like this
 #+HTML: <br><br>
 #+HTML: <div id="tc-actual"></div>
 
-*** TODO Observed
+*** Observed
+Observed data series refers to the time series /as observed/ at a certain time
+point. Observed lines are useful (only) when there are updates in actual data,
+resulting in different /versions/ based on when the data was released.
+
+We formalize these versions using /lags/. When we are at a time point $t$ what
+we get as truth (the value that creates the actual series) is a lag $0$ truth,
+$l_0(t)$. At the same time, we also get $l_1(t - 1)$ truth for time point $t -
+1$, $l_2(t - 2)$ truth for $t - 2$ and so on. In this case, even if we have
+higher lag truths for time $t$, the observed series at time $t$ will be made up
+of the series $[l_i(t - i), \forall i \in [t - 1, t - 2, \ldots 0]]$
+
+To display the observe data thus we need to provide the required lag truths for
+a time point. We do this by providing a list of lists. The outer list is over
+all the time points. The inner lists represent decreasing lag values (like ~{
+lag: 2, value: 0.2}~) for that time point.
+
+A simple example follows. Notice that the third time point is the latest one
+and so we only have lag 0 value for that.
+
+#+BEGIN_SRC js
+  // Assume there are 3 timepoints
+  let observedExample = [
+    [ { lag: 2, value: 0.88 }, { lag: 1, value: 0.88 }, { lag: 0, value: 0.93 }],
+    [ { lag: 1, value: 1.11 }, { lag: 0, value: 1.32 } ],
+    [ { lag: 0, value: 1.13 } ]
+  ]
+#+END_SRC
+
+The next snippet generates some random data programmatically for demoing
+purpose.
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  // Lets only show 20 time steps.
+  let observed = rseq(20).map((r, idx) => {
+    let delta = 0.05
+    let lags = []
+    for (let l = 20; l >= 0; l--) {
+      lags.push({ lag: l, value: r + (delta * (20 - l)) })
+    }
+    return lags
+  })
+
+  // Add [] for other points
+  observed = observed.concat(timePoints.slice(20).map(tp => []))
+  console.log(observed)
+#+END_SRC
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  let tcObserved = new d3Foresight.TimeChart('#tc-observed', config)
+  tcObserved.plot(Object.assign(copy(data), { observed: observed }))
+  tcObserved.update(10)
+#+END_SRC
+
+#+HTML: <br><br>
+#+HTML: <div id="tc-observed"></div>
 
 *** History
 Historical data lines (similar to ~actual~ series) can be shown by passing an

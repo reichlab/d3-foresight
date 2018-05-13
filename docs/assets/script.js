@@ -93,6 +93,24 @@ let tcActual = new d3Foresight.TimeChart('#tc-actual', config)
 tcActual.plot(Object.assign(copy(data), { actual: actual }))
 tcActual.update(10)
 
+// Lets only show 20 time steps.
+let observed = rseq(20).map((r, idx) => {
+  let delta = 0.05
+  let lags = []
+  for (let l = 20; l >= 0; l--) {
+    lags.push({ lag: l, value: r + (delta * (20 - l)) })
+  }
+  return lags
+})
+
+// Add [] for other points
+observed = observed.concat(timePoints.slice(20).map(tp => []))
+console.log(observed)
+
+let tcObserved = new d3Foresight.TimeChart('#tc-observed', config)
+tcObserved.plot(Object.assign(copy(data), { observed: observed }))
+tcObserved.update(10)
+
 let historicalData = [
   {
     id: 'some-past-series',
