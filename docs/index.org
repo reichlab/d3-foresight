@@ -287,6 +287,11 @@ a time point. We do this by providing a list of lists. The outer list is over
 all the time points. The inner lists represent decreasing lag values (like ~{
 lag: 2, value: 0.2}~) for that time point.
 
+#+BEGIN_aside
+Current observed line API is not really nice. Follow [[https://github.com/reichlab/d3-foresight/issues/54][this issue]] for a better
+way.
+#+END_aside
+
 A simple example follows. Notice that the third time point is the latest one
 and so we only have lag 0 value for that.
 
