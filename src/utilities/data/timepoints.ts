@@ -21,7 +21,7 @@ function parseMonth(d: Date): number {
 }
 
 function isTimepoint(tp: any): boolean {
-  return ('year' in tp)
+  return (tp !== null) && (typeof tp === 'object') && ('year' in tp)
 }
 
 function isDate(tp: any): boolean {
