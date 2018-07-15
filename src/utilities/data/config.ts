@@ -47,7 +47,7 @@ function isVersionTimePresent (modelsData): boolean {
     // Keeping the default behavior simple
     return false
   } else {
-    return nonNullPreds.every(p => 'data-version-date' in p)
+    return nonNullPreds.every(p => 'dataVersionTime' in p)
   }
 }
 
