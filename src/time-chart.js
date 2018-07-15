@@ -14,7 +14,7 @@ import TimeRect from './components/time-chart/timerect'
 import Chart from './chart'
 import { verifyTimeChartData } from './utilities/data/verify'
 import { getTimeChartDataConfig } from './utilities/data/config'
-import { filterActivePredictions } from './utilities/misc'
+import { filterActivePredictions, orArrays } from './utilities/misc'
 import * as ev from './events'
 
 /**
@@ -144,6 +144,17 @@ export default class TimeChart extends Chart {
     this.dataConfig = getTimeChartDataConfig(data, this.config)
     this.ticks = this.dataConfig.ticks
 
+    // Data version times specify which time to use
+    this.dataVersionTimes = this.ticks.map(() => null)
+
+    // Parse dataVersionTimes if present
+    if (this.dataConfig.predictions.versionTime) {
+      this.dataVersionTimes = orArrays(data.models.map(m => {
+        return m.predictions.map(p => p === null ? null : p.dataVersionTime)
+      }))
+    }
+
+    this.dataVersionTimes = this.dataVersionTimes.map((d, idx) => d === null ? idx : d)
     if (this.config.axes.y.domain) {
       this.yScale.domain(this.config.axes.y.domain)
     } else {
@@ -220,7 +231,10 @@ export default class TimeChart extends Chart {
   update (idx) {
     if (idx !== this.currentIdx) {
       this.currentIdx = idx
-      this.timerect.update(idx)
+
+      // Use data versions to update the timerect
+      this.timerect.update(this.dataVersionTimes[idx])
+
       this.predictions.forEach(p => { p.update(idx) })
       this.overlay.update(this.predictions)
       if (this.dataConfig.observed) {
