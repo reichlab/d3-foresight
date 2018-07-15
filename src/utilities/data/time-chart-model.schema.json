@@ -19,7 +19,11 @@
           "description": "Low values for the confidence interval ranges",
           "type": "array",
           "items": { "type": "number" }
-        }
+        },
+        "offset": {
+          "description": "Offset value to use when data version time",
+          "type": "number"
+        },
       },
       "required": ["point"]
     }
@@ -63,6 +67,10 @@
           "onsetTime": { "$ref": "#/definitions/pred" },
           "peakTime": { "$ref": "#/definitions/pred" },
           "peakValue": { "$ref": "#/definitions/pred" },
+          "dataVersionTime": {
+            "description": "Time index specifying the data used for prediction",
+            "type": "number"
+          },
           "series": {
             "description": "Time ahead predictions",
             "type": "array",
