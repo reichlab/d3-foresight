@@ -19,9 +19,15 @@ export default class TimeRect extends SComponent {
   }
 
   update (idx) {
-    this.rect
-      .transition()
-      .duration(200)
-      .attr('width', this.xScale(idx))
+    if (idx === null) {
+      // We don't know the data version time
+      this.hidden = true
+    } else {
+      this.hidden = false
+      this.rect
+        .transition()
+        .duration(200)
+        .attr('width', this.xScale(idx))
+    }
   }
 }

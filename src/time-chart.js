@@ -141,20 +141,20 @@ export default class TimeChart extends Chart {
   // plot data
   plot (data) {
     verifyTimeChartData(data)
+
     this.dataConfig = getTimeChartDataConfig(data, this.config)
     this.ticks = this.dataConfig.ticks
-
-    // Data version times specify which time to use
-    this.dataVersionTimes = this.ticks.map(() => null)
 
     // Parse dataVersionTimes if present
     if (this.dataConfig.predictions.versionTime) {
       this.dataVersionTimes = orArrays(data.models.map(m => {
         return m.predictions.map(p => p === null ? null : p.dataVersionTime)
       }))
+    } else {
+      // Otherwise use simple array of indices
+      this.dataVersionTimes = this.ticks.map((t, idx) => idx)
     }
 
-    this.dataVersionTimes = this.dataVersionTimes.map((d, idx) => d === null ? idx : d)
     if (this.config.axes.y.domain) {
       this.yScale.domain(this.config.axes.y.domain)
     } else {
