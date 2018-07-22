@@ -17,7 +17,6 @@ import { getTimeChartDataConfig } from './utilities/data/config'
 import { filterActivePredictions, orArrays } from './utilities/misc'
 import * as ev from './events'
 
-
 export default class TimeChart extends Chart {
   constructor (element, options = {}) {
     let defaultConfig = {
