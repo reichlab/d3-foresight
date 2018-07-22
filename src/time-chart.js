@@ -17,24 +17,6 @@ import { getTimeChartDataConfig } from './utilities/data/config'
 import { filterActivePredictions, orArrays } from './utilities/misc'
 import * as ev from './events'
 
-/**
- * Return points where the predictions were made
- * This is used as the first point in prediction marker
- */
-function getPredictionInitPoints (observed) {
-  return observed.map(d => {
-    // Handle zero length values
-    try {
-      if (d.length !== 0) {
-        return d.find(ld => ld.lag === 0).value
-      } else {
-        return null
-      }
-    } catch (e) {
-      return null
-    }
-  })
-}
 
 export default class TimeChart extends Chart {
   constructor (element, options = {}) {
@@ -212,9 +194,7 @@ export default class TimeChart extends Chart {
       } else {
         predMarker = this.predictions[markerIndex]
       }
-      // Find the starting points
-      let initPoints = data.observed ? getPredictionInitPoints(data.observed) : null
-      predMarker.plot(this.scales, m.predictions, initPoints)
+      predMarker.plot(this.scales, m.predictions)
     })
 
     this.controlPanel.plot(this.predictions, this.dataConfig)

@@ -23,9 +23,9 @@ export default class LineMarker extends SComponent {
       .style('stroke', color)
   }
 
-  move (cfg, series, anchorPoint) {
+  move (cfg, series) {
     let circles = this.selection.selectAll('.point-prediction')
-        .data(series.slice(anchorPoint !== null ? 1 : 0))
+        .data(series)
 
     circles.exit().remove()
 

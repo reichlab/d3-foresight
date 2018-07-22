@@ -38,9 +38,8 @@ export default class Prediction extends SComponent {
     this.noData = true
   }
 
-  plot (scales, modelData, initPoints) {
+  plot (scales, modelData) {
     this.modelData = modelData
-    this.initPoints = initPoints
     this.displayedData = Array(this.modelData.length).fill(false)
     this.scales = scales
   }
@@ -79,19 +78,6 @@ export default class Prediction extends SComponent {
 
       // Move main pointers
       let series = []
-      let anchorPoint = this.initPoints && this.initPoints[idx]
-
-      if (anchorPoint !== null) {
-        // If we have anchor points to start at, use those
-        // as the first point in the predictions
-        series.push({
-          index: idx,
-          point: anchorPoint,
-          low: anchorPoint,
-          high: anchorPoint
-        })
-      }
-
       let idxOverflow = Math.min(0, this.modelData.length - (idx + currData.series.length))
       let displayLimit = currData.series.length - idxOverflow
 
@@ -106,11 +92,11 @@ export default class Prediction extends SComponent {
 
       // Save indexed data for query
       this.displayedData = Array(this.modelData.length).fill(false)
-      series.slice(anchorPoint !== null ? 1 : 0).forEach(d => {
+      series.forEach(d => {
         this.displayedData[d.index] = d.point
       })
 
-      this.lineMarker.move(this.config, series, anchorPoint)
+      this.lineMarker.move(this.config, series)
     }
   }
 
