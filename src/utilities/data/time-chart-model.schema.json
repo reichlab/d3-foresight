@@ -63,6 +63,10 @@
           "onsetTime": { "$ref": "#/definitions/pred" },
           "peakTime": { "$ref": "#/definitions/pred" },
           "peakValue": { "$ref": "#/definitions/pred" },
+          "dataVersionTime": {
+            "description": "Time index specifying the data used for prediction",
+            "type": "number"
+          },
           "series": {
             "description": "Time ahead predictions",
             "type": "array",

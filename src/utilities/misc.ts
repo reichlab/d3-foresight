@@ -59,3 +59,33 @@ export function selectUncle (currentSelector, uncleSelector: string) {
 
   return walkUp(currentNode, currentNode.parentNode)
 }
+
+function allEqual (array: number[]): boolean {
+  // @ts-ignore
+  return !!array.reduce((acc, it) =>  acc === it ? acc : false)
+}
+
+/**
+ * Take or of arrays, assume values at same indices to be the same
+ */
+export function orArrays (arrays: number[][]): number[] {
+  let len = arrays[0].length
+
+  // We can always take the largest array but lets not do that right now
+  if (arrays.some(arr => arr.length !== len)) {
+    throw new Error('Arrays of unequal length passed while oring')
+  }
+
+  return arrays[0].map((it, idx) => {
+    let nonNulls = arrays.map(arr => arr[idx]).filter(d => d !== null)
+    if (nonNulls.length > 0) {
+      if (allEqual(nonNulls)) {
+        return nonNulls[0]
+      } else {
+        throw new Error('Non equal items in arrays')
+      }
+    } else {
+      return null
+    }
+  })
+}

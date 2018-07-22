@@ -38,6 +38,21 @@ function isPeakPresent (modelsData): boolean {
 }
 
 /**
+ * Tell if we have data version date present in the predictions data
+ */
+function isVersionTimePresent (modelsData): boolean {
+  let model = modelsData[0]
+  let nonNullPreds = model.predictions.filter(p => p !== null)
+  if (nonNullPreds.length === 0) {
+    // Keeping the default behavior simple
+    return false
+  } else {
+    return nonNullPreds.every(p => 'dataVersionTime' in p)
+  }
+}
+
+
+/**
  * Parse time chart data and provide information about it
  */
 export function getTimeChartDataConfig (data, config) {
@@ -48,7 +63,8 @@ export function getTimeChartDataConfig (data, config) {
     baseline: 'baseline' in data,
     predictions: {
       peak: isPeakPresent(data.models),
-      onset: config.onset && isOnsetPresent(data.models)
+      onset: config.onset && isOnsetPresent(data.models),
+      versionTime: isVersionTimePresent(data.models)
     },
     ticks: data.timePoints.map(tp => getTick(tp, config.pointType)),
     pointType: config.pointType
