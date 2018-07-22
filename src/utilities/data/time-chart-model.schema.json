@@ -19,10 +19,6 @@
           "description": "Low values for the confidence interval ranges",
           "type": "array",
           "items": { "type": "number" }
-        },
-        "offset": {
-          "description": "Offset value to use when data version time",
-          "type": "number"
         }
       },
       "required": ["point"]
