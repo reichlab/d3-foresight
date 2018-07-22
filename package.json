@@ -1,6 +1,6 @@
 {
   "name": "d3-foresight",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "description": "Time series forecasts visualizations using d3",
   "author": "Abhinav Tushar <lepisma@fastmail.com>",
   "main": "./dist/d3-foresight.js",
