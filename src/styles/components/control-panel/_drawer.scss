@@ -9,7 +9,7 @@
   right: 60px;
   top: 10px;
 
-  .legend-control-container {
+  .legend-middle-container {
     background-color: $white-shade;
     padding: 5px 0;
 
@@ -45,7 +45,7 @@
     }
   }
 
-  .legend-model-container {
+  .legend-bottom-container {
     max-height: 200px;
     overflow-y: auto;
   }

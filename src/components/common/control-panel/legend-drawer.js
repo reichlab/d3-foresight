@@ -6,6 +6,23 @@ import Component from '../../component'
 import SearchBox from './search-box'
 import * as tt from '../../../utilities/tooltip'
 
+function makePredictionRow (p, tooltip) {
+  let drawerRow = new DrawerRow(p.id, p.color)
+  if (p.meta.url) {
+    drawerRow.addLink(p.meta.url, tooltip)
+  }
+
+  drawerRow.addTooltip(
+    tooltip,
+    tt.parseText({
+      title: p.meta.name,
+      text: p.meta.description
+    }), 'left')
+
+  drawerRow.active = !p.hidden
+  return drawerRow
+}
+
 /**
  * Legend nav drawer
  */
@@ -16,9 +33,9 @@ export default class LegendDrawer extends Component {
     this.selection.classed('legend-drawer', true)
 
     // Items above the controls (actual, observed, history)
-    let actualContainer = this.selection.append('div')
+    let topContainer = this.selection.append('div')
 
-    let actualItems = [
+    let topItems = [
       {
         color: colors.actual,
         text: 'Actual',
@@ -45,25 +62,25 @@ export default class LegendDrawer extends Component {
       }
     ]
 
-    // Add rows for actual lines
-    this.actualRows = {}
-    actualItems.forEach(data => {
+    // Add rows for top items
+    this.topRowsMap = {}
+    topItems.forEach(data => {
       let drawerRow = new DrawerRow(data.text, data.color)
       drawerRow.addOnClick(({ id, state }) => {
         ev.publish(config.uuid, ev.LEGEND_ITEM, { id, state })
       })
       drawerRow.addTooltip(config.tooltip, tt.parseText(data.tooltipData), 'left')
       drawerRow.active = true
-      actualContainer.append(() => drawerRow.node)
-      this.actualRows[data.text.toLowerCase()] = drawerRow
+      topContainer.append(() => drawerRow.node)
+      this.topRowsMap[data.text.toLowerCase()] = drawerRow
     })
 
     // Control buttons (CI, show/hide, search)
-    let controlContainer = this.selection.append('div')
-        .attr('class', 'legend-control-container')
+    let middleContainer = this.selection.append('div')
+        .attr('class', 'legend-middle-container')
 
     if (config.ci) {
-      let ciRow = controlContainer.append('div')
+      let ciRow = middleContainer.append('div')
           .attr('class', 'row control-row')
       ciRow.append('span').text('CI')
 
@@ -84,7 +101,7 @@ export default class LegendDrawer extends Component {
     }
 
     // Show / hide all
-    let showHideRow = controlContainer.append('div')
+    let showHideRow = middleContainer.append('div')
         .attr('class', 'row control-row')
     showHideRow.append('span').text('Show')
 
@@ -103,11 +120,14 @@ export default class LegendDrawer extends Component {
 
     // Add search box
     this.searchBox = new SearchBox()
-    controlContainer.append(() => this.searchBox.node)
+    middleContainer.append(() => this.searchBox.node)
+
+    // Pinned model rows
+    this.pinnedContainer = topContainer.append('div')
 
     // Model rows
-    this.modelContainer = this.selection.append('div')
-      .attr('class', 'legend-model-container')
+    this.bottomContainer = this.selection.append('div')
+      .attr('class', 'legend-bottom-container')
 
     this.tooltip = config.tooltip
     this.uuid = config.uuid
@@ -115,14 +135,14 @@ export default class LegendDrawer extends Component {
 
   // Show / hide the "row items divs" while filtering with the search box
   showRows (states) {
-    this.rows.forEach((row, idx) => {
+    this.bottomRows.forEach((row, idx) => {
       row.hidden = !states[idx]
     })
   }
 
   // Show / hide all the items markers
   showHideAllItems (show) {
-    this.rows.forEach(row => {
+    this.bottomRows.forEach(row => {
       if (row.active !== show) {
         row.click()
       }
@@ -130,9 +150,9 @@ export default class LegendDrawer extends Component {
   }
 
   plot (predictions, config) {
-    // Update the actual items above models
-    for (let actualId in this.actualRows) {
-      this.actualRows[actualId].hidden = !config[actualId]
+    // Update the top items except pinned models
+    for (let topId in this.topRowsMap) {
+      this.topRowsMap[topId].hidden = !config[topId]
     }
 
     // Don't show search bar if predictions are less than or equal to maxNPreds
@@ -151,35 +171,39 @@ export default class LegendDrawer extends Component {
       this.searchBox.hidden = true
     }
 
-    // Add prediction items
-    this.modelContainer.selectAll('*').remove()
-    this.rows = predictions.map(p => {
-      let drawerRow = new DrawerRow(p.id, p.color)
-      if (p.meta.url) {
-        drawerRow.addLink(p.meta.url, this.tooltip)
-      }
+    // Plot models which are unpinned in the bottom section
+    this.bottomContainer.selectAll('*').remove()
+    this.bottomRows = predictions
+      .filter(p => config.pinnedModels.indexOf(p.id) === -1)
+      .map(p => {
+        let drawerRow = makePredictionRow(p, this.tooltip)
+        drawerRow.addOnClick(({ id, state }) => {
+          this.showHideButtons.reset()
+          ev.publish(this.uuid, ev.LEGEND_ITEM, { id, state })
+        })
 
-      drawerRow.addOnClick(({ id, state }) => {
-        this.showHideButtons.reset()
-        ev.publish(this.uuid, ev.LEGEND_ITEM, { id, state })
+        this.bottomContainer.append(() => drawerRow.node)
+        return drawerRow
       })
 
-      drawerRow.addTooltip(
-        this.tooltip,
-        tt.parseText({
-          title: p.meta.name,
-          text: p.meta.description
-        }), 'left')
+    // Handle pinned models separately
+    this.pinnedContainer.selectAll('*').remove()
+    this.pinnedRows = predictions
+      .filter(p => config.pinnedModels.indexOf(p.id) > -1)
+      .map(p => {
+        let drawerRow = makePredictionRow(p, this.tooltip)
+        drawerRow.addOnClick(({ id, state }) => {
+          ev.publish(this.uuid, ev.LEGEND_ITEM, { id, state })
+        })
 
-      drawerRow.active = !p.hidden
-      this.modelContainer.append(() => drawerRow.node)
-      return drawerRow
-    })
+        this.pinnedContainer.append(() => drawerRow.node)
+        return drawerRow
+      })
   }
 
   update (predictions) {
     predictions.forEach(p => {
-      let row = this.rows.find(r => r.id === p.id)
+      let row = this.bottomRows.find(r => r.id === p.id) || this.pinnedRows.find(r => r.id === p.id)
       if (row) {
         row.na = p.noData
       }

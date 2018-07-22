@@ -38,6 +38,15 @@ function isPeakPresent (modelsData): boolean {
 }
 
 /**
+ * Return list of model ids that are to be pinned
+ */
+function pinnedModelIds (modelsData): string[] {
+  return modelsData.filter(model => {
+    return 'pinned' in model ? model.pinned : false
+  }).map(model => model.id)
+}
+
+/**
  * Tell if we have data version date present in the predictions data
  */
 function isVersionTimePresent (modelsData): boolean {
@@ -66,6 +75,7 @@ export function getTimeChartDataConfig (data, config) {
       onset: config.onset && isOnsetPresent(data.models),
       versionTime: isVersionTimePresent(data.models)
     },
+    pinnedModels: pinnedModelIds(data.models),
     ticks: data.timePoints.map(tp => getTick(tp, config.pointType)),
     pointType: config.pointType
   }
@@ -79,6 +89,7 @@ export function getDistChartDataConfig (data, config) {
     actual: false,
     observed: false,
     history: false,
+    pinnedModels: pinnedModelIds(data.models),
     ticks: data.timePoints.map(tp => getTick(tp, config.pointType)),
     pointType: config.pointType,
     curveNames: data.models[0].curves.map(c => c.name)
