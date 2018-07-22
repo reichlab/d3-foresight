@@ -33,6 +33,10 @@
       "description": "Short unique identifier for the model",
       "type": "string"
     },
+    "pinned": {
+      "description": "Whether to pin this model in legend",
+      "type": "boolean"
+    },
     "meta": {
       "description": "Metadata for the model",
       "type": "object",
