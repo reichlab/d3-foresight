@@ -45,6 +45,9 @@ let data = {
         description: 'Model description here',
         url: 'http://github.com'
       },
+      pinned: true, // Setting this shows the model in top section of the legend
+                    // In case of absence of `pinned` key (or false), the model
+                    // goes in the bottom section
       predictions
     }
   ]
