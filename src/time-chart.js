@@ -123,10 +123,7 @@ export default class TimeChart extends Chart {
   plot (data) {
     verifyTimeChartData(data)
 
-    data.models[2].pinned = true
-
     this.dataConfig = getTimeChartDataConfig(data, this.config)
-    console.log(this.dataConfig)
     this.ticks = this.dataConfig.ticks
 
     // Parse dataVersionTimes if present
