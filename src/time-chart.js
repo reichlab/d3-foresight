@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import * as domains from './utilities/data/domains'
+import * as tpUtils from './utilities/data/timepoints'
 import * as colors from './utilities/colors'
 import { XAxisDate } from './components/common/axis-x'
 import { YAxis } from './components/common/axis-y'
@@ -14,7 +15,7 @@ import TimeRect from './components/time-chart/timerect'
 import Chart from './chart'
 import { verifyTimeChartData } from './utilities/data/verify'
 import { getTimeChartDataConfig } from './utilities/data/config'
-import { filterActivePredictions, orArrays } from './utilities/misc'
+import { filterActivePredictions } from './utilities/misc'
 import * as ev from './events'
 
 export default class TimeChart extends Chart {
@@ -124,17 +125,8 @@ export default class TimeChart extends Chart {
     verifyTimeChartData(data)
 
     this.dataConfig = getTimeChartDataConfig(data, this.config)
+    this.dataVersionTimes = tpUtils.parseDataVersionTimes(data, this.dataConfig)
     this.ticks = this.dataConfig.ticks
-
-    // Parse dataVersionTimes if present
-    if (this.dataConfig.predictions.versionTime) {
-      this.dataVersionTimes = orArrays(data.models.map(m => {
-        return m.predictions.map(p => p === null ? null : p.dataVersionTime)
-      }))
-    } else {
-      // Otherwise use simple array of indices
-      this.dataVersionTimes = this.ticks.map((t, idx) => idx)
-    }
 
     if (this.config.axes.y.domain) {
       this.yScale.domain(this.config.axes.y.domain)

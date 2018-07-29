@@ -68,8 +68,7 @@
           "peakTime": { "$ref": "#/definitions/pred" },
           "peakValue": { "$ref": "#/definitions/pred" },
           "dataVersionTime": {
-            "description": "Time index specifying the data used for prediction",
-            "type": "number"
+            "description": "Time specifying the data available for that prediction"
           },
           "series": {
             "description": "Time ahead predictions",

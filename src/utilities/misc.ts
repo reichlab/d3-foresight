@@ -60,15 +60,15 @@ export function selectUncle (currentSelector, uncleSelector: string) {
   return walkUp(currentNode, currentNode.parentNode)
 }
 
-function allEqual (array: number[]): boolean {
+function allEqual (array: number[], eqFn): boolean {
   // @ts-ignore
-  return !!array.reduce((acc, it) =>  acc === it ? acc : false)
+  return !!array.reduce((acc, it) =>  eqFn(acc, it) ? acc : false)
 }
 
 /**
  * Take or of arrays, assume values at same indices to be the same
  */
-export function orArrays (arrays: number[][]): number[] {
+export function orArrays (arrays: number[][], eqFn = (a, b) => a === b): number[] {
   let len = arrays[0].length
 
   // We can always take the largest array but lets not do that right now
@@ -79,7 +79,7 @@ export function orArrays (arrays: number[][]): number[] {
   return arrays[0].map((it, idx) => {
     let nonNulls = arrays.map(arr => arr[idx]).filter(d => d !== null)
     if (nonNulls.length > 0) {
-      if (allEqual(nonNulls)) {
+      if (allEqual(nonNulls, eqFn)) {
         return nonNulls[0]
       } else {
         throw new Error('Non equal items in arrays')

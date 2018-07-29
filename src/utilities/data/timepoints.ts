@@ -11,6 +11,7 @@ import * as d3 from 'd3'
 import { Timepoint, TimepointId } from '../../interfaces'
 import * as errors from '../errors'
 import { parseText } from '../tooltip'
+import { orArrays } from '../misc'
 
 function parseWeek(d: Date): number {
   return parseInt(d3.timeFormat('%W')(d))
@@ -107,5 +108,26 @@ export function getDateTime(tp: Timepoint | Date | string, pointType: TimepointI
     }
   } else {
     throw new errors.UnknownPointType()
+  }
+}
+
+/**
+ * Parse data version times as JS datetimes
+ */
+export function parseDataVersionTimes(data, dataConfig) {
+  if (dataConfig.predictions.versionTime) {
+    return orArrays(data.models.map(m => {
+      let preds = m.predictions.map(p => {
+        if ((p === null) || (p.dataVersionTime === null)) {
+          return null
+        } else {
+          return getDateTime(p.dataVersionTime, dataConfig.pointType)
+        }
+      })
+      return preds
+      }), (a, b) => a.valueOf() === b.valueOf())
+  } else {
+    // Otherwise use time from regular timepoints
+    return data.timePoints.map(t => getDateTime(t, dataConfig.pointType))
   }
 }

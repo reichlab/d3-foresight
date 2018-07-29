@@ -15,11 +15,11 @@ export default class TimeRect extends SComponent {
   }
 
   plot (scales) {
-    this.xScale = scales.xScale
+    this.xScaleDate = scales.xScaleDate
   }
 
-  update (idx) {
-    if (idx === null) {
+  update (time) {
+    if (time === null) {
       // We don't know the data version time
       this.hidden = true
     } else {
@@ -27,7 +27,7 @@ export default class TimeRect extends SComponent {
       this.rect
         .transition()
         .duration(200)
-        .attr('width', this.xScale(idx))
+        .attr('width', this.xScaleDate(time))
     }
   }
 }
