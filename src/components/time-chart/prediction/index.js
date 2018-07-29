@@ -159,7 +159,7 @@ export default class Prediction extends SComponent {
    */
   displayedIdx (idx) {
     for (let i = 0; i < this.displayedData.length; i++) {
-      if (this.displayedData[i]) return (idx - i)
+      if (this.displayedData[i] !== false) return (idx - i)
     }
     return null
   }

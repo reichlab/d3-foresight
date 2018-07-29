@@ -115,7 +115,7 @@ export default class Overlay extends SComponent {
 
         let visiblePreds = queryObjects.filter(q => {
           // Take only model predictions which have data at index
-          return (['Actual', 'Observed'].indexOf(q.id) === -1) && (q.query(index))
+          return (['Actual', 'Observed'].indexOf(q.id) === -1) && (q.query(index) !== false)
         })
 
         let ttTitle = ''
