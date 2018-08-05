@@ -10,6 +10,7 @@ import Baseline from './components/time-chart/baseline'
 import HistoricalLines from './components/time-chart/historical-lines'
 import Observed from './components/time-chart/observed'
 import Overlay from './components/time-chart/overlay'
+import TimezeroLine from './components/time-chart/timezero-line'
 import Prediction from './components/time-chart/prediction'
 import TimeRect from './components/time-chart/timerect'
 import Chart from './chart'
@@ -51,6 +52,7 @@ export default class TimeChart extends Chart {
     }))
 
     this.timerect = this.append(new TimeRect(this.layout))
+    this.timezeroLine = this.append(new TimezeroLine(this.layout))
     this.overlay = this.append(new Overlay(this.layout, { tooltip: this.tooltip, uuid: this.uuid }))
     this.history = this.append(new HistoricalLines({ tooltip: this.tooltip }))
     this.baseline = this.append(new Baseline(this.layout, { ...this.config.baseline, tooltip: this.tooltip }))
@@ -141,6 +143,7 @@ export default class TimeChart extends Chart {
     this.yAxis.plot(this.scales)
 
     this.timerect.plot(this.scales)
+    this.timezeroLine.plot(this.scales)
     this.baseline.hidden = !this.dataConfig.baseline
     if (this.dataConfig.baseline) {
       this.baseline.plot(this.scales, data.baseline)
@@ -212,6 +215,13 @@ export default class TimeChart extends Chart {
         this.observed.update(idx)
       }
       this.controlPanel.update(this.predictions)
+
+      // Since version times are present (and might be different)
+      // we show the time zero line separately
+      this.timezeroLine.hidden = !this.dataConfig.predictions.versionTime
+      this.timezeroLine.textHidden = this.predictions.every(p => p.noData)
+
+      this.timezeroLine.update(idx)
     }
   }
 

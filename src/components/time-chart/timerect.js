@@ -12,6 +12,12 @@ export default class TimeRect extends SComponent {
       .attr('width', 0)
       .attr('height', layout.height)
       .attr('class', 'timerect')
+
+    this.text = this.selection.append('text')
+      .attr('class', 'data-version-text')
+      .attr('transform', `translate(15, 0) rotate(-90)`)
+      .style('text-anchor', 'end')
+      .text('Data as of')
   }
 
   plot (scales) {
@@ -28,6 +34,11 @@ export default class TimeRect extends SComponent {
         .transition()
         .duration(200)
         .attr('width', this.xScaleDate(time))
+
+      this.text
+        .transition()
+        .duration(200)
+        .attr('transform', `translate(${this.xScaleDate(time) + 15}, 10) rotate(-90)`)
     }
   }
 }
