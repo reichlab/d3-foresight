@@ -6,7 +6,7 @@ import * as domains from '../../utilities/data/domains'
 import Overlay from './overlay'
 import NoPredText from './no-pred-text'
 import * as colors from '../../utilities/colors'
-import { filterActivePredictions } from '../../utilities/misc'
+import { filterActiveLines } from '../../utilities/misc'
 import SComponent from '../s-component'
 
 /**
@@ -50,7 +50,7 @@ export default class DistributionPanel extends SComponent {
     this.colors = colors.getColorMap(data.models.length)
 
     // Clear markers not needed
-    this.predictions = filterActivePredictions(this.predictions, data.models)
+    this.predictions = filterActiveLines(this.predictions, data.models)
 
     // Generate markers for predictions if not already there
     // Assume unique model ids

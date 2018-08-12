@@ -25,7 +25,7 @@ export default class AdditionalLine extends SComponent {
       .style('stroke', style.color)
       .style('fill', 'transparent')
 
-    applyStyle(this.path, style.path)
+    applyStyle(this.path, style.line)
 
     this.id = id
     this.meta = meta
