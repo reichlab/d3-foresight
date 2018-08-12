@@ -7,7 +7,7 @@ import SearchBox from './search-box'
 import * as tt from '../../../utilities/tooltip'
 
 function makePredictionRow (p, tooltip) {
-  let drawerRow = new DrawerRow(p.id, p.color)
+  let drawerRow = new DrawerRow(p.id, p.style.color)
   if (p.meta.url) {
     drawerRow.addLink(p.meta.url, tooltip)
   }

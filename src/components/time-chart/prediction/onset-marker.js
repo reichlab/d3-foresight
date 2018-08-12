@@ -4,12 +4,13 @@ import { selectUncle } from '../../../utilities/misc'
 import SComponent from '../../s-component'
 
 export default class OnsetMarker extends SComponent {
-  constructor (id, color, onsetY) {
+  constructor (id, onsetY, style) {
     super()
     this.selection
       .attr('class', 'onset-group')
       .attr('id', id + '-marker')
 
+    let color = style.color
     let stp = 6
     let colorPoint = colors.hexToRgba(color, 0.8)
     let colorRange = colors.hexToRgba(color, 0.6)
@@ -69,7 +70,7 @@ export default class OnsetMarker extends SComponent {
         cfg.tooltip.render(tt.parsePoint({
           title: cfg.id,
           values: [{ key: 'Onset Time', value: cfg.scales.ticks[onset.point] }],
-          color: cfg.color
+          color: this.color
         }))
       })
       .on('mouseout', () => {

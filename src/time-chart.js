@@ -169,6 +169,10 @@ export default class TimeChart extends Chart {
 
     // Generate markers for predictions if not already there
     // Assume unique model ids
+    let predictionStyle = {
+      color: 'red'
+    }
+
     data.models.forEach((m, idx) => {
       let predMarker
       let markerIndex = this.predictions.findIndex(p => p.id === m.id)
@@ -177,11 +181,11 @@ export default class TimeChart extends Chart {
         predMarker = new Prediction({
           id: m.id,
           meta: m.meta,
-          color: this.colors[idx],
           onsetY: (idx + 1) * onsetDiff + this.height + 1,
           cid: this.cid,
           tooltip: this.tooltip,
-          ...this.dataConfig.predictions
+          ...this.dataConfig.predictions,
+          style: { color: this.colors[idx] }
         })
         this.append(predMarker)
         this.predictions.push(predMarker)

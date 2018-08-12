@@ -1,8 +1,9 @@
 import * as d3 from 'd3'
 import SComponent from '../../s-component'
+import { applyStyle } from '../../../utilities/style'
 
 export default class LineMarker extends SComponent {
-  constructor (id, color) {
+  constructor (id, style) {
     super()
     this.selection
       .attr('class', 'prediction-group')
@@ -10,17 +11,18 @@ export default class LineMarker extends SComponent {
 
     this.selection.append('path')
       .attr('class', 'area-prediction')
-      .style('fill', color)
+      .style('fill', style.color)
+    applyStyle(this.selection.select('.area-prediction'), style.area)
 
     this.selection.append('path')
       .attr('class', 'line-prediction')
-      .style('stroke', color)
+      .style('stroke', style.color)
+    applyStyle(this.selection.select('.line-prediction'), style.line)
 
     this.selection.selectAll('.point-prediction')
       .enter()
       .append('circle')
       .attr('class', 'point-prediction')
-      .style('stroke', color)
   }
 
   move (cfg, series) {
@@ -38,7 +40,8 @@ export default class LineMarker extends SComponent {
       .attr('cx', d => cfg.scales.xScale(d.index))
       .attr('cy', d => cfg.scales.yScale(d.point))
       .attr('r', 3)
-      .style('stroke', cfg.color)
+      .style('stroke', cfg.style.color)
+    applyStyle(circles, cfg.style.point)
 
     let line = d3.line()
         .x(d => cfg.scales.xScale(d.index))

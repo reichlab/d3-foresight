@@ -1,11 +1,12 @@
 import * as d3 from 'd3'
 import SComponent from '../s-component'
+import { applyStyle } from '../../utilities/style.ts'
 
 /**
  * Prediction marker for distribution chart
  */
 export default class Prediction extends SComponent {
-  constructor ({ id, meta, color }) {
+  constructor ({ id, meta, style }) {
     super()
     this.selection
       .attr('class', 'prediction-group')
@@ -13,13 +14,15 @@ export default class Prediction extends SComponent {
 
     this.selection.append('path')
       .attr('class', 'area-prediction')
-      .style('fill', color)
+      .style('fill', style.color)
+    applyStyle(this.selection.select('.area-prediction'), style.area)
 
     this.selection.append('path')
       .attr('class', 'line-prediction')
-      .style('stroke', color)
+      .style('stroke', style.color)
+    applyStyle(this.selection.select('.line-prediction'), style.line)
 
-    this.color = color
+    this.style = style
     this.id = id
     this.meta = meta
 

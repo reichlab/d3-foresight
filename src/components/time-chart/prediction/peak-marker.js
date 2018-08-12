@@ -4,13 +4,14 @@ import { selectUncle } from '../../../utilities/misc'
 import SComponent from '../../s-component'
 
 export default class PeakMarker extends SComponent {
-  constructor (id, color) {
+  constructor (id, style) {
     super()
 
     this.selection
       .attr('class', 'peak-group')
       .attr('id', id + '-marker')
 
+    let color = style.color
     let colorPoint = colors.hexToRgba(color, 0.8)
     let colorRange = colors.hexToRgba(color, 0.6)
 

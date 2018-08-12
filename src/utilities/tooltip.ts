@@ -94,7 +94,9 @@ export function parsePredictions ({ title, predictions, index }): string {
   })
 
   visiblePreds.slice(0, maxPreds).forEach(p => {
-    let style = `background:${p.color};color:${p.color ? 'white' : ''}`
+    let color = p.style ? p.style.color : null
+
+    let style = `background:${color};color:${color ? 'white' : ''}`
     html += `<div class='tooltip-row' style='${style}'>
                ${p.id}
                <span class='bold'>
