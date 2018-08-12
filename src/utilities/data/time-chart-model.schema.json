@@ -57,6 +57,28 @@
       },
       "required": ["description", "name"]
     },
+    "style": {
+      "description": "Style settings for the model",
+      "type": "object",
+      "properties": {
+        "color": {
+          "description": "Base color for the model, by default this comes from the internal palette",
+          "type": "string"
+        },
+        "point": {
+          "description": "CSS styles for dots in the line",
+          "type": "object"
+        },
+        "area": {
+          "description": "CSS styles for the confidence area",
+          "type": "object"
+        },
+        "line": {
+          "description": "CSS styles for the main line",
+          "type": "object"
+        }
+      }
+    },
     "predictions": {
       "description": "Prediction array for each time point",
       "type": "array",
