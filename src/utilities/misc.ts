@@ -9,6 +9,10 @@ import * as d3 from 'd3'
 import { Position } from '../interfaces'
 import { DocumentError } from './errors'
 
+export function kebabCase(text) {
+  return text.toLowerCase().replace(/ /g, '-')
+}
+
 /**
  * Return mouse position as absolute value for current view using the provided
  * d3Selection. The selection here matters because many of the elements with

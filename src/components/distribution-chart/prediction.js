@@ -1,6 +1,7 @@
 import * as d3 from 'd3'
 import SComponent from '../s-component'
-import { applyStyle } from '../../utilities/style.ts'
+import { applyStyle } from '../../utilities/style'
+import { kebabCase } from '../../utilities/misc'
 
 /**
  * Prediction marker for distribution chart
@@ -10,7 +11,7 @@ export default class Prediction extends SComponent {
     super()
     this.selection
       .attr('class', 'prediction-group')
-      .attr('id', id + '-marker')
+      .attr('id', kebabCase(id) + '-marker')
 
     this.selection.append('path')
       .attr('class', 'area-prediction')

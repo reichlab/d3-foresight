@@ -1,6 +1,6 @@
 import * as tt from '../../../utilities/tooltip'
 import * as colors from '../../../utilities/colors'
-import { selectUncle } from '../../../utilities/misc'
+import { selectUncle, kebabCase } from '../../../utilities/misc'
 import SComponent from '../../s-component'
 
 export default class OnsetMarker extends SComponent {
@@ -8,7 +8,7 @@ export default class OnsetMarker extends SComponent {
     super()
     this.selection
       .attr('class', 'onset-group')
-      .attr('id', id + '-marker')
+      .attr('id', kebabCase(id) + '-marker')
 
     let color = style.color
     let stp = 6

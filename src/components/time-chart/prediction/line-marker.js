@@ -1,13 +1,14 @@
 import * as d3 from 'd3'
 import SComponent from '../../s-component'
 import { applyStyle } from '../../../utilities/style'
+import { kebabCase } from '../../../utilities/misc'
 
 export default class LineMarker extends SComponent {
   constructor (id, style) {
     super()
     this.selection
       .attr('class', 'prediction-group')
-      .attr('id', id + 'marker')
+      .attr('id', kebabCase(id) + '-marker')
 
     this.selection.append('path')
       .attr('class', 'area-prediction')
