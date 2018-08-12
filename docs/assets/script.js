@@ -45,10 +45,22 @@ let data = {
         description: 'Model description here',
         url: 'http://github.com'
       },
-      pinned: false, // Setting this shows the model in top section of the legend
+      pinned: false, // Setting true shows the model in top section of the legend
                      // In case of absence of `pinned` key (or false), the model
                      // goes in the bottom section
-      predictions
+      predictions,
+      style: { // Optional parameter for applying custom css on svg elements
+        color: '#4682b4', // Defaults to values from the internal palette
+        point: {
+          // Style for the dots in prediction
+        },
+        area: {
+          // Style for the confidence area (shaded region around the line)
+        },
+        line: {
+          // Style for the main line
+        }
+      }
     }
   ]
 }
@@ -204,6 +216,47 @@ let configOnset = Object.assign(copy(config), { onset: true })
 let tcPeakOnset = new d3Foresight.TimeChart('#tc-peak-onset', configOnset)
 tcPeakOnset.plot(dataWithPeakOnset)
 tcPeakOnset.update(10)
+
+let tcAdditional = new d3Foresight.TimeChart('#timechart-additional', config)
+
+let additionalLines = [
+  {
+    id: 'Extra 1',
+    data: 1.53, // Scalar makes it show up as horizontal line
+    style: { // Optional style parameter
+      color: 'red',
+      point: {
+        // Optional parameter for styling the dots
+      },
+      line: {
+        // Style for the main line
+        'stroke-dasharray': '5,5'
+      }
+    },
+    meta: {
+      // Similar to what is used in models, all optional
+      name: 'Extra baseline',
+      description: 'This is an additional baseline',
+      url: 'https://github.com'
+    },
+    tooltip: false, // Should the value show up in tooltip (false by default or when absent)
+    legend: true // Should the value show up in legend (true by default or when absent)
+  },
+  {
+    id: 'Extra 2',
+    data: rseq(51), // Structure similar to like the actual array
+    style: {
+      color: '#9b59b6',
+      point: {
+        r: 0
+      }
+    },
+    tooltip: true
+  }
+]
+
+tcAdditional.plot(Object.assign(copy(data), { additionalLines }))
+tcAdditional.update(10)
 
 let options = {
   baseline: {

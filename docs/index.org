@@ -42,6 +42,9 @@ library try to cover these cases. See [[http://reichlab.io/flusight][reichlab/fl
 #+TOC: headlines 2
 
 * Setting up
+:PROPERTIES:
+:CUSTOM_ID: setting-up
+:END:
 
 The library requires [[https://d3js.org/][d3]] and [[https://momentjs.com][momentjs]] as external dependencies. To build
 foresight itself, use ~npm compile~ (for ~./dist/d3-foresight.js~) or ~npm build~ (for
@@ -68,6 +71,9 @@ for that can be added using:
 #+END_SRC
 
 * TimeChart
+:PROPERTIES:
+:CUSTOM_ID: timechart
+:END:
 
 A ~TimeChart~ displays the time series to be predicted and the models'
 predictions. Beyond the very minimal plots involving only model forecasts, it
@@ -87,10 +93,17 @@ can show the following items:
 [[file:./timechart.png]]
 
 ** Basic plot
+:PROPERTIES:
+:CUSTOM_ID: timechart-basic-plot
+:END:
 In this section, we will create a very basic visualization involving one model
 providing random numbers as forecasts for a year.
 
 *** Configuration
+:PROPERTIES:
+:CUSTOM_ID: timechart-basic-plot-configuration
+:END:
+
 Time in foresight is represented using ~timePoints~ which is an array mapping to
 discrete date/time values. As of now, foresight supports the following three
 types of time points:
@@ -125,6 +138,10 @@ foresight charts using a config object which is the following in our case:
 #+END_SRC
 
 *** Data
+:PROPERTIES:
+:CUSTOM_ID: timechart-basic-plot-data
+:END:
+
 At minimum, ~TimeChart~ expects an array of time points and an array of model
 data. The time points in our case go from week 1 to week 52 of 2016 and can be
 represented as:
@@ -180,13 +197,29 @@ involved in putting together the values for the model:
         pinned: false, // Setting true shows the model in top section of the legend
                        // In case of absence of `pinned` key (or false), the model
                        // goes in the bottom section
-        predictions
+        predictions,
+        style: { // Optional parameter for applying custom css on svg elements
+          color: '#4682b4', // Defaults to values from the internal palette
+          point: {
+            // Style for the dots in prediction
+          },
+          area: {
+            // Style for the confidence area (shaded region around the line)
+          },
+          line: {
+            // Style for the main line
+          }
+        }
       }
     ]
   }
 #+END_SRC
 
 *** Plotting
+:PROPERTIES:
+:CUSTOM_ID: timechart-basic-plot-plotting
+:END:
+
 The life cycle of ~TimeChart~ involves the following stages:
 
 1. Initialization
@@ -223,9 +256,17 @@ clicking on the chart itself. These mouse click events can trigger user defined
 functions too. See the section on [[Hooks]] for more description.
 
 ** Adding components
+:PROPERTIES:
+:CUSTOM_ID: timechart-adding-components
+:END:
+
 This section builds up on the chart above to add more information
 
 *** Baseline
+:PROPERTIES:
+:CUSTOM_ID: timechart-adding-components-baseline
+:END:
+
 A baseline is a horizontal line specifying some sort of baseline. To plot it,
 pass a ~baseline~ item in data. Optionally, set a label for the baseline by
 providing it in the ~config~.
@@ -255,6 +296,10 @@ providing it in the ~config~.
 #+HTML: <div id="tc-baseline"></div>
 
 *** Actual
+:PROPERTIES:
+:CUSTOM_ID: timechart-adding-components-actual
+:END:
+
 Another important component to show is the actual line that we are trying to
 predict. The ~actual~ series is an array of the same length as the ~timePoints~ and
 can be something like this
@@ -274,6 +319,10 @@ can be something like this
 #+HTML: <div id="tc-actual"></div>
 
 *** Observed
+:PROPERTIES:
+:CUSTOM_ID: timechart-adding-components-observed
+:END:
+
 Observed data series refers to the time series /as observed/ at a certain time
 point. Observed lines are useful (only) when there are updates in actual data,
 resulting in different /versions/ based on when the data was released.
@@ -335,6 +384,10 @@ purpose.
 #+HTML: <div id="tc-observed"></div>
 
 *** History
+:PROPERTIES:
+:CUSTOM_ID: timechart-adding-components-history
+:END:
+
 Historical data lines (similar to ~actual~ series) can be shown by passing an
 array of historical actual series like the following:
 
@@ -367,6 +420,10 @@ passed as history to have the same length, the user is supposed to pad/clip all
 the series to match the current season's length.
 
 *** Confidence Intervals
+:PROPERTIES:
+:CUSTOM_ID: timechart-adding-components-ci
+:END:
+
 Confidence intervals show a region of uncertainty around the model predictions
 (peak, onset and the regular time step predictions). These involve users to
 specify:
@@ -440,6 +497,10 @@ Putting everything together now:
 #+HTML: <div id="tc-ci"></div>
 
 *** Peak and Onset
+:PROPERTIES:
+:CUSTOM_ID: timechart-adding-components-peak-and-onset
+:END:
+
 Just like a ~series~ key in predictions, we can also add ~onsetTime~, ~peakTime~ and
 ~peakValue~ keys to show the respective predictions. Each of these have a
 /mandatory/ ~point~ key and can have ~low~ and ~high~ ranges to show confidence
@@ -531,8 +592,67 @@ For showing the onset value, we also need to pass a config option ~{ onset: true
 #+HTML: <br><br>
 #+HTML: <div id="tc-peak-onset"></div>
 
+*** Additional lines
+:PROPERTIES:
+:CUSTOM_ID: timechart-adding-components-additional-lines
+:END:
+
+Starting from ~v0.10.0~, you can add extra lines to be shown in the plot. To keep
+the library backward compatible, you need to provide the extra data as another
+key in the data object that you send to the ~plot~ function. Here is an example
+and specification of the structure that we expect:
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  let tcAdditional = new d3Foresight.TimeChart('#timechart-additional', config)
+
+  let additionalLines = [
+    {
+      id: 'Extra 1',
+      data: 1.53, // Scalar makes it show up as horizontal line
+      style: { // Optional style parameter
+        color: 'red',
+        point: {
+          // Optional parameter for styling the dots
+        },
+        line: {
+          // Style for the main line
+          'stroke-dasharray': '5,5'
+        }
+      },
+      meta: {
+        // Similar to what is used in models, all optional
+        name: 'Extra baseline',
+        description: 'This is an additional baseline',
+        url: 'https://github.com'
+      },
+      tooltip: false, // Should the value show up in tooltip (false by default or when absent)
+      legend: true // Should the value show up in legend (true by default or when absent)
+    },
+    {
+      id: 'Extra 2',
+      data: rseq(51), // Structure similar to like the actual array
+      style: {
+        color: '#9b59b6',
+        point: {
+          r: 0
+        }
+      },
+      tooltip: true
+    }
+  ]
+
+  tcAdditional.plot(Object.assign(copy(data), { additionalLines }))
+  tcAdditional.update(10)
+#+END_SRC
+
+#+HTML: <br><br>
+#+HTML: <div id="timechart-additional"></div>
 
 ** TODO All config and data options
+:PROPERTIES:
+:CUSTOM_ID: timechart-config
+:END:
+
 Possible options to the constructor are described below:
 
 #+BEGIN_SRC js :tangle ./assets/script.js
@@ -568,12 +688,18 @@ Possible options to the constructor are described below:
 /Options for plotting go here/
 
 * TODO DistributionChart
+:PROPERTIES:
+:CUSTOM_ID: distributionchart
+:END:
 
 #+CAPTION: ~DistributionChart~ displays probability distributions for the
 #+CAPTION: prediction targets
 [[file:./distchart.png]]
 
 * Hooks
+:PROPERTIES:
+:CUSTOM_ID: hooks
+:END:
 
 Charts can call user defined functions when movement events are triggered inside
 (e.g. by clicking on movement buttons or clicking on the overlay). To register
