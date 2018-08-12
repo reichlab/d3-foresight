@@ -162,7 +162,7 @@ export default class DistributionChart extends Chart {
     })
 
     // Update models shown in control panel
-    this.controlPanel.plot(this.panels[0].predictions, dataConfig)
+    this.controlPanel.plot(this.panels[0].predictions, [], dataConfig)
 
     // Fade out models with no predictions
     this.controlPanel.update(this.panels[0].predictions)

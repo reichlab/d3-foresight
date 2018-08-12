@@ -26,14 +26,14 @@ export function getMousePosition (d3Selection): Position {
 }
 
 /**
- * Return prediction objects which are present in modelsData. Clear the ones
+ * Return line objects which are present in lines. Clear the ones
  * which are absent.
  */
-export function filterActivePredictions (predictions, modelsData) {
-  let modelIds = modelsData.map(m => m.id)
-  return predictions.filter(p => {
-    if (modelIds.indexOf(p.id) === -1) {
-      p.clear()
+export function filterActiveLines (lineList, lines) {
+  let lineIds = lines.map(l => l.id)
+  return lineList.filter(l => {
+    if (lineIds.indexOf(l.id) === -1) {
+      l.clear()
       return false
     } else {
       return true

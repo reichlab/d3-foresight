@@ -12,11 +12,12 @@ import Observed from './components/time-chart/observed'
 import Overlay from './components/time-chart/overlay'
 import TimezeroLine from './components/time-chart/timezero-line'
 import Prediction from './components/time-chart/prediction'
+import AdditionalLine from './components/time-chart/additional-line'
 import TimeRect from './components/time-chart/timerect'
 import Chart from './chart'
 import { verifyTimeChartData } from './utilities/data/verify'
 import { getTimeChartDataConfig } from './utilities/data/config'
-import { filterActivePredictions } from './utilities/misc'
+import { filterActiveLines } from './utilities/misc'
 import * as ev from './events'
 
 export default class TimeChart extends Chart {
@@ -59,6 +60,7 @@ export default class TimeChart extends Chart {
     this.actual = this.append(new Actual())
     this.observed = this.append(new Observed())
     this.predictions = []
+    this.additional = []
     this.cid = this.config.confidenceIntervals.length - 1
 
     let panelConfig = {
@@ -107,9 +109,9 @@ export default class TimeChart extends Chart {
       } else if (id === 'Observed') {
         this.observed.hidden = !this.observed.hidden
       } else {
-        let predMarker = this.predictions.find(p => p.id === id)
-        if (predMarker) {
-          predMarker.hidden = !state
+        let marker = [...this.predictions, ...this.additional].find(m => m.id === id)
+        if (marker) {
+          marker.hidden = !state
         }
       }
     })
@@ -125,6 +127,70 @@ export default class TimeChart extends Chart {
   // plot data
   plot (data) {
     verifyTimeChartData(data)
+
+    let spec = {
+      id: 'Some unique id',
+      data: 3.43, // or array like actual,
+      style: {
+        stroke: 'something',
+        point: {
+          // Things for point (dots)
+        }
+      },
+      meta: {
+        // optional,
+        name: 'erer',
+        description: 'Some desc',
+        url: 'somet stuf'
+      },
+      tooltip: false, // default
+      legend: true // default
+    }
+
+    // Add additional lines
+    data.additionalLines = [
+      {
+        id: 'baseline-2',
+        data: 3.2,
+        style: {
+          color: 'red'
+        }
+      },
+      {
+        id: 'close to actual',
+        meta: {
+          name: 'Lol kek',
+          description: 'hello world, this is something'
+        },
+        style: {
+          color: 'red',
+          point: {
+            r: 10,
+            fill: 'green'
+          }
+        },
+        data: data.actual
+      },
+      {
+        id: 'second',
+        meta: {
+          name: 'Lol kek',
+          url: 'https://github.com'
+        },
+        tooltip: true,
+        style: {
+          stroke: 'blue'
+        },
+        data: 1.2
+      },
+      {
+        id: 'last one?',
+        style: {
+          stroke: 'red'
+        },
+        data: data.actual
+      }
+    ]
 
     this.dataConfig = getTimeChartDataConfig(data, this.config)
     this.dataVersionTimes = tpUtils.parseDataVersionTimes(data, this.dataConfig)
@@ -158,6 +224,29 @@ export default class TimeChart extends Chart {
       this.history.plot(this.scales, data.history)
     }
 
+    // Plot additional lines
+    if (this.dataConfig.additionalLines) {
+      this.additional = filterActiveLines(this.additional, data.additionalLines)
+      data.additionalLines.forEach((ad, idx) => {
+        let addMarker
+        let markerIndex = this.additional.findIndex(a => a.id === ad.id)
+        if (markerIndex === -1) {
+          addMarker = new AdditionalLine(this.layout, {
+            id: ad.id,
+            meta: ad.meta,
+            tooltip: 'tooltip' in ad ? ad.tooltip : false,
+            legend: 'legend' in ad ? ad.legend : true,
+            style: { color: 'gray', ...ad.style }
+          })
+          this.append(addMarker)
+          this.additional.push(addMarker)
+        } else {
+          addMarker = this.additional[markerIndex]
+        }
+        addMarker.plot(this.scales, ad.data)
+      })
+    }
+
     let totalModels = data.models.length
     let onsetDiff = (this.onsetHeight - 2) / (totalModels + 1)
 
@@ -165,7 +254,7 @@ export default class TimeChart extends Chart {
     this.colors = colors.getColorMap(data.models.length)
 
     // Clear markers not needed
-    this.predictions = filterActivePredictions(this.predictions, data.models)
+    this.predictions = filterActiveLines(this.predictions, data.models)
 
     // Generate markers for predictions if not already there
     // Assume unique model ids
@@ -191,8 +280,12 @@ export default class TimeChart extends Chart {
       predMarker.plot(this.scales, m.predictions)
     })
 
-    this.controlPanel.plot(this.predictions, this.dataConfig)
-    this.overlay.plot(this.scales, [this.actual, this.observed, ...this.predictions])
+    this.controlPanel.plot(this.predictions, this.additional, this.dataConfig)
+
+    this.overlay.plot(this.scales, [
+      this.actual, this.observed,
+      ...this.predictions, ...this.additional
+    ])
 
     // Hot start the chart
     this.currentIdx = 0

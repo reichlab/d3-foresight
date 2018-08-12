@@ -28,8 +28,8 @@ export default class ControlPanel extends Component {
     sideButtons.legendBtnState = true
   }
 
-  plot (predictions, config) {
-    this.legendDrawer.plot(predictions, config)
+  plot (predictions, additional, config) {
+    this.legendDrawer.plot(predictions, additional, config)
   }
 
   update (predictions) {

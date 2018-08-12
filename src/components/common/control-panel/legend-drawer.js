@@ -8,17 +8,18 @@ import * as tt from '../../../utilities/tooltip'
 
 function makePredictionRow (p, tooltip) {
   let drawerRow = new DrawerRow(p.id, p.style.color)
-  if (p.meta.url) {
-    drawerRow.addLink(p.meta.url, tooltip)
+
+  let ttText
+  if (p.meta) {
+    if (p.meta.url) {
+      drawerRow.addLink(p.meta.url, tooltip)
+    }
+    ttText = tt.parseText({ title: p.meta.name, text: p.meta.description })
+  } else {
+    ttText = tt.parseText({ title: p.id, text: '' })
   }
 
-  drawerRow.addTooltip(
-    tooltip,
-    tt.parseText({
-      title: p.meta.name,
-      text: p.meta.description
-    }), 'left')
-
+  drawerRow.addTooltip(tooltip, ttText, 'left')
   drawerRow.active = !p.hidden
   return drawerRow
 }
@@ -149,7 +150,7 @@ export default class LegendDrawer extends Component {
     })
   }
 
-  plot (predictions, config) {
+  plot (predictions, additional, config) {
     // Update the top items except pinned models
     for (let topId in this.topRowsMap) {
       this.topRowsMap[topId].hidden = !config[topId]
@@ -188,10 +189,12 @@ export default class LegendDrawer extends Component {
 
     // Handle pinned models separately
     this.pinnedContainer.selectAll('*').remove()
-    this.pinnedRows = predictions
-      .filter(p => config.pinnedModels.indexOf(p.id) > -1)
-      .map(p => {
-        let drawerRow = makePredictionRow(p, this.tooltip)
+    this.pinnedRows = [
+      ...predictions.filter(p => config.pinnedModels.indexOf(p.id) > -1),
+      ...additional.filter(ad => ad.legend)
+    ]
+      .map(it => {
+        let drawerRow = makePredictionRow(it, this.tooltip)
         drawerRow.addOnClick(({ id, state }) => {
           ev.publish(this.uuid, ev.LEGEND_ITEM, { id, state })
         })

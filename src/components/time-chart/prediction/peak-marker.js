@@ -87,7 +87,7 @@ export default class PeakMarker extends SComponent {
             { key: 'Peak Percent', value: peakValue.point },
             { key: 'Peak Time', value: cfg.scales.ticks[peakTime.point] }
           ],
-          color: cfg.color
+          color: this.color
         }))
       })
       .on('mouseout', () => {

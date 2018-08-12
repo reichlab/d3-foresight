@@ -2,6 +2,8 @@ import * as d3 from 'd3'
 import * as tt from '../../utilities/tooltip'
 import * as ev from '../../events'
 import SComponent from '../s-component'
+import AdditionLine from '../time-chart/additional-line'
+import Prediction from '../time-chart/prediction'
 
 class NoPredText extends SComponent {
   constructor () {
@@ -102,6 +104,14 @@ export default class Overlay extends SComponent {
       this.todayLine.hidden = true
     }
 
+    let objects = {
+      static: queryObjects.filter(q => ['Actual', 'Observed'].indexOf(q.id) > -1),
+      models: queryObjects.filter(q => q instanceof Prediction),
+      additional: queryObjects.filter(q => {
+        return q instanceof AdditionLine && q.tooltip
+      })
+    }
+
     // Add mouse move and click events
     let that = this
     this.overlay
@@ -113,15 +123,15 @@ export default class Overlay extends SComponent {
 
         that.hoverLine.x = snappedX
 
-        let visiblePreds = queryObjects.filter(q => {
+        let visibleModels = objects.models.filter(q => {
           // Take only model predictions which have data at index
-          return (['Actual', 'Observed'].indexOf(q.id) === -1) && (q.query(index) !== false)
+          return q.query(index) !== false
         })
 
         let ttTitle = ''
-        if (visiblePreds.length > 0) {
+        if (visibleModels.length > 0) {
           // Add note regarding which prediction is getting displayed
-          let aheadIndex = visiblePreds[0].displayedIdx(index)
+          let aheadIndex = visibleModels[0].displayedIdx(index)
           if (aheadIndex !== null) {
             ttTitle = `${aheadIndex + 1} ahead`
           }
@@ -129,7 +139,7 @@ export default class Overlay extends SComponent {
 
         that.tooltip.render(tt.parsePredictions({
           title: ttTitle,
-          predictions: queryObjects,
+          predictions: [...objects.static, ...objects.additional, ...objects.models],
           index
         }))
 

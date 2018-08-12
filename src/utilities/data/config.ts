@@ -76,6 +76,7 @@ export function getTimeChartDataConfig (data, config) {
       versionTime: isVersionTimePresent(data.models)
     },
     pinnedModels: pinnedModelIds(data.models),
+    additionalLines: 'additionalLines' in data,
     ticks: data.timePoints.map(tp => getTick(tp, config.pointType)),
     pointType: config.pointType
   }
