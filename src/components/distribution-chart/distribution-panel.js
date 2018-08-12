@@ -62,7 +62,7 @@ export default class DistributionPanel extends SComponent {
         predMarker = new Prediction({
           id: m.id,
           meta: m.meta,
-          style: { color: this.colors[idx] }
+          style: { color: this.colors[idx], ...m.style }
         })
         this.append(predMarker)
         this.predictions.push(predMarker)
