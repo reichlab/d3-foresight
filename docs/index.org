@@ -72,7 +72,7 @@ for that can be added using:
 
 * TimeChart
 :PROPERTIES:
-:CUSTOM_ID: timechart
+:CUSTOM_ID: timechart-section
 :END:
 
 A ~TimeChart~ displays the time series to be predicted and the models'
@@ -648,6 +648,71 @@ and specification of the structure that we expect:
 #+HTML: <br><br>
 #+HTML: <div id="timechart-additional"></div>
 
+** Data Version Time and Timezero
+:PROPERTIES:
+:CUSTOM_ID: timechart-dvt
+:END:
+
+There are two possible reference times for a prediction by a particular model:
+
+1. /Timezero/: The time with respect to which the forecasts are made. For example,
+   if a model predicts 3 steps ahead values of ~[1.0, 1.2, 0.5]~ with a timezero
+   of ~t~, then we say that the predicted values are for time steps ~t + 1~, ~t + 2~,
+   and ~t + 3~.
+2. /Data Version Time/: Specifies the data at a particular version (given by the
+   /time/ value) the model looked at while making its prediction.
+
+In a usual prediction task, when we are a time ~t~, our predictions are made by
+considering ~t~ as the /timezero/ *and* the /data version time/. The /data version time/
+is displayed using a gray shaded region (covering all the data that the model
+looked at) and a boundary text 'Data as of'. The timezero line is shown as a
+separate dashed vertical line with text 'Timezero'.
+
+When both times are the same, only data version time is displayed. In case the
+user provides data version times separately for each prediction, both times are
+shown since they /might/ be different. You can also override the display of the
+/timezero/ line by passing a Boolean key in either the /options/ parameter (passed
+when initializing the plot) or the data parameter (passed when calling the /plot/
+function):
+
+#+BEGIN_SRC js
+  ...
+    timezeroLine: true
+  ...
+#+END_SRC
+
+Here is an example plot where user passes in additional data version. Note that
+the ~dataVersionTime~ values are /not/ indices for the ~timePoints~ array but date
+time values themselves. We first define the function that adds dummy data
+version time to all the predictions.
+
+#+BEGIN_SRC js :tangle ./assets/script.js
+  // Lets just add 2 to the timezeros for dvds
+  function addDvts (data) {
+    let dvts = data.timePoints.map(tp => {
+      return { week: tp.week + 2, year: tp.year }
+    })
+
+    data.models.forEach(m => {
+      m.predictions.forEach((p, idx) => {
+        if (p) {
+          p.dataVersionTime = dvts[idx]
+        }
+      })
+    })
+
+    return data
+  }
+
+  let tcDvd = new d3Foresight.TimeChart('#timechart-dvt-plot', config)
+
+  tcDvd.plot(addDvts(copy(data)))
+  tcDvd.update(10)
+#+END_SRC
+
+#+HTML: <br><br>
+#+HTML: <div id="timechart-dvt-plot"></div>
+
 ** TODO All config and data options
 :PROPERTIES:
 :CUSTOM_ID: timechart-config
@@ -681,7 +746,9 @@ Possible options to the constructor are described below:
     },
     pointType: 'mmwr-week',
     confidenceIntervals: ['90%', '50%'], // List of ci labels
-    onset: true // Whether to show onset panel or not
+    onset: true, // Whether to show onset panel or not
+    timezeroLine: false // Whether to show the timezeroLine, skipping this makes us fall back to the
+                        // behavior based presence of data version time
   }
 #+END_SRC
 

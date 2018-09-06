@@ -258,6 +258,28 @@ let additionalLines = [
 tcAdditional.plot(Object.assign(copy(data), { additionalLines }))
 tcAdditional.update(10)
 
+// Lets just add 2 to the timezeros for dvds
+function addDvts (data) {
+  let dvts = data.timePoints.map(tp => {
+    return { week: tp.week + 2, year: tp.year }
+  })
+
+  data.models.forEach(m => {
+    m.predictions.forEach((p, idx) => {
+      if (p) {
+        p.dataVersionTime = dvts[idx]
+      }
+    })
+  })
+
+  return data
+}
+
+let tcDvd = new d3Foresight.TimeChart('#timechart-dvt-plot', config)
+
+tcDvd.plot(addDvts(copy(data)))
+tcDvd.update(10)
+
 let options = {
   baseline: {
     text: ['CDC', 'Baseline'], // A list of strings creates multiline text
@@ -283,7 +305,9 @@ let options = {
   },
   pointType: 'mmwr-week',
   confidenceIntervals: ['90%', '50%'], // List of ci labels
-  onset: true // Whether to show onset panel or not
+  onset: true, // Whether to show onset panel or not
+  timezeroLine: false // Whether to show the timezeroLine, skipping this makes us fall back to the
+                      // behavior based presence of data version time
 }
 
 })
