@@ -146,6 +146,8 @@ export default class TimeChart extends Chart {
 
     this.timerect.plot(this.scales)
     this.timezeroLine.plot(this.scales)
+    this.timezeroLine.hidden = !this.dataConfig.timezeroLine
+
     this.baseline.hidden = !this.dataConfig.baseline
     if (this.dataConfig.baseline) {
       this.baseline.plot(this.scales, data.baseline)
@@ -247,7 +249,6 @@ export default class TimeChart extends Chart {
 
       // Since version times are present (and might be different)
       // we show the time zero line separately
-      this.timezeroLine.hidden = !this.dataConfig.predictions.versionTime
       this.timezeroLine.textHidden = this.predictions.every(p => p.noData)
 
       this.timezeroLine.update(idx)

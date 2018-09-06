@@ -60,6 +60,19 @@ function isVersionTimePresent (modelsData): boolean {
   }
 }
 
+/**
+ * Whether to show the timezeroLine
+ */
+function showTimezeroLine (data): boolean {
+  if ('timezeroLine' in data) {
+    // key takes priority
+    return data.timezeroLine
+  } else {
+    // If version time is present, we show the timezero by default
+    return isVersionTimePresent(data.models)
+  }
+}
+
 
 /**
  * Parse time chart data and provide information about it
@@ -70,6 +83,7 @@ export function getTimeChartDataConfig (data, config) {
     observed: 'observed' in data,
     history: 'history' in data,
     baseline: 'baseline' in data,
+    timezeroLine: showTimezeroLine(data),
     predictions: {
       peak: isPeakPresent(data.models),
       onset: config.onset && isOnsetPresent(data.models),
