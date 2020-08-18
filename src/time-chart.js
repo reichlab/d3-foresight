@@ -64,7 +64,7 @@ export default class TimeChart extends Chart {
     this.cid = this.config.confidenceIntervals.length - 1
 
     let panelConfig = {
-      ci: this.cid === -1 ? false : {
+      ci: this.cid === -1 ? false : { // -1 is changed to 0
         idx: this.cid,
         values: this.config.confidenceIntervals
       },
@@ -115,7 +115,7 @@ export default class TimeChart extends Chart {
         }
       }
     })
-
+    // added in LEGEND_RESCALE OPTION - don't think we need this though
     ev.addSub(this.uuid, ev.LEGEND_CI, (msg, { idx }) => {
       this.predictions.forEach(p => {
         this.cid = p.cid = idx
@@ -123,6 +123,40 @@ export default class TimeChart extends Chart {
       })
     })
   }
+
+  updateDomains (predictions) {
+    if (this.config.axes.y.domain) {
+      this.yScale.domain(this.config.axes.y.domain);
+      } else {
+        this.yScale.domain(domains.y_pred(this.actual.data, predictions, this.dataConfig));
+      }
+      this.yAxis.plot(this.scales);
+      this.actual.rescale(this.scales);
+      this.predictions.forEach(function (p) {
+        return p.update(this.currentIdx);
+      });
+  }
+
+  // add updateDomain function
+  /*
+    (0, _createClass3.default)(TimeChart, [{
+    key: 'updateDomains',
+    value: function updateDomains(predictions) {
+      var _this2 = this;
+
+      if (this.config.axes.y.domain) {
+        this.yScale.domain(this.config.axes.y.domain);
+      } else {
+        this.yScale.domain(domains.y_pred(this.actual.data, predictions, this.dataConfig));
+      }
+      this.yAxis.plot(this.scales);
+      this.actual.rescale(this.scales);
+      this.predictions.forEach(function (p) {
+        return p.update(_this2.currentIdx);
+      });
+    }
+  },
+  */
 
   // plot data
   plot (data) {
@@ -140,7 +174,7 @@ export default class TimeChart extends Chart {
     this.xScale.domain(domains.x(data, this.dataConfig))
     this.xScaleDate.domain(domains.xDate(data, this.dataConfig))
     this.xScalePoint.domain(domains.xPoint(data, this.dataConfig))
-
+    // plot has been extracted to a new function plotChart
     this.xAxis.plot(this.scales)
     this.yAxis.plot(this.scales)
 
@@ -224,7 +258,7 @@ export default class TimeChart extends Chart {
       this.actual, this.observed,
       ...this.predictions, ...this.additional
     ])
-
+    // new plotChart ends here. doesn't do anything differnt 
     // Hot start the chart
     this.currentIdx = 0
     this.update(this.currentIdx)
@@ -241,6 +275,14 @@ export default class TimeChart extends Chart {
       this.timerect.update(this.dataVersionTimes[idx])
 
       this.predictions.forEach(p => { p.update(idx) })
+      // update domains is added here --> this is probably what I'll have to 
+      // add to make the cutoff shit work. Raw from webpack
+      /*
+        this.updateDomains([].concat((0, _toConsumableArray3.default)(this.predictions), (0, _toConsumableArray3.default)(this.additional)).filter(function (m) {
+          return !m.hidden;
+        }));
+      */
+      this.updateDomains(...this.predictions, ...this.additional.filter(m => !m.hidden))
       this.overlay.update(this.predictions)
       if (this.dataConfig.observed) {
         this.observed.update(idx)
