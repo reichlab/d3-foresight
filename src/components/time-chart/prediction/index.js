@@ -13,7 +13,7 @@ import PeakMarker from './peak-marker'
 export default class Prediction extends SComponent {
   constructor ({ id, meta, onsetY, cid, tooltip, onset, peak, style }) {
     super()
-
+    
     this.lineMarker = this.append(new LineMarker(id, style))
     if (onset) {
       this.onsetMarker = this.append(new OnsetMarker(id, onsetY, style))

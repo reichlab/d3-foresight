@@ -49,55 +49,32 @@ export default class Actual extends SComponent {
   }
 
   // added rescale function 
-  rescale (scales) {
-    let line = d3.line().x(function (d) {
-      return scales.xScale(d.x);
-    }).y(function (d) {
-      return scales.yScale(d.y);
-    });
-    this.line.datum(this.data.filter(function (d) {
-      return d.y;
-    })).transition().duration(200).attr('d', line);
+  rescale(scales) {
+    console.log('does this shit run?')
+    let line = d3.line()
+        .x(d => scales.xScale(d.x))
+        .y(d => scales.yScale(d.y))
+    this.line
+      .datum(this.data.filter(d => d.y))
+      .transition()
+      .duration(200)
+      .attr('d', line)
 
-    let circles = this.selection.selectAll('.point-actual').data(this.data.filter(function (d) {
-      return d.y;
-    }));
+    // Only plot non nulls
+    let circles = this.selection.selectAll('.point-actual')
+        .data(this.data.filter(d => d.y))
 
-    circles.exit().remove();
+    circles.exit().remove()
 
-    circles.enter().append('circle').merge(circles).attr('class', 'point-actual').transition(200).ease(d3.easeQuadOut).attr('cx', function (d) {
-      return scales.xScale(d.x);
-    }).attr('cy', function (d) {
-      return scales.yScale(d.y);
-    }).attr('r', 2);
+    circles.enter().append('circle')
+      .merge(circles)
+      .attr('class', 'point-actual')
+      .transition(200)
+      .ease(d3.easeQuadOut)
+      .attr('cx', d => scales.xScale(d.x))
+      .attr('cy', d => scales.yScale(d.y))
+      .attr('r', 2)
   }
-  /*
-   {
-    key: 'rescale',
-    value: function rescale(scales) {
-      var line = d3.line().x(function (d) {
-        return scales.xScale(d.x);
-      }).y(function (d) {
-        return scales.yScale(d.y);
-      });
-      this.line.datum(this.data.filter(function (d) {
-        return d.y;
-      })).transition().duration(200).attr('d', line);
-
-      var circles = this.selection.selectAll('.point-actual').data(this.data.filter(function (d) {
-        return d.y;
-      }));
-
-      circles.exit().remove();
-
-      circles.enter().append('circle').merge(circles).attr('class', 'point-actual').transition(200).ease(d3.easeQuadOut).attr('cx', function (d) {
-        return scales.xScale(d.x);
-      }).attr('cy', function (d) {
-        return scales.yScale(d.y);
-      }).attr('r', 2);
-    }
-  },
-  */
 
   query (idx) {
     if (this.hidden) {

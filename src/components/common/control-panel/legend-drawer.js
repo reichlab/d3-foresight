@@ -83,7 +83,7 @@ export default class LegendDrawer extends Component {
     if (config.ci) {
       let ciRow = middleContainer.append('div')
           .attr('class', 'row control-row')
-      ciRow.append('span').text('CI')
+      ciRow.append('span').text('Confidence Interval')
 
       let ciValues = [...config.ci.values, 'none']
       this.ciButtons = new ToggleButtons(ciValues)

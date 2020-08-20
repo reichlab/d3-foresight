@@ -6,7 +6,6 @@
  * Doc guard
  */
 import * as d3 from 'd3'
-import * as errors from '../errors'
 import { Range } from '../../interfaces'
 import { getDateTime } from './timepoints'
 
@@ -60,45 +59,29 @@ export function y (data, dataConfig): Range {
 }
 
 export function y_pred(actual, predictions, dataConfig): Range {
+  console.log('actual', actual)
+  console.log('perdic', predictions)
+  console.log('dataConfig', dataConfig)
   let min = 0;
   let max = 0;
+
   if (dataConfig.actual) {
-    max = Math.max(max, actual.filter(d => d.y).map(d => d.y));
+    max = Math.max(max, ...actual.filter(d => d.y).map(d => d.y));
   }
+
   predictions.filter(p => !p.hidden).forEach(md => {
     md.displayedData.filter(v => v != false).forEach(p => {
       if (p) {
-        max = Math.max(max, p);
+        max = Math.max(max, ...p);
         if (dataConfig.predictions.peak) {
           max = Math.max(max, predMax(p.peakValue));
         }
       }
     });
   });
+
   return [min, 1.2 * max];
 }
-// the new y_pred is here:
-/*
-  function y_pred(actual, predictions, dataConfig) {
-    var min = 0;
-    var max = 0;
-    if (dataConfig.actual) {
-        max = Math.max.apply(Math, [max].concat(actual.filter(function (d) { return d.y; }).map(function (d) { return d.y; })));
-    }
-    predictions.filter(function (p) { return !p.hidden; }).forEach(function (md) {
-        md.displayedData.filter(function (v) { return v != false; }).forEach(function (p) {
-            if (p) {
-                max = Math.max.apply(Math, [max].concat(p));
-                if (dataConfig.predictions.peak) {
-                    max = Math.max(max, predMax(p.peakValue));
-                }
-            }
-        });
-    });
-    return [min, 1.2 * max];
-}
-exports.y_pred = y_pred;
- */
 
 /**
  * Return domain of x

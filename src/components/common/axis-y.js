@@ -9,13 +9,19 @@ import { selectUncle } from '../../utilities/misc'
 export class YAxis extends SComponent {
   constructor (layout, { tooltip, title, description, url }) {
     super()
+
+    this.title = title;
+    this.layout = layout;
+    this.tooltip = tooltip;
+    this.description = description;
+
     this.selection.attr('class', 'axis axis-y')
 
     let yText = this.selection.append('text')
         .attr('transform', `translate(-45 , ${layout.height / 2}) rotate(-90)`)
         .attr('dy', '.71em')
         .style('text-anchor', 'middle')
-        .text(title)
+        .text(this.title)
         .on('mouseover', () => { tooltip.hidden = false })
         .on('mouseout', () => { tooltip.hidden = true })
         .on('mousemove', function () {
@@ -32,8 +38,24 @@ export class YAxis extends SComponent {
     }
   }
 
+  changeTitle (titleChange) {
+    this.title = titleChange
+    this.selection.selectAll('#y-axis-label').remove()
+    this.selection.append('text')
+      .attr('transform', `translate(-45 , ${this.layout.height / 2}) rotate(-90)`)
+      .attr('dy', '.71em')
+      .style('text-anchor', 'middle')
+      .text(this.title)
+      .on('mouseover', () => { this.tooltip.hidden = false })
+      .on('mouseout', () => { this.tooltip.hidden = true })
+      .on('mousemove', function () {
+        this.tooltip.render(tt.parseText({ text: this.description }))
+        tt.moveTooltip(this.tooltip, selectUncle(this, '.overlay'))
+      })
+  }
+
   plot (scales, maxTicks) {
-    let yAxis = d3.axisLeft(scales.yScale).tickFormat(d3.format('.2f'))
+    let yAxis = d3.axisLeft(scales.yScale).tickFormat(d3.format('.1s'))
     if (maxTicks) yAxis.ticks(maxTicks)
     this.selection
       .transition().duration(200).call(yAxis)
