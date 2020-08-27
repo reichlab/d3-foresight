@@ -155,7 +155,7 @@ export class XAxisDate extends SComponent {
 
     let xAxisDate = d3.axisBottom(scales.xScaleDate)
         .ticks(d3.timeMonth)
-        .tickFormat(d3.timeFormat('%b %y'))
+        .tickFormat(d3.timeFormat('%b'))
 
     // Mobile view fix
     if (this.width < 420) {

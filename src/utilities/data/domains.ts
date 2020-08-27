@@ -59,9 +59,6 @@ export function y (data, dataConfig): Range {
 }
 
 export function y_pred(actual, predictions, dataConfig): Range {
-  console.log('actual', actual)
-  console.log('perdic', predictions)
-  console.log('dataConfig', dataConfig)
   let min = 0;
   let max = 0;
 
@@ -94,7 +91,7 @@ export function x (data, dataConfig): Range {
  * Return domain for xdate
  */
 export function xDate (data, dataConfig): Range {
-  return d3.extent(data.timePoints.map(tp => {
+  return d3.extent(data.timePoints.map((tp, i) => {
     return getDateTime(tp, dataConfig.pointType)
   }))
 }

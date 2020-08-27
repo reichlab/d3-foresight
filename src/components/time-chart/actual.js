@@ -50,7 +50,6 @@ export default class Actual extends SComponent {
 
   // added rescale function 
   rescale(scales) {
-    console.log('does this shit run?')
     let line = d3.line()
         .x(d => scales.xScale(d.x))
         .y(d => scales.yScale(d.y))

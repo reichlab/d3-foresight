@@ -95,9 +95,9 @@ export default class Overlay extends SComponent {
 
   plot (scales, queryObjects) {
     // Check if `today` lies within the plotting range
-    let todayX = scales.xScaleDate(new Date())
-    if ((todayX >= scales.xScalePoint(scales.ticks[0])) &&
-        (todayX <= scales.xScalePoint(scales.ticks[scales.ticks.length - 1]))) {
+    let todayX = scales.xScaleDate(new Date);
+    if ((todayX >= scales.xScale(0)) &&
+        (todayX <= scales.xScale(scales.ticks.length - 1))) {
       this.todayLine.x = todayX
       this.todayLine.hidden = false
     } else {

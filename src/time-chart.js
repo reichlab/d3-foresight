@@ -64,7 +64,7 @@ export default class TimeChart extends Chart {
     this.cid = this.config.confidenceIntervals.length - 1
 
     let panelConfig = {
-      ci: this.cid === -1 ? false : { // -1 is changed to 0
+      ci: this.cid === -1 ? false : { 
         idx: this.cid,
         values: this.config.confidenceIntervals
       },
@@ -142,7 +142,6 @@ export default class TimeChart extends Chart {
     this.dataConfig = getTimeChartDataConfig(data, this.config)
     this.dataVersionTimes = tpUtils.parseDataVersionTimes(data, this.dataConfig)
     this.ticks = this.dataConfig.ticks
-
     if (this.config.axes.y.domain) {
       this.yScale.domain(this.config.axes.y.domain)
     } else {
