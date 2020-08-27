@@ -10,3 +10,8 @@ time series forecasts.
 
 Check out [flusight](http://reichlab.io/flusight) for a demo. Documentation is
 [here](http://reichlab.io/d3-foresight).
+
+# updated for CDC
+This has been updated to match the current version included in the [covid19-forecast-hub](https://github.com/reichlab/covid19-forecast-hub). 
+
+Additional customizations were added for use in the [CDC Covid Data Tracker](https://covid.cdc.gov/covid-data-tracker/#forecasting).  
