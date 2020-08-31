@@ -62,14 +62,15 @@ export default class TimeChart extends Chart {
     this.predictions = []
     this.additional = []
     this.cid = this.config.confidenceIntervals.length - 1
-
+    
     let panelConfig = {
       ci: this.cid === -1 ? false : { 
         idx: this.cid,
         values: this.config.confidenceIntervals
       },
       tooltip: this.tooltip,
-      uuid: this.uuid
+      uuid: this.uuid,
+      width: this.width
     }
 
     // Control panel
