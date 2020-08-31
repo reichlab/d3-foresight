@@ -18,7 +18,7 @@ export class YAxis extends SComponent {
     this.selection.attr('class', 'axis axis-y')
 
     let yText = this.selection.append('text')
-        .attr('transform', `translate(-45 , ${layout.height / 2}) rotate(-90)`)
+        .attr('transform', `translate(-55 , ${layout.height / 2}) rotate(-90)`)
         .attr('dy', '.71em')
         .style('text-anchor', 'middle')
         .text(this.title)

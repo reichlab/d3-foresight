@@ -75,7 +75,8 @@ function parseTimepoint(tp: Timepoint | Date | string, pointType: TimepointId): 
 export function getTick(tp: Timepoint | Date | string, pointType: TimepointId): string | number {
   tp = parseTimepoint(tp, pointType)
   if ((pointType === 'week') || (pointType === 'mmwr-week') ) {
-    return tp.week
+    // this allows us to go over a year
+    return `${tp.week}-${tp.year}`
   } if (pointType === 'biweek') {
     return tp.biweek
   } if (pointType === 'month') {
