@@ -18,7 +18,7 @@ export class YAxis extends SComponent {
     this.selection.attr('class', 'axis axis-y')
 
     let yText = this.selection.append('text')
-        .attr('transform', `translate(-55 , ${layout.height / 2}) rotate(-90)`)
+        .attr('transform', `translate(-53 , ${layout.height / 2}) rotate(-90)`)
         .attr('dy', '.71em')
         .style('text-anchor', 'middle')
         .text(this.title)
@@ -55,7 +55,7 @@ export class YAxis extends SComponent {
   }
 
   plot (scales, maxTicks) {
-    let yAxis = d3.axisLeft(scales.yScale).tickFormat(d3.format('.1s'))
+    let yAxis = d3.axisLeft(scales.yScale).tickFormat(d3.format('.2s'))
     if (maxTicks) yAxis.ticks(maxTicks)
     this.selection
       .transition().duration(200).call(yAxis)
