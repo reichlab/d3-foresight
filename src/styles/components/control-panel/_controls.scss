@@ -9,9 +9,9 @@
     @include shadow();
     @include border(rgba($accent, 0.5));
     color: $accent;
-    padding: 2px 6px;
+    padding: 4px 10px;
     margin-bottom: 5px;
-    font-size: 11px;
+    font-size: 18px;
 
     i::before {
       margin: 0;

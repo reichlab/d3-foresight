@@ -27,11 +27,11 @@ export default class ControlPanel extends Component {
     // Turn on legend by default
     sideButtons.legendBtnState = true
     
-    if (this.config.width <= 420) {
+    // if (this.config.width <= 420) {
       this.legendDrawer.hidden = true;
-    } else {
-      this.legendDrawer.hidden = false;
-    }
+    // } else {
+    //   this.legendDrawer.hidden = false;
+    // }
   }
 
   plot (predictions, additional, config) {

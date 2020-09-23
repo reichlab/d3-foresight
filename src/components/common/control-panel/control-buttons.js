@@ -22,13 +22,13 @@ export default class ControlButtons extends Component {
       {
         name: 'backBtn',
         iconClass: 'icon-left-big',
-        tooltipText: 'Move backward',
+        tooltipText: 'Previous forecasts',
         event: ev.PANEL_MOVE_PREV
       },
       {
         name: 'nextBtn',
         iconClass: 'icon-right-big',
-        tooltipText: 'Move forward',
+        tooltipText: 'Newer forecasts',
         event: ev.PANEL_MOVE_NEXT
       }
     ]
