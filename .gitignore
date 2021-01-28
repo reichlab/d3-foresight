@@ -39,3 +39,6 @@ jspm_packages
 dist
 .fuse*
 /src/.tern-port
+
+# MacOS system files
+.DS_Store
